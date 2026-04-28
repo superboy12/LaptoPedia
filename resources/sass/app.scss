@@ -1,0 +1,62 @@
+// --- DYNAMIC HOME CUSTOM CSS ---
+
+.floating-laptop {
+    animation: float 4s ease-in-out infinite;
+    filter: drop-shadow(0 30px 40px rgba(0,0,0,0.25));
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+}
+
+.text-truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}
+
+// Aesthetic Product Card
+.product-card-aesthetic {
+    border: 1px solid #f1f5f9;
+    border-radius: 24px;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    background: #fff;
+    position: relative;
+
+    .image-container {
+        transition: all 0.5s ease;
+    }
+
+    &:hover {
+        border-color: transparent;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.1);
+        transform: translateY(-10px) scale(1.01);
+
+        .image-container {
+            transform: scale(1.05);
+        }
+    }
+}
+
+.category-badge-aesthetic {
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 7px 14px;
+    border-radius: 10px;
+    letter-spacing: 0.8px;
+    transition: all 0.3s ease;
+
+    .product-card-aesthetic:hover & {
+        background: var(--primary-interactive);
+        color: #fff;
+    }
+}
+
+.fs-7 { font-size: 0.8rem; }
