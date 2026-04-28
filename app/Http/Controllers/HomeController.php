@@ -25,9 +25,9 @@ class HomeController extends Controller
     public function index()
     {
         // Menggunakan with('category') agar pengambilan data lebih efisien (Eager Loading)
-        $products = \App\Models\Product::with('category')->get();
+         $products = \App\Models\Product::with('category')->latest()->take(4)->get();
         
-        return view('home', compact('products'));
+      return view('home', compact('products'));
     }
 
     /**
