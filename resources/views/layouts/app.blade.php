@@ -303,18 +303,93 @@
     </ul>
 
     <div class="nav-actions">
-        <div class="nav-search-box">
-            <i class="bi bi-search"></i>
-            <input type="text" placeholder="Find laptops...">
+    <div class="nav-search-box">
+        <i class="bi bi-search"></i>
+        <input type="text" placeholder="Find laptops...">
+    </div>
+
+    {{-- Keranjang --}}
+    <a href="#" class="nav-icon">
+        <i class="bi bi-bag"></i>
+        <span class="cart-dot" id="cartCount">0</span>
+    </a>
+
+    {{-- User menu: tampil berbeda tergantung status login --}}
+    @auth
+        {{-- Sudah login: tampilkan nama + dropdown logout --}}
+        <div style="position:relative;" id="userMenuWrap">
+            <button class="nav-icon" onclick="toggleUserMenu()" style="display:flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.75);">
+                <i class="bi bi-person-circle" style="font-size:1.1rem;"></i>
+                <span style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                    {{ Str::before(Auth::user()->nama_lengkap, ' ') }}
+                </span>
+                <i class="bi bi-chevron-down" style="font-size:0.65rem;"></i>
+            </button>
+
+            {{-- Dropdown --}}
+            <div id="userDropdown" style="
+                display:none;
+                position:absolute;
+                top:calc(100% + 10px);
+                right:0;
+                background:#1a1a1a;
+                border:1px solid rgba(255,255,255,0.1);
+                border-radius:10px;
+                min-width:180px;
+                padding:6px;
+                z-index:9999;
+                box-shadow:0 16px 40px rgba(0,0,0,0.6);
+            ">
+                <div style="padding:10px 12px 8px;border-bottom:1px solid rgba(255,255,255,0.07);margin-bottom:4px;">
+                    <p style="font-size:0.8rem;font-weight:600;color:#fff;">{{ Auth::user()->nama_lengkap }}</p>
+                    <p style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-top:2px;">{{ Auth::user()->email }}</p>
+                    <span style="
+                        display:inline-block;margin-top:5px;
+                        font-size:0.65rem;font-weight:700;
+                        text-transform:uppercase;letter-spacing:0.08em;
+                        background:rgba(212,168,67,0.15);color:#d4a843;
+                        padding:2px 7px;border-radius:4px;
+                    ">{{ Auth::user()->role }}</span>
+                </div>
+
+                <a href="#" style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:7px;font-size:0.82rem;color:rgba(255,255,255,0.65);transition:background 0.2s,color 0.2s;"
+                   onmouseover="this.style.background='rgba(255,255,255,0.06)';this.style.color='#fff'"
+                   onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,0.65)'">
+                    <i class="bi bi-person"></i> Profil Saya
+                </a>
+                <a href="#" style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:7px;font-size:0.82rem;color:rgba(255,255,255,0.65);transition:background 0.2s,color 0.2s;"
+                   onmouseover="this.style.background='rgba(255,255,255,0.06)';this.style.color='#fff'"
+                   onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,0.65)'">
+                    <i class="bi bi-bag"></i> Pesanan Saya
+                </a>
+
+                <div style="height:1px;background:rgba(255,255,255,0.07);margin:4px 0;"></div>
+
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" style="
+                        display:flex;align-items:center;gap:9px;
+                        width:100%;padding:9px 12px;border-radius:7px;
+                        font-size:0.82rem;color:#f87171;
+                        background:none;border:none;cursor:pointer;
+                        font-family:'DM Sans',sans-serif;
+                        transition:background 0.2s;
+                    "
+                    onmouseover="this.style.background='rgba(248,113,113,0.1)'"
+                    onmouseout="this.style.background='transparent'">
+                        <i class="bi bi-box-arrow-right"></i> Keluar
+                    </button>
+                </form>
+            </div>
         </div>
-        <a href="#" class="nav-icon">
-            <i class="bi bi-bag"></i>
-            <span class="cart-dot" id="cartCount">0</span>
-        </a>
-        <a href="{{ route('login') }}" class="nav-icon">
+
+    @else
+        {{-- Belum login: tampilkan ikon person biasa --}}
+        <a href="{{ route('login') }}" class="nav-icon" title="Login">
             <i class="bi bi-person"></i>
         </a>
-    </div>
+    @endauth
+</div>
 </nav>
 
 <!-- PAGE CONTENT -->
@@ -393,5 +468,19 @@
 </footer>
 
 @stack('scripts')
+<script>
+function toggleUserMenu() {
+    const d = document.getElementById('userDropdown');
+    d.style.display = d.style.display === 'none' ? 'block' : 'none';
+}
+
+document.addEventListener('click', function(e) {
+    const wrap = document.getElementById('userMenuWrap');
+    if (wrap && !wrap.contains(e.target)) {
+        const d = document.getElementById('userDropdown');
+        if (d) d.style.display = 'none';
+    }
+});
+</script>
 </body>
 </html>
