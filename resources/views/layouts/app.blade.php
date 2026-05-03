@@ -308,11 +308,11 @@
         <input type="text" placeholder="Find laptops...">
     </div>
 
-    {{-- Keranjang --}}
-    <a href="#" class="nav-icon">
-        <i class="bi bi-bag"></i>
-        <span class="cart-dot" id="cartCount">0</span>
-    </a>
+    {{-- Keranjang — link ke halaman cart --}}
+    <a href="{{ url('/cart-demo') }}" class="nav-icon">
+    <i class="bi bi-bag"></i>
+    <span class="cart-dot" id="cartCount">0</span>
+</a>
 
     {{-- User menu: tampil berbeda tergantung status login --}}
     @auth
@@ -335,7 +335,7 @@
                 background:#1a1a1a;
                 border:1px solid rgba(255,255,255,0.1);
                 border-radius:10px;
-                min-width:180px;
+                min-width:190px;
                 padding:6px;
                 z-index:9999;
                 box-shadow:0 16px 40px rgba(0,0,0,0.6);
@@ -357,6 +357,19 @@
                    onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,0.65)'">
                     <i class="bi bi-person"></i> Profil Saya
                 </a>
+
+                {{-- Link ke Keranjang --}}
+                <a href="{{ route('cart.index') }}" style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:7px;font-size:0.82rem;color:rgba(255,255,255,0.65);transition:background 0.2s,color 0.2s;"
+                   onmouseover="this.style.background='rgba(255,255,255,0.06)';this.style.color='#fff'"
+                   onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,0.65)'">
+                    <i class="bi bi-cart3"></i> Keranjang Saya
+                    @if(collect(session('cart', []))->sum('quantity') > 0)
+                    <span style="margin-left:auto;background:var(--gold);color:#000;font-size:0.62rem;font-weight:800;padding:1px 6px;border-radius:4px;">
+                        {{ collect(session('cart', []))->sum('quantity') }}
+                    </span>
+                    @endif
+                </a>
+
                 <a href="#" style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:7px;font-size:0.82rem;color:rgba(255,255,255,0.65);transition:background 0.2s,color 0.2s;"
                    onmouseover="this.style.background='rgba(255,255,255,0.06)';this.style.color='#fff'"
                    onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,0.65)'">
@@ -480,6 +493,143 @@ document.addEventListener('click', function(e) {
         const d = document.getElementById('userDropdown');
         if (d) d.style.display = 'none';
     }
+});
+</script>
+
+<!-- ===== CART DEMO FUNCTIONS ===== -->
+<style>
+    .cart-toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: #1a1a1a;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 50px;
+        padding: 12px 24px;
+        z-index: 9999;
+        transition: transform 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .cart-toast.show {
+        transform: translateX(-50%) translateY(0);
+    }
+    .cart-toast-inner {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: white;
+    }
+    .bi-check-circle-fill { color: #10b981; }
+    .bi-x-circle-fill { color: #ef4444; }
+    
+    .btn-cart.loading {
+        opacity: 0.7;
+        cursor: wait;
+    }
+    .btn-cart.added {
+        background: #10b981;
+        color: white;
+        border-color: #10b981;
+    }
+</style>
+
+<script>
+// Fungsi untuk update badge cart
+function updateCartCount(count) {
+    const badge = document.getElementById('cartCount');
+    if (badge) {
+        badge.textContent = count;
+        badge.style.transform = 'scale(1.2)';
+        setTimeout(() => badge.style.transform = '', 200);
+    }
+}
+
+// Fungsi untuk show toast notifikasi
+function showToast(message, isSuccess = true) {
+    let toast = document.getElementById('cartToast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'cartToast';
+        toast.className = 'cart-toast';
+        toast.innerHTML = `
+            <div class="cart-toast-inner">
+                <i class="bi ${isSuccess ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}"></i>
+                <span id="toastMessage"></span>
+            </div>
+        `;
+        document.body.appendChild(toast);
+    }
+    
+    const toastMsg = document.getElementById('toastMessage');
+    const toastIcon = toast.querySelector('i');
+    
+    toastIcon.className = `bi ${isSuccess ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}`;
+    toastMsg.textContent = message;
+    
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2500);
+}
+
+    // Ambil data produk dari card
+    const card = btn.closest('.p-card');
+    const productName = card?.querySelector('.p-name')?.textContent?.trim() ?? 'Product';
+    
+    // Simpan HTML asli button
+    const originalHTML = btn.innerHTML;
+    
+    // Loading state
+    btn.disabled = true;
+    btn.classList.add('loading');
+    btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Adding...';
+    
+    // Simulasi proses (biar keliatan animasinya)
+    setTimeout(() => {
+        // Ambil cart dari localStorage
+        let cart = JSON.parse(localStorage.getItem('demo_cart') || '[]');
+        
+        // Cek apakah produk sudah ada di cart
+        const existingIndex = cart.findIndex(item => item.name === productName);
+        
+        if (existingIndex !== -1) {
+            cart[existingIndex].quantity += 1;
+        } else {
+            cart.push({
+                name: productName,
+                quantity: 1,
+                addedAt: new Date().toISOString()
+            });
+        }
+        
+        // Simpan ke localStorage
+        localStorage.setItem('demo_cart', JSON.stringify(cart));
+        
+        // Hitung total item
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        
+        // Update badge di navbar
+        updateCartCount(totalItems);
+        
+        // Tampilkan notifikasi
+        showToast(`${productName} added to cart!`, true);
+        
+        // Reset button
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.classList.remove('loading');
+            btn.innerHTML = originalHTML;
+        }, 800);
+        
+    }, 400);
+}
+
+// Load cart count saat halaman dimuat
+document.addEventListener('DOMContentLoaded', function() {
+    const cart = JSON.parse(localStorage.getItem('demo_cart') || '[]');
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    updateCartCount(totalItems);
 });
 </script>
 </body>

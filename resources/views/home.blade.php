@@ -422,18 +422,18 @@
         padding: 9px 16px;
         border-radius: 100px;
         cursor: pointer;
-        transition: background 0.2s, border-color 0.2s;
+        transition: background 0.25s, border-color 0.25s, transform 0.2s, color 0.25s;
         white-space: nowrap;
     }
-    .btn-cart:hover {
+    .btn-cart:hover:not(:disabled) {
         background: rgba(255,255,255,0.13);
         border-color: rgba(255,255,255,0.22);
         color: var(--white);
+        transform: scale(1.04);
     }
+    .btn-cart:disabled { cursor: not-allowed; }
 
-    /* =============================================
-       RESPONSIVE
-    ============================================= */
+    /* Responsive */
     @media (max-width: 1100px) {
         .products-grid { grid-template-columns: repeat(2,1fr); }
     }
@@ -470,7 +470,6 @@
     <div class="hero-grid"></div>
 
     <div class="hero-inner">
-        <!-- LEFT -->
         <div class="hero-left">
             <div class="hero-eyebrow">
                 <span class="eyebrow-pulse"></span>
@@ -513,7 +512,6 @@
             </div>
         </div>
 
-        <!-- RIGHT -->
         <div class="hero-right">
             <div class="hero-glow"></div>
             <img
@@ -525,12 +523,10 @@
     </div>
 </section>
 
-
 <!-- =============================================
-     FEATURED LAPTOPS
+     FEATURED LAPTOPS (DEMO PRODUCTS)
 ============================================= -->
 <section class="featured-section" id="featured">
-
     <div class="featured-top">
         <div>
             <span class="section-label">Handpicked for you</span>
@@ -543,113 +539,168 @@
     </div>
 
     <div class="products-grid">
-
-        @forelse($products ?? [] as $product)
+        {{-- PRODUCT 1 - Bestseller --}}
         <div class="p-card">
-            @if($loop->first)
-                <span class="p-badge p-badge-bs">Bestseller</span>
-            @elseif($loop->index === 1)
-                <span class="p-badge p-badge-off">15% Off</span>
-            @elseif($loop->index === 2)
-                <span class="p-badge p-badge-new">New</span>
-            @endif
-
+            <span class="p-badge p-badge-bs">Bestseller</span>
             <div class="p-img-wrap">
-                <img
-                    src="{{ $product->image ? asset('storage/'.$product->image) : 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=80' }}"
-                    alt="{{ $product->name }}">
+                <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80" alt="MacBook Pro">
             </div>
-
             <div class="p-body">
-                <div class="p-name">{{ $product->name }}</div>
+                <div class="p-name">MacBook Pro 16"</div>
+                <div class="p-stars">
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-half"></i>
+                    <span>(4.9)</span>
+                </div>
+                <div class="p-spec">M3 Pro chip · 18GB RAM · 512GB SSD · Liquid Retina XDR</div>
+                <div class="p-footer">
+                    <div class="p-price">
+                        Rp 28.999.000
+                        <small>Harga terbaik</small>
+                    </div>
+                    <button class="btn-cart" onclick="addToCart(this)">
+                        <i class="bi bi-bag-plus"></i> Add
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {{-- PRODUCT 2 - 15% Off --}}
+        <div class="p-card">
+            <span class="p-badge p-badge-off">15% Off</span>
+            <div class="p-img-wrap">
+                <img src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400&q=80" alt="Dell XPS">
+            </div>
+            <div class="p-body">
+                <div class="p-name">Dell XPS 15</div>
+                <div class="p-stars">
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star"></i>
+                    <span>(4.7)</span>
+                </div>
+                <div class="p-spec">Intel i7-13700H · 16GB · 1TB SSD · 4K OLED Touch</div>
+                <div class="p-footer">
+                    <div class="p-price">
+                        Rp 25.999.000
+                        <small>Harga terbaik</small>
+                    </div>
+                    <button class="btn-cart" onclick="addToCart(this)">
+                        <i class="bi bi-bag-plus"></i> Add
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {{-- PRODUCT 3 - New --}}
+        <div class="p-card">
+            <span class="p-badge p-badge-new">New</span>
+            <div class="p-img-wrap">
+                <img src="https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&q=80" alt="ASUS ROG">
+            </div>
+            <div class="p-body">
+                <div class="p-name">ASUS ROG Strix G16</div>
                 <div class="p-stars">
                     <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                     <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                     <i class="bi bi-star-half"></i>
                     <span>(4.8)</span>
                 </div>
-                <div class="p-spec">{{ Str::limit($product->description ?? 'Spesifikasi tersedia di halaman detail produk.', 75) }}</div>
+                <div class="p-spec">RTX 4070 · i9-13980HX · 32GB · 2TB SSD · 240Hz</div>
                 <div class="p-footer">
                     <div class="p-price">
-                        Rp {{ number_format($product->price, 0, ',', '.') }}
+                        Rp 32.999.000
                         <small>Harga terbaik</small>
                     </div>
-                    <button class="btn-cart" onclick="addToCart({{ $product->id }}, event)">
+                    <button class="btn-cart" onclick="addToCart(this)">
                         <i class="bi bi-bag-plus"></i> Add
                     </button>
                 </div>
             </div>
         </div>
 
-        @empty
-        {{-- Static fallback --}}
-        @php
-        $demo = [
-            ['name'=>'MacBook Pro 16"',   'badge'=>'bs',  'bl'=>'Bestseller', 'rating'=>'4.9', 'spec'=>'M3 Pro chip · 18GB RAM · 512GB SSD · Liquid Retina XDR', 'price'=>'Rp 15.000...', 'img'=>'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80'],
-            ['name'=>'Dell XPS 15',        'badge'=>'off', 'bl'=>'15% Off',   'rating'=>'4.7', 'spec'=>'Intel i7-13700H · 16GB · 1TB SSD · 4K OLED Touch',    'price'=>'Rp 7.000...',  'img'=>'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400&q=80'],
-            ['name'=>'ASUS ROG Strix G16', 'badge'=>'new', 'bl'=>'New',       'rating'=>'4.8', 'spec'=>'RTX 4070 · i9-13980HX · 32GB · 2TB SSD · 240Hz',      'price'=>'Rp 16.000...', 'img'=>'https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&q=80'],
-            ['name'=>'HP Spectre x360',    'badge'=>'',   'bl'=>'',           'rating'=>'4.5', 'spec'=>'Intel i7 · 16GB · 512GB SSD · OLED Touch · 2-in-1',    'price'=>'Rp 8.000...',  'img'=>'https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=400&q=80'],
-        ];
-        @endphp
-
-        @foreach($demo as $d)
+        {{-- PRODUCT 4 - Regular --}}
         <div class="p-card">
-            @if($d['badge'])
-            <span class="p-badge p-badge-{{ $d['badge'] }}">{{ $d['bl'] }}</span>
-            @endif
-
             <div class="p-img-wrap">
-                <img src="{{ $d['img'] }}" alt="{{ $d['name'] }}">
+                <img src="https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=400&q=80" alt="HP Spectre">
             </div>
-
             <div class="p-body">
-                <div class="p-name">{{ $d['name'] }}</div>
+                <div class="p-name">HP Spectre x360</div>
                 <div class="p-stars">
                     <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                     <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-half"></i>
-                    <span>({{ $d['rating'] }})</span>
+                    <i class="bi bi-star"></i>
+                    <span>(4.5)</span>
                 </div>
-                <div class="p-spec">{{ $d['spec'] }}</div>
+                <div class="p-spec">Intel i7 · 16GB · 512GB SSD · OLED Touch · 2-in-1</div>
                 <div class="p-footer">
                     <div class="p-price">
-                        {{ $d['price'] }}
+                        Rp 19.999.000
                         <small>Harga terbaik</small>
                     </div>
-                    <button class="btn-cart">
+                    <button class="btn-cart" onclick="addToCart(this)">
                         <i class="bi bi-bag-plus"></i> Add
                     </button>
                 </div>
             </div>
         </div>
-        @endforeach
-        @endforelse
-
     </div>
 </section>
 
-@endsection
-
 @push('scripts')
 <script>
-function addToCart(productId, event) {
-    event.stopPropagation();
-    fetch('/cart/add', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        },
-        body: JSON.stringify({ product_id: productId, quantity: 1 })
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.success) {
-            const badge = document.getElementById('cartCount');
-            if (badge) badge.textContent = data.cartCount ?? '1';
-        }
-    })
-    .catch(() => { window.location.href = '{{ route("login") }}'; });
+// ADD TO CART FUNCTION (TANPA POPUP ALERT)
+function addToCart(button) {
+    // Ambil data produk dari card
+    const card = button.closest('.p-card');
+    const productName = card.querySelector('.p-name').innerText;
+    
+    // Ubah tampilan tombol
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="bi bi-check-lg"></i> Added!';
+    button.disabled = true;
+    button.style.background = '#10b981';
+    button.style.borderColor = '#10b981';
+    
+    // Ambil cart dari localStorage
+    let cart = JSON.parse(localStorage.getItem('my_cart') || '[]');
+    
+    // Cek apakah produk sudah ada
+    let existing = cart.find(item => item.name === productName);
+    
+    if (existing) {
+        existing.quantity += 1;
+    } else {
+        cart.push({
+            name: productName,
+            quantity: 1
+        });
+    }
+    
+    // Simpan ke localStorage
+    localStorage.setItem('my_cart', JSON.stringify(cart));
+    
+    // Update badge cart
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    const cartBadge = document.getElementById('cartCount');
+    if (cartBadge) {
+        cartBadge.textContent = totalItems;
+        cartBadge.style.transform = 'scale(1.2)';
+        setTimeout(() => cartBadge.style.transform = '', 200);
+    }
+    
+    // HAPUS ALERT! (udah gak pake popup)
+    // alert(productName + ' added to cart!');
+    
+    // Reset tombol setelah 1 detik
+    setTimeout(() => {
+        button.innerHTML = originalText;
+        button.disabled = false;
+        button.style.background = '';
+        button.style.borderColor = '';
+    }, 1000);
 }
 </script>
 @endpush
+@endsection
