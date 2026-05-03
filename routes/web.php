@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\AdminController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
@@ -14,6 +16,17 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/register',  [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
+});
+
+// ─────────────────────────────────────────────
+//  ADMIN ROUTES (Guest)
+// ─────────────────────────────────────────────
+Route::prefix('admin')->name('admin.')->middleware('guest')->group(function () {
+    Route::get('/login',     [AdminController::class, 'showLogin'])->name('login');
+    Route::post('/login',    [AdminController::class, 'login']);
+
+    Route::get('/register',  [AdminController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AdminController::class, 'register']);
 });
 
 // ─────────────────────────────────────────────
@@ -42,4 +55,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/cart-demo', function () {
     return view('cart.demo');
 })->name('cart.demo');
+});
+
+// ─────────────────────────────────────────────
+//  ADMIN AUTH ROUTES
+// ─────────────────────────────────────────────
+Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+    Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/products', [DashboardController::class, 'products'])->name('products');
+    Route::get('/orders', [DashboardController::class, 'orders'])->name('orders');
 });
