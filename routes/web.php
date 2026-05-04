@@ -43,18 +43,20 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/product/{slug}', [HomeController::class, 'detail'])->name('product.detail');
 
-   // ── Shopping Cart ──────────────────────────────────────
-     Route::prefix('cart')->group(function () {
-        Route::get('/', [CartController::class, 'index'])->name('cart.index');
-        Route::post('/add', [CartController::class, 'add'])->name('cart.add');
-        Route::patch('/update/{id}', [CartController::class, 'update'])->name('cart.update');
-        Route::delete('/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
-        Route::delete('/clear', [CartController::class, 'clear'])->name('cart.clear');
-        Route::post('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+    // ── Shopping Cart ──────────────────────────────────────
+    Route::prefix('cart')->name('cart.')->group(function () {
+        Route::get('/',              [CartController::class, 'index'])->name('index');
+        Route::post('/add',          [CartController::class, 'add'])->name('add');
+        Route::patch('/update/{id}', [CartController::class, 'update'])->name('update');
+        Route::delete('/remove/{id}',[CartController::class, 'remove'])->name('remove');
+        Route::delete('/clear',      [CartController::class, 'clear'])->name('clear');
+        Route::post('/checkout',     [CartController::class, 'checkout'])->name('checkout');
     });
+
+    // tambahan dari upstream
     Route::get('/cart-demo', function () {
-    return view('cart.demo');
-})->name('cart.demo');
+        return view('cart.demo');
+    })->name('cart.demo');
 });
 
 // ─────────────────────────────────────────────
