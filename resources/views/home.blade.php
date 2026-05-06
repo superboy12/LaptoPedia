@@ -255,94 +255,72 @@
         max-width: 1280px;
         margin: 0 auto;
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 18px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 48px;
     }
 
-    /* ===== PRODUCT CARD ===== */
+    /* ===== PRODUCT CARD (High-End Minimalist) ===== */
     .p-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 24px;
-        overflow: hidden;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        overflow: visible;
         display: flex;
         flex-direction: column;
+        align-items: center;
+        text-align: center;
         position: relative;
-        padding: 6px;
-        transition:
-            border-color 0.4s ease,
-            transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
-            box-shadow 0.4s ease;
+        padding: 0;
         cursor: pointer;
     }
-    .p-card:hover {
-        border-color: var(--border-hover);
-        transform: translateY(-10px);
-        box-shadow: 0 32px 80px rgba(0,0,0,0.12);
+    .p-card:hover .p-img-wrap {
+        transform: translateY(-8px);
+        box-shadow: 0 24px 60px rgba(0,0,0,0.08);
     }
 
-    .p-badge {
-        position: absolute;
-        top: 14px; left: 14px;
-        font-family: 'Manrope', sans-serif;
-        font-size: 0.62rem;
-        font-weight: 800;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        padding: 4px 10px;
-        border-radius: 100px;
-        z-index: 3;
-    }
-    .p-badge-bs  { background: var(--gold); color: #000; }
-    .p-badge-off { background: #ef4444; color: #fff; }
-    .p-badge-new { background: #10b981; color: #fff; }
+
 
     .p-img-wrap {
-        background: var(--surface-2);
-        border-radius: 18px;
+        background: var(--surface);
+        border-radius: 32px;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 36px 24px 28px;
-        height: 240px;
-        overflow: hidden;
+        padding: 60px;
+        height: 380px;
+        width: 100%;
         position: relative;
-        transition: background 0.4s ease;
-    }
-    .p-img-wrap::after {
-        content: '';
-        position: absolute;
-        bottom: 0; left: 0; right: 0;
-        height: 50px;
-        background: linear-gradient(transparent, var(--surface));
-        pointer-events: none;
+        transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.5s ease;
+        margin-bottom: 32px;
     }
     .p-img-wrap img {
-        max-height: 160px;
+        max-height: 240px;
         max-width: 100%;
         object-fit: contain;
         position: relative;
         z-index: 2;
-        transition: transform 0.5s var(--transition);
+        transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
     .p-card:hover .p-img-wrap img {
-        transform: scale(1.07) translateY(-5px);
+        transform: scale(1.06) translateY(-4px);
     }
 
     .p-body {
-        padding: 20px;
+        padding: 0 20px;
         display: flex;
         flex-direction: column;
+        align-items: center;
         flex: 1;
+        width: 100%;
     }
 
     .p-name {
         font-family: 'Manrope', sans-serif;
-        font-size: 0.95rem;
-        font-weight: 700;
+        font-size: 1.8rem;
+        font-weight: 800;
         color: var(--text);
-        letter-spacing: -0.02em;
-        margin-bottom: 6px;
+        letter-spacing: -0.04em;
+        margin-bottom: 12px;
         transition: color 0.4s ease;
     }
 
@@ -359,78 +337,78 @@
     .p-stars {
         display: flex;
         align-items: center;
-        gap: 2px;
-        margin-bottom: 10px;
+        justify-content: center;
+        gap: 4px;
+        margin-bottom: 16px;
     }
-    .p-stars i { font-size: 0.68rem; color: var(--gold); }
-    .p-stars span { font-size: 0.72rem; color: var(--text-muted); margin-left: 5px; }
+    .p-stars i { font-size: 0.8rem; color: var(--gold); }
+    .p-stars span { font-size: 0.85rem; color: var(--text-muted); margin-left: 6px; }
 
     .p-spec {
-        font-size: 0.77rem;
+        font-size: 0.95rem;
         color: var(--text-muted);
-        line-height: 1.55;
-        font-weight: 300;
+        line-height: 1.6;
+        font-weight: 400;
         flex: 1;
-        margin-bottom: 18px;
+        max-width: 85%;
+        margin-bottom: 32px;
         transition: color 0.4s ease;
     }
 
     .p-footer {
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        padding-top: 16px;
-        border-top: 1px solid var(--border);
+        justify-content: center;
+        gap: 16px;
+        padding-top: 0;
+        border-top: none;
+        width: 100%;
     }
 
     .p-price {
         font-family: 'Manrope', sans-serif;
-        font-size: 1rem;
+        font-size: 1.25rem;
         font-weight: 800;
         color: var(--text);
         letter-spacing: -0.03em;
         transition: color 0.4s ease;
     }
     .p-price small {
-        display: block;
-        font-size: 0.68rem;
-        font-weight: 400;
-        color: var(--text-muted);
-        margin-top: 2px;
+        display: none; /* Removed for cleaner look */
     }
 
     .btn-cart {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 6px;
-        background: var(--search-bg);
-        border: 1px solid var(--border);
-        color: var(--text);
+        gap: 8px;
+        background: var(--text);
+        color: var(--bg);
+        border: none;
         font-family: 'Manrope', sans-serif;
-        font-size: 0.8rem;
-        font-weight: 700;
-        padding: 10px 18px;
+        font-size: 0.9rem;
+        font-weight: 800;
+        padding: 14px 32px;
         border-radius: 100px;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
         white-space: nowrap;
     }
     .btn-cart:hover:not(:disabled) {
-        background: var(--gold-dim);
-        border-color: var(--gold);
-        color: var(--gold);
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(212,168,67,0.15);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        opacity: 0.9;
     }
     .btn-cart:disabled { cursor: not-allowed; }
 
     /* Responsive */
     @media (max-width: 1100px) {
-        .products-grid { grid-template-columns: repeat(2,1fr); }
+        .p-img-wrap { height: 320px; padding: 40px; }
+        .p-img-wrap img { max-height: 200px; }
     }
     @media (max-width: 860px) {
+        .products-grid { grid-template-columns: 1fr; gap: 48px; }
         .hero-inner {
             grid-template-columns: 1fr;
             gap: 40px;
@@ -443,11 +421,12 @@
         .hero-eyebrow { margin-left: auto; margin-right: auto; }
         .featured-section { padding: 72px 24px; }
         .featured-top { flex-direction: column; align-items: flex-start; gap: 18px; }
-        .products-grid { grid-template-columns: repeat(2,1fr); gap: 14px; }
     }
     @media (max-width: 520px) {
         .hero-title { font-size: 3.2rem; }
-        .products-grid { grid-template-columns: 1fr; }
+        .p-img-wrap { height: 260px; padding: 20px; border-radius: 24px; }
+        .p-img-wrap img { max-height: 160px; }
+        .p-name { font-size: 1.4rem; }
     }
 </style>
 @endpush
@@ -515,9 +494,8 @@
     <div class="products-grid reveal">
         {{-- PRODUCT 1 - Bestseller --}}
         <div class="p-card" onclick="window.location='{{ url('/product-demo/macbook-pro-16') }}'">
-            <span class="p-badge p-badge-bs">Bestseller</span>
             <div class="p-img-wrap">
-                <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80" alt="MacBook Pro">
+                <img src="https://pngimg.com/d/macbook_PNG8.png" alt="MacBook Pro" onerror="this.src='https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80'">
             </div>
             <div class="p-body">
                 <div class="p-name">MacBook Pro 16"</div>
@@ -542,9 +520,8 @@
 
         {{-- PRODUCT 2 - 15% Off --}}
         <div class="p-card" onclick="window.location='{{ url('/product-demo/dell-xps-15') }}'">
-            <span class="p-badge p-badge-off">15% Off</span>
             <div class="p-img-wrap">
-                <img src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400&q=80" alt="Dell XPS">
+                <img src="https://pngimg.com/d/laptop_PNG5917.png" alt="Dell XPS" onerror="this.src='https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400&q=80'">
             </div>
             <div class="p-body">
                 <div class="p-name">Dell XPS 15</div>
@@ -569,9 +546,8 @@
 
         {{-- PRODUCT 3 - New --}}
         <div class="p-card" onclick="window.location='{{ url('/product-demo/asus-rog-strix-g16') }}'">
-            <span class="p-badge p-badge-new">New</span>
             <div class="p-img-wrap">
-                <img src="https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&q=80" alt="ASUS ROG">
+                <img src="https://pngimg.com/d/laptop_PNG101783.png" alt="ASUS ROG" onerror="this.src='https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&q=80'">
             </div>
             <div class="p-body">
                 <div class="p-name">ASUS ROG Strix G16</div>
@@ -597,7 +573,7 @@
         {{-- PRODUCT 4 - Regular --}}
         <div class="p-card" onclick="window.location='{{ url('/product-demo/hp-spectre-x360') }}'">
             <div class="p-img-wrap">
-                <img src="https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=400&q=80" alt="HP Spectre">
+                <img src="https://pngimg.com/d/laptop_PNG5905.png" alt="HP Spectre" onerror="this.src='https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=400&q=80'">
             </div>
             <div class="p-body">
                 <div class="p-name">HP Spectre x360</div>
