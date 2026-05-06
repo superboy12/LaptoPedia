@@ -118,11 +118,11 @@
     }
 
     .hero-title {
-        font-family: 'Playfair Display', serif;
+        font-family: 'Manrope', sans-serif;
         font-size: clamp(3.5rem, 6.5vw, 6.8rem);
-        font-weight: 800;
-        line-height: 1;
-        letter-spacing: -0.04em;
+        font-weight: 900;
+        line-height: 0.98;
+        letter-spacing: -0.05em;
         color: var(--text);
         margin-bottom: 22px;
         transition: color 0.4s ease;
@@ -207,11 +207,11 @@
     }
 
     .stat-num {
-        font-family: 'Playfair Display', serif;
+        font-family: 'Manrope', sans-serif;
         font-size: 2.6rem;
         font-weight: 800;
         color: var(--text);
-        letter-spacing: -0.02em;
+        letter-spacing: -0.04em;
         line-height: 1;
         transition: color 0.4s ease;
     }
@@ -396,11 +396,11 @@
     }
 
     .section-h2 {
-        font-family: 'Playfair Display', serif;
+        font-family: 'Manrope', sans-serif;
         font-size: clamp(2.5rem, 4vw, 3.2rem);
         font-weight: 800;
         color: var(--text);
-        letter-spacing: -0.03em;
+        letter-spacing: -0.04em;
         margin-bottom: 8px;
         transition: color 0.4s ease;
     }
