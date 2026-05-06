@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
+        /* ── DARK MODE (default) ── */
         :root {
             --black:        #000000;
             --off-black:    #0a0a0a;
@@ -27,6 +28,40 @@
             --gold-light:   #e8c06a;
             --gold-dim:     rgba(212,168,67,0.12);
             --transition:   cubic-bezier(0.4,0,0.2,1);
+            /* semantic */
+            --bg:           #000000;
+            --bg-2:         #0a0a0a;
+            --text:         #ffffff;
+            --text-muted:   rgba(255,255,255,0.50);
+            --nav-bg:       rgba(0,0,0,0.75);
+            --nav-border:   rgba(255,255,255,0.06);
+            --search-bg:    rgba(255,255,255,0.06);
+            --search-border:rgba(255,255,255,0.09);
+        }
+
+        /* ── LIGHT MODE ── */
+        [data-theme="light"] {
+            --black:        #f5f5f8;
+            --off-black:    #ffffff;
+            --deep:         #eeeef1;
+            --surface:      #ffffff;
+            --surface-2:    #f2f2f5;
+            --border:       rgba(0,0,0,0.10);
+            --border-hover: rgba(0,0,0,0.22);
+            --white:        #1a1a2e;
+            --off-white:    #2d2d44;
+            --muted:        #6b6b80;
+            --gold:         #a67c00;
+            --gold-light:   #c49b17;
+            --gold-dim:     rgba(166,124,0,0.08);
+            --bg:           #f5f5f8;
+            --bg-2:         #ffffff;
+            --text:         #1a1a2e;
+            --text-muted:   #6b6b80;
+            --nav-bg:       rgba(255,255,255,0.92);
+            --nav-border:   rgba(0,0,0,0.08);
+            --search-bg:    rgba(0,0,0,0.04);
+            --search-border:rgba(0,0,0,0.10);
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -34,17 +69,18 @@
 
         body {
             font-family: 'DM Sans', sans-serif;
-            background: var(--black);
-            color: var(--white);
+            background: var(--bg);
+            color: var(--text);
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
+            transition: background 0.4s ease, color 0.4s ease;
         }
 
         h1,h2,h3,h4,h5,h6 { font-family: 'Manrope', sans-serif; letter-spacing: -0.03em; }
         a { text-decoration: none; color: inherit; }
 
         ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: var(--black); }
+        ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--surface-2); border-radius: 3px; }
 
         /* ===== NAVBAR ===== */
@@ -57,10 +93,11 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(0,0,0,0.75);
+            background: var(--nav-bg);
             backdrop-filter: saturate(180%) blur(20px);
             -webkit-backdrop-filter: saturate(180%) blur(20px);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid var(--nav-border);
+            transition: background 0.4s ease, border-color 0.4s ease;
         }
 
         .nav-brand {
@@ -68,7 +105,8 @@
             font-weight: 800;
             font-size: 1.15rem;
             letter-spacing: -0.04em;
-            color: var(--white);
+            color: var(--text);
+            transition: color 0.4s ease;
         }
         .nav-brand em { font-style: normal; color: var(--gold); }
 
@@ -81,10 +119,10 @@
         .nav-links a {
             font-size: 0.82rem;
             font-weight: 400;
-            color: rgba(255,255,255,0.75);
+            color: var(--text-muted);
             transition: color 0.2s;
         }
-        .nav-links a:hover { color: var(--white); }
+        .nav-links a:hover { color: var(--text); }
 
         .nav-actions { display: flex; align-items: center; gap: 18px; }
 
@@ -92,35 +130,49 @@
             display: flex;
             align-items: center;
             gap: 7px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.09);
+            background: var(--search-bg);
+            border: 1px solid var(--search-border);
             border-radius: 8px;
             padding: 6px 12px;
+            transition: background 0.4s ease, border-color 0.4s ease;
         }
-        .nav-search-box i { color: var(--muted); font-size: 0.82rem; }
+        .nav-search-box i { color: var(--text-muted); font-size: 0.82rem; }
         .nav-search-box input {
             background: none;
             border: none;
             outline: none;
-            color: var(--white);
+            color: var(--text);
             font-family: 'DM Sans', sans-serif;
             font-size: 0.82rem;
             width: 150px;
         }
-        .nav-search-box input::placeholder { color: rgba(255,255,255,0.3); }
+        .nav-search-box input::placeholder { color: var(--text-muted); }
 
         .nav-icon {
             background: none;
             border: none;
             cursor: pointer;
-            color: rgba(255,255,255,0.75);
+            color: var(--text-muted);
             font-size: 1.05rem;
             position: relative;
             display: flex;
             align-items: center;
             transition: color 0.2s;
         }
-        .nav-icon:hover { color: var(--white); }
+        .nav-icon:hover { color: var(--text); }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            background: var(--search-bg);
+            border: 1px solid var(--search-border);
+            color: var(--text-muted);
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 0.9rem;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .theme-toggle:hover { color: var(--gold); border-color: var(--gold); }
 
         .cart-dot {
             position: absolute;
@@ -151,24 +203,27 @@
         .section-h2 {
             font-size: clamp(1.8rem, 3vw, 2.6rem);
             font-weight: 800;
-            color: var(--white);
+            color: var(--text);
             letter-spacing: -0.04em;
             line-height: 1.1;
             margin-bottom: 8px;
+            transition: color 0.4s ease;
         }
         .section-desc {
             font-size: 0.9rem;
-            color: var(--muted);
+            color: var(--text-muted);
             font-weight: 300;
             line-height: 1.65;
+            transition: color 0.4s ease;
         }
 
         /* ===== FEATURES STRIP ===== */
         .features-strip {
-            background: var(--deep);
+            background: var(--bg-2);
             border-top: 1px solid var(--border);
             border-bottom: 1px solid var(--border);
             padding: 0 48px;
+            transition: background 0.4s ease;
         }
         .features-inner {
             max-width: 1280px;
@@ -183,23 +238,25 @@
             transition: background 0.3s;
         }
         .feat-item:last-child { border-right: none; }
-        .feat-item:hover { background: rgba(255,255,255,0.02); }
+        .feat-item:hover { background: var(--search-bg); }
         .feat-icon { font-size: 1.7rem; color: var(--gold); margin-bottom: 12px; display: block; }
         .feat-title {
             font-family: 'Manrope', sans-serif;
             font-size: 0.92rem;
             font-weight: 700;
-            color: var(--white);
+            color: var(--text);
             margin-bottom: 6px;
             letter-spacing: -0.02em;
+            transition: color 0.4s ease;
         }
-        .feat-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.6; font-weight: 300; }
+        .feat-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; font-weight: 300; transition: color 0.4s ease; }
 
         /* ===== FOOTER ===== */
         .footer {
-            background: var(--off-black);
+            background: var(--bg-2);
             padding: 70px 48px 0;
             border-top: 1px solid var(--border);
+            transition: background 0.4s ease;
         }
         .footer-inner {
             max-width: 1280px;
@@ -214,17 +271,19 @@
             font-weight: 800;
             font-size: 1.1rem;
             letter-spacing: -0.03em;
-            color: var(--white);
+            color: var(--text);
             margin-bottom: 10px;
+            transition: color 0.4s ease;
         }
         .footer-logo em { font-style: normal; color: var(--gold); }
         .footer-tagline {
             font-size: 0.8rem;
-            color: var(--muted);
+            color: var(--text-muted);
             line-height: 1.65;
             font-weight: 300;
             margin-bottom: 22px;
             max-width: 230px;
+            transition: color 0.4s ease;
         }
         .footer-socials { display: flex; gap: 10px; }
         .footer-socials a {
@@ -234,7 +293,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--muted);
+            color: var(--text-muted);
             font-size: 0.82rem;
             transition: border-color 0.2s, color 0.2s, background 0.2s;
         }
@@ -249,17 +308,18 @@
             font-weight: 700;
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.3);
+            color: var(--text-muted);
             margin-bottom: 16px;
+            transition: color 0.4s ease;
         }
         .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
         .footer-col a {
             font-size: 0.83rem;
-            color: rgba(255,255,255,0.5);
+            color: var(--text-muted);
             transition: color 0.2s;
             font-weight: 300;
         }
-        .footer-col a:hover { color: var(--white); }
+        .footer-col a:hover { color: var(--text); }
         .footer-bottom {
             max-width: 1280px;
             margin: 0 auto;
@@ -269,10 +329,10 @@
             align-items: center;
             justify-content: space-between;
         }
-        .footer-copy { font-size: 0.75rem; color: rgba(255,255,255,0.22); }
+        .footer-copy { font-size: 0.75rem; color: var(--text-muted); }
         .footer-legal { display: flex; gap: 22px; }
-        .footer-legal a { font-size: 0.75rem; color: rgba(255,255,255,0.22); transition: color 0.2s; }
-        .footer-legal a:hover { color: rgba(255,255,255,0.5); }
+        .footer-legal a { font-size: 0.75rem; color: var(--text-muted); transition: color 0.2s; }
+        .footer-legal a:hover { color: var(--text); }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 900px) {
@@ -402,6 +462,11 @@
             <i class="bi bi-person"></i>
         </a>
     @endauth
+
+    {{-- Theme Toggle --}}
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Ganti Tema">
+        <i class="bi bi-sun-fill" id="themeIcon"></i>
+    </button>
 </div>
 </nav>
 
@@ -413,18 +478,18 @@
     <div class="features-inner">
         <div class="feat-item">
             <i class="bi bi-box-seam feat-icon"></i>
-            <div class="feat-title">Free Shipping</div>
-            <p class="feat-desc">On all orders over Rp 3.000.000. Fast and reliable delivery nationwide.</p>
+            <div class="feat-title">Gratis Ongkir</div>
+            <p class="feat-desc">Untuk semua pesanan di atas Rp 3.000.000. Pengiriman cepat ke seluruh Indonesia.</p>
         </div>
         <div class="feat-item">
             <i class="bi bi-shield-check feat-icon"></i>
-            <div class="feat-title">2-Year Warranty</div>
-            <p class="feat-desc">Extended warranty on all laptops with 24/7 customer support.</p>
+            <div class="feat-title">Garansi 2 Tahun</div>
+            <p class="feat-desc">Garansi resmi untuk semua laptop dengan dukungan pelanggan 24/7.</p>
         </div>
         <div class="feat-item">
             <i class="bi bi-arrow-repeat feat-icon"></i>
-            <div class="feat-title">30-Day Returns</div>
-            <p class="feat-desc">Not satisfied? Return within 30 days for a full refund.</p>
+            <div class="feat-title">30 Hari Pengembalian</div>
+            <p class="feat-desc">Tidak puas? Kembalikan dalam 30 hari untuk pengembalian dana penuh.</p>
         </div>
     </div>
 </div>
@@ -631,6 +696,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     updateCartCount(totalItems);
 });
+
+/* ── Dark / Light Theme Toggle ── */
+function toggleTheme() {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme') || 'dark';
+    const next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('lp_theme', next);
+    updateThemeIcon(next);
+}
+function updateThemeIcon(theme) {
+    const icon = document.getElementById('themeIcon');
+    if (icon) icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+}
+// Apply saved theme immediately (before page renders)
+(function() {
+    const saved = localStorage.getItem('lp_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+    updateThemeIcon(saved);
+})();
 </script>
 
 <!-- ═══════════════════════════════════════════════
