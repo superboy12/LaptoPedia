@@ -697,16 +697,16 @@ function updateThemeIcon(theme) {
     position: fixed;
     bottom: 100px; right: 28px;
     width: 360px; max-height: 500px;
-    background: #1a1a1a;
-    border: 1px solid rgba(255,255,255,0.08);
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 20px;
-    box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.3);
     z-index: 9991;
     display: flex; flex-direction: column;
     overflow: hidden;
     opacity: 0; transform: translateY(20px) scale(0.95);
     pointer-events: none;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease, background 0.4s ease;
 }
 .cs-window.visible {
     opacity: 1; transform: translateY(0) scale(1);
@@ -753,25 +753,26 @@ function updateThemeIcon(theme) {
     border-radius: 14px; font-size: 0.82rem; line-height: 1.55;
     word-wrap: break-word;
 }
-.cs-msg.bot { align-self: flex-start; background: #242424; color: #f5f5f7; border-bottom-left-radius: 4px; }
+.cs-msg.bot { align-self: flex-start; background: var(--surface-2); color: var(--text); border-bottom-left-radius: 4px; }
 .cs-msg.user { align-self: flex-end; background: linear-gradient(135deg, #d4a843, #b8870e); color: #000; font-weight: 600; border-bottom-right-radius: 4px; }
-.cs-msg.typing { align-self: flex-start; background: #242424; color: rgba(255,255,255,0.4); font-style: italic; }
+.cs-msg.typing { align-self: flex-start; background: var(--surface-2); color: var(--text-muted); font-style: italic; }
 
 .cs-input-wrap {
     padding: 12px 14px;
-    border-top: 1px solid rgba(255,255,255,0.07);
+    border-top: 1px solid var(--border);
     display: flex; align-items: center; gap: 8px;
-    flex-shrink: 0; background: #1a1a1a;
+    flex-shrink: 0; background: var(--surface);
+    transition: background 0.4s ease;
 }
 .cs-input {
-    flex: 1; background: #111;
-    border: 1px solid rgba(255,255,255,0.09); color: #fff;
+    flex: 1; background: var(--bg);
+    border: 1px solid var(--border); color: var(--text);
     font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
     padding: 9px 13px; border-radius: 100px; outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, background 0.4s ease, color 0.4s ease;
 }
-.cs-input:focus { border-color: #d4a843; }
-.cs-input::placeholder { color: rgba(255,255,255,0.3); }
+.cs-input:focus { border-color: var(--gold); }
+.cs-input::placeholder { color: var(--text-muted); }
 .cs-send {
     width: 34px; height: 34px; border-radius: 50%;
     background: linear-gradient(135deg, #d4a843, #b8870e);

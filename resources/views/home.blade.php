@@ -11,8 +11,9 @@
         align-items: center;
         position: relative;
         overflow: hidden;
-        background: var(--black);
+        background: var(--bg);
         padding-top: 52px;
+        transition: background 0.4s ease;
     }
 
     /* Ambient orbs */
@@ -120,10 +121,11 @@
     .hero-sub {
         font-size: 1rem;
         font-weight: 300;
-        color: rgba(255,255,255,0.5);
+        color: var(--text-muted);
         line-height: 1.72;
         max-width: 400px;
         margin-bottom: 40px;
+        transition: color 0.4s ease;
     }
 
     .hero-btns {
@@ -137,7 +139,7 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        background: var(--white);
+        background: var(--gold);
         color: #000;
         font-family: 'Manrope', sans-serif;
         font-weight: 700;
@@ -150,7 +152,7 @@
         letter-spacing: -0.01em;
     }
     .btn-white:hover {
-        background: #e8e8e8;
+        background: var(--gold-light);
         color: #000;
         transform: scale(1.02);
     }
@@ -160,20 +162,20 @@
         align-items: center;
         gap: 7px;
         background: transparent;
-        color: rgba(255,255,255,0.7);
+        color: var(--text-muted);
         font-family: 'Manrope', sans-serif;
         font-weight: 600;
         font-size: 0.87rem;
         padding: 13px 26px;
         border-radius: 100px;
-        border: 1px solid rgba(255,255,255,0.18);
+        border: 1px solid var(--border);
         cursor: pointer;
         transition: border-color 0.2s, color 0.2s, background 0.2s;
     }
     .btn-outline:hover {
-        border-color: rgba(255,255,255,0.4);
-        color: var(--white);
-        background: rgba(255,255,255,0.04);
+        border-color: var(--border-hover);
+        color: var(--text);
+        background: var(--search-bg);
     }
 
     .hero-stats {
@@ -181,7 +183,7 @@
         gap: 44px;
         margin-top: 56px;
         padding-top: 40px;
-        border-top: 1px solid rgba(255,255,255,0.07);
+        border-top: 1px solid var(--border);
         animation: fade-up 0.9s 0.2s ease both;
     }
 
@@ -189,17 +191,19 @@
         font-family: 'Manrope', sans-serif;
         font-size: 2.2rem;
         font-weight: 900;
-        color: var(--white);
+        color: var(--text);
         letter-spacing: -0.05em;
         line-height: 1;
+        transition: color 0.4s ease;
     }
 
     .stat-lbl {
         font-size: 0.72rem;
-        color: var(--muted);
+        color: var(--text-muted);
         margin-top: 5px;
         font-weight: 400;
         letter-spacing: 0.02em;
+        transition: color 0.4s ease;
     }
 
     /* ---- Right (Visual) ---- */
@@ -243,9 +247,10 @@
        FEATURED SECTION
     ============================================= */
     .featured-section {
-        background: var(--off-black);
+        background: var(--bg-2);
         padding: 112px 48px 104px;
         border-top: 1px solid var(--border);
+        transition: background 0.4s ease;
     }
 
     .featured-top {
@@ -300,9 +305,9 @@
         cursor: pointer;
     }
     .p-card:hover {
-        border-color: rgba(255,255,255,0.16);
+        border-color: var(--border-hover);
         transform: translateY(-8px);
-        box-shadow: 0 28px 70px rgba(0,0,0,0.55);
+        box-shadow: 0 28px 70px rgba(0,0,0,0.18);
     }
 
     .p-badge {
@@ -322,7 +327,7 @@
     .p-badge-new { background: #10b981; color: #fff; }
 
     .p-img-wrap {
-        background: linear-gradient(145deg, #1f1f1f, #161616);
+        background: var(--surface-2);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -330,13 +335,14 @@
         height: 210px;
         overflow: hidden;
         position: relative;
+        transition: background 0.4s ease;
     }
     .p-img-wrap::after {
         content: '';
         position: absolute;
         bottom: 0; left: 0; right: 0;
         height: 50px;
-        background: linear-gradient(transparent, rgba(26,26,26,0.6));
+        background: linear-gradient(transparent, var(--surface));
         pointer-events: none;
     }
     .p-img-wrap img {
@@ -362,9 +368,10 @@
         font-family: 'Manrope', sans-serif;
         font-size: 0.95rem;
         font-weight: 700;
-        color: var(--white);
+        color: var(--text);
         letter-spacing: -0.02em;
         margin-bottom: 6px;
+        transition: color 0.4s ease;
     }
 
     .p-stars {
@@ -374,15 +381,16 @@
         margin-bottom: 10px;
     }
     .p-stars i { font-size: 0.68rem; color: var(--gold); }
-    .p-stars span { font-size: 0.72rem; color: var(--muted); margin-left: 5px; }
+    .p-stars span { font-size: 0.72rem; color: var(--text-muted); margin-left: 5px; }
 
     .p-spec {
         font-size: 0.77rem;
-        color: rgba(255,255,255,0.35);
+        color: var(--text-muted);
         line-height: 1.55;
         font-weight: 300;
         flex: 1;
         margin-bottom: 18px;
+        transition: color 0.4s ease;
     }
 
     .p-footer {
@@ -391,21 +399,22 @@
         justify-content: space-between;
         gap: 10px;
         padding-top: 16px;
-        border-top: 1px solid rgba(255,255,255,0.05);
+        border-top: 1px solid var(--border);
     }
 
     .p-price {
         font-family: 'Manrope', sans-serif;
         font-size: 1rem;
         font-weight: 800;
-        color: var(--white);
+        color: var(--text);
         letter-spacing: -0.03em;
+        transition: color 0.4s ease;
     }
     .p-price small {
         display: block;
         font-size: 0.68rem;
         font-weight: 400;
-        color: var(--muted);
+        color: var(--text-muted);
         margin-top: 2px;
     }
 
@@ -413,9 +422,9 @@
         display: inline-flex;
         align-items: center;
         gap: 5px;
-        background: rgba(255,255,255,0.07);
-        border: 1px solid rgba(255,255,255,0.11);
-        color: var(--white);
+        background: var(--search-bg);
+        border: 1px solid var(--border);
+        color: var(--text);
         font-family: 'Manrope', sans-serif;
         font-size: 0.75rem;
         font-weight: 700;
@@ -426,9 +435,9 @@
         white-space: nowrap;
     }
     .btn-cart:hover:not(:disabled) {
-        background: rgba(255,255,255,0.13);
-        border-color: rgba(255,255,255,0.22);
-        color: var(--white);
+        background: var(--gold-dim);
+        border-color: var(--gold);
+        color: var(--gold);
         transform: scale(1.04);
     }
     .btn-cart:disabled { cursor: not-allowed; }
