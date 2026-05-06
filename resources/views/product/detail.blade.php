@@ -1,31 +1,19 @@
 @extends('layouts.app')
 
-@section('content')
+@push('styles')
 <style>
-    /* Mengimpor Font Serif Editorial */
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&display=swap');
-
-    :root {
-        --edit-black: #0f172a;
-        --edit-gray: #64748b;
-        --edit-light: #f8fafc;
-        --edit-accent: #cda434; /* Emas tipis / Champagne */
+    /* =============================================
+       PRODUCT DETAIL — Premium Minimalist Magazine
+    ============================================= */
+    .detail-page {
+        min-height: 100vh;
+        background: var(--bg);
+        transition: background 0.4s ease;
+        padding-bottom: 100px; /* space for sticky bar */
     }
-
-    body {
-        background-color: #ffffff;
-        font-family: 'Inter', sans-serif;
-        color: var(--edit-black);
-    }
-
-    /* Typographic Utilities */
-    .font-serif { font-family: 'Playfair Display', serif; }
-    .text-accent { color: var(--edit-accent); }
-    .tracking-widest { letter-spacing: 0.2em; }
-    .leading-relaxed { line-height: 1.8; }
 
     /* 1. HERO COVER SECTION */
-    .editorial-hero {
+    .detail-hero {
         height: 90vh;
         min-height: 600px;
         position: relative;
@@ -33,11 +21,12 @@
         align-items: center;
         justify-content: center;
         text-align: center;
-        background-color: var(--edit-black);
+        background-color: var(--black);
         overflow: hidden;
+        margin-top: 52px; /* navbar height */
     }
 
-    .hero-bg {
+    .detail-hero-bg {
         position: absolute;
         top: 0; left: 0; width: 100%; height: 100%;
         object-fit: cover;
@@ -45,244 +34,520 @@
         transform: scale(1.05);
         transition: transform 10s ease-out;
     }
-    
-    .editorial-hero:hover .hero-bg { transform: scale(1); }
+    .detail-hero:hover .detail-hero-bg { transform: scale(1); }
 
-    .hero-content {
+    /* Vignette effect to ensure text readability */
+    .detail-hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.8) 100%);
+        pointer-events: none;
+    }
+
+    .detail-hero-content {
         position: relative;
         z-index: 10;
         max-width: 900px;
         padding: 0 2rem;
-        color: #ffffff;
+        color: #ffffff; /* Selalu putih di atas hero image */
+        animation: fade-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    .hero-category {
+    .detail-hero-category {
         text-transform: uppercase;
-        font-size: 0.8rem;
-        letter-spacing: 4px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.3em;
         margin-bottom: 2rem;
         display: block;
-        color: rgba(255,255,255,0.7);
+        color: var(--gold);
     }
 
-    .hero-title {
-        font-size: clamp(3rem, 8vw, 6.5rem);
-        font-weight: 800;
-        line-height: 1;
+    .detail-hero-title {
+        font-family: 'Manrope', sans-serif;
+        font-size: clamp(3.5rem, 8vw, 6.5rem);
+        font-weight: 900;
+        line-height: 1.05;
         margin-bottom: 1.5rem;
-        letter-spacing: -2px;
+        letter-spacing: -0.04em;
     }
 
-    .hero-subtitle {
-        font-size: 1.2rem;
+    .detail-hero-subtitle {
+        font-size: 1.15rem;
         font-weight: 300;
-        opacity: 0.9;
+        opacity: 0.85;
         max-width: 600px;
         margin: 0 auto;
         line-height: 1.6;
     }
 
     /* 2. OVERVIEW STORY SECTION */
-    .story-section { padding: 8rem 0; }
-    .quote-mark { font-size: 4rem; color: var(--edit-accent); line-height: 0; margin-bottom: 1rem; font-family: 'Playfair Display', serif; }
+    .detail-story { padding: 8rem 2rem; text-align: center; }
+    .quote-mark { 
+        font-size: 5rem; 
+        color: var(--gold); 
+        line-height: 0; 
+        margin-bottom: 1.5rem; 
+        font-family: 'Times New Roman', serif; 
+        opacity: 0.5;
+    }
     .story-text {
-        font-size: clamp(1.5rem, 4vw, 2.5rem);
-        line-height: 1.4;
-        color: var(--edit-black);
-        text-align: center;
-        max-width: 1000px;
+        font-family: 'Manrope', sans-serif;
+        font-size: clamp(1.5rem, 4vw, 2.8rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1.3;
+        color: var(--text);
+        max-width: 900px;
+        margin: 0 auto 3rem;
+        transition: color 0.4s ease;
+    }
+    .story-desc {
+        font-size: 1rem;
+        color: var(--text-muted);
+        line-height: 1.8;
+        max-width: 700px;
         margin: 0 auto;
+        font-weight: 300;
+        transition: color 0.4s ease;
     }
 
     /* 3. MAGAZINE GALLERY GRID */
-    .mag-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; margin: 4rem 0; }
-    @media (min-width: 768px) {
+    .mag-grid-wrap {
+        max-width: 1280px;
+        margin: 0 auto 8rem;
+        padding: 0 2rem;
+    }
+    .mag-grid { 
+        display: grid; 
+        grid-template-columns: 1fr; 
+        gap: 2rem; 
+    }
+    @media (min-width: 900px) {
         .mag-grid { grid-template-columns: 7fr 5fr; }
     }
-    .mag-img-wrapper { overflow: hidden; position: relative; background: var(--edit-light); }
-    .mag-img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1); }
-    .mag-img-wrapper:hover .mag-img { transform: scale(1.05); }
     
-    .img-tall { height: 600px; }
-    .img-short { height: 400px; margin-top: auto; }
+    .mag-img-card { 
+        background: var(--surface-2); 
+        border-radius: 24px;
+        overflow: hidden; 
+        position: relative; 
+        border: 1px solid var(--border);
+        transition: background 0.4s ease, border-color 0.4s ease;
+    }
+    .mag-img-inner {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+    .mag-img { 
+        max-width: 100%; 
+        max-height: 100%; 
+        object-fit: contain; 
+        transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); 
+    }
+    .mag-img-card:hover .mag-img { transform: scale(1.08) translateY(-10px); }
+    
+    .img-tall { height: 650px; }
+    .img-short { height: 400px; }
+
+    .mag-text-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 3rem 2.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        transition: background 0.4s ease, border-color 0.4s ease;
+    }
+    .mag-text-card h4 {
+        font-family: 'Manrope', sans-serif;
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--text);
+        letter-spacing: -0.03em;
+        margin-bottom: 1rem;
+        transition: color 0.4s ease;
+    }
+    .mag-text-card p {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        line-height: 1.7;
+        font-weight: 300;
+        margin: 0;
+        transition: color 0.4s ease;
+    }
 
     /* 4. PERFORMANCE HIGHLIGHTS */
-    .spec-section { background-color: var(--edit-light); padding: 8rem 0; }
-    .spec-line { width: 40px; height: 2px; background-color: var(--edit-accent); margin-bottom: 1.5rem; }
-    .spec-highlight { margin-bottom: 3rem; }
-    .spec-title { font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; color: var(--edit-gray); margin-bottom: 0.5rem; }
-    .spec-value { font-size: 2.5rem; font-weight: 600; color: var(--edit-black); letter-spacing: -1px; line-height: 1.2; }
-    .spec-desc { font-size: 0.95rem; color: var(--edit-gray); margin-top: 0.5rem; }
+    .spec-section { 
+        background: var(--surface); 
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        padding: 8rem 0; 
+        transition: background 0.4s ease, border-color 0.4s ease;
+    }
+    .spec-inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 4rem;
+    }
+    @media (min-width: 900px) {
+        .spec-inner { grid-template-columns: 1fr 1.5fr; gap: 6rem; align-items: center; }
+    }
+
+    .spec-left h2 {
+        font-family: 'Manrope', sans-serif;
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 900;
+        line-height: 1.05;
+        color: var(--text);
+        letter-spacing: -0.04em;
+        margin-bottom: 1.5rem;
+        transition: color 0.4s ease;
+    }
+    .spec-left p {
+        color: var(--text-muted);
+        font-size: 1.05rem;
+        line-height: 1.7;
+        font-weight: 300;
+        transition: color 0.4s ease;
+    }
+
+    .spec-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem 2rem;
+    }
+    .spec-line { width: 40px; height: 2px; background: var(--gold); margin-bottom: 1.5rem; border-radius: 2px; }
+    .spec-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 700; transition: color 0.4s ease;}
+    .spec-value { 
+        font-family: 'Manrope', sans-serif;
+        font-size: 2.2rem; 
+        font-weight: 800; 
+        color: var(--text); 
+        letter-spacing: -0.03em; 
+        line-height: 1.2; 
+        transition: color 0.4s ease;
+    }
+    .spec-desc { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem; font-weight: 300; transition: color 0.4s ease;}
 
     /* 5. TESTIMONIALS */
-    .testimonial-section { padding: 8rem 0; }
-    .testimonial-card { text-align: center; max-width: 700px; margin: 0 auto; }
-    .testi-stars { color: var(--edit-accent); font-size: 0.9rem; margin-bottom: 1.5rem; }
-    .testi-quote { font-size: 1.8rem; line-height: 1.5; color: var(--edit-black); margin-bottom: 2rem; font-style: italic; }
-    .testi-author { font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
+    .testimonial-section { padding: 8rem 2rem; text-align: center; }
+    .testimonial-card { max-width: 800px; margin: 0 auto; }
+    .testi-stars { color: var(--gold); font-size: 1rem; margin-bottom: 2rem; letter-spacing: 2px; }
+    .testi-quote { 
+        font-family: 'Manrope', sans-serif;
+        font-size: clamp(1.4rem, 3vw, 2rem); 
+        line-height: 1.5; 
+        font-weight: 700;
+        color: var(--text); 
+        margin-bottom: 2.5rem; 
+        letter-spacing: -0.02em;
+        transition: color 0.4s ease;
+    }
+    .testi-author { 
+        font-weight: 700; 
+        text-transform: uppercase; 
+        font-size: 0.75rem; 
+        letter-spacing: 0.15em; 
+        color: var(--text-muted);
+        transition: color 0.4s ease;
+    }
 
     /* 6. STICKY ELEGANT ACTION BAR */
     .action-bar {
-        position: sticky; bottom: 0;
-        background: rgba(255,255,255,0.95);
-        backdrop-filter: blur(15px);
-        padding: 1.5rem 0;
-        border-top: 1px solid #f1f5f9;
-        z-index: 100;
-        box-shadow: 0 -10px 40px rgba(0,0,0,0.03);
+        position: fixed; 
+        bottom: 0; left: 0; right: 0;
+        background: var(--surface);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        padding: 1.2rem 2rem;
+        border-top: 1px solid var(--border);
+        z-index: 999;
+        box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+        transition: background 0.4s ease, border-color 0.4s ease;
     }
     
-    .price-editorial { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; margin: 0; }
+    .action-inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .action-info { display: flex; align-items: center; gap: 1.5rem; }
+    .action-name { 
+        font-family: 'Manrope', sans-serif; 
+        font-weight: 800; 
+        font-size: 1.1rem; 
+        color: var(--text); 
+        margin: 0; 
+        transition: color 0.4s ease;
+    }
+    .action-price { 
+        font-family: 'Manrope', sans-serif; 
+        font-size: 1.3rem; 
+        font-weight: 900; 
+        color: var(--text); 
+        margin: 0; 
+        letter-spacing: -0.02em;
+        transition: color 0.4s ease;
+    }
     
-    .btn-ghost { border: 1px solid var(--edit-black); background: transparent; color: var(--edit-black); padding: 12px 30px; font-weight: 500; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.5px; transition: all 0.4s; border-radius: 0; }
-    .btn-ghost:hover { background: var(--edit-black); color: white; }
+    .action-btns { display: flex; gap: 1rem; }
     
-    .btn-solid { border: 1px solid var(--edit-black); background: var(--edit-black); color: white; padding: 12px 30px; font-weight: 500; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.5px; transition: all 0.4s; border-radius: 0; }
-    .btn-solid:hover { background: transparent; color: var(--edit-black); }
+    .btn-action-outline { 
+        border: 1px solid var(--border); 
+        background: transparent; 
+        color: var(--text); 
+        padding: 12px 24px; 
+        font-weight: 700; 
+        font-size: 0.8rem; 
+        text-transform: uppercase; 
+        letter-spacing: 0.1em; 
+        border-radius: 100px;
+        transition: all 0.3s ease; 
+        cursor: pointer;
+    }
+    .btn-action-outline:hover { background: var(--search-bg); border-color: var(--border-hover); }
+    
+    .btn-action-solid { 
+        background: linear-gradient(135deg, #f0d080 0%, #d4a843 40%, #a0721a 100%);
+        border: none;
+        color: #000; 
+        padding: 12px 32px; 
+        font-weight: 800; 
+        font-size: 0.85rem; 
+        border-radius: 100px;
+        transition: transform 0.2s, box-shadow 0.2s; 
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .btn-action-solid:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(212,168,67,0.3); }
 
     /* ANIMATIONS (Triggered via JS Intersection Observer) */
-    .fade-up { opacity: 0; transform: translateY(50px); transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1); }
-    .fade-up.is-visible { opacity: 1; transform: translateY(0); }
+    .reveal-up { 
+        opacity: 0; 
+        transform: translateY(40px); 
+        transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); 
+    }
+    .reveal-up.is-visible { opacity: 1; transform: translateY(0); }
     
     .delay-100 { transition-delay: 100ms; }
     .delay-200 { transition-delay: 200ms; }
+    .delay-300 { transition-delay: 300ms; }
+
+    @media (max-width: 768px) {
+        .action-inner { flex-direction: column; align-items: stretch; }
+        .action-info { justify-content: space-between; margin-bottom: 1rem; }
+        .action-name { display: none; }
+        .spec-grid { grid-template-columns: 1fr; gap: 2rem; }
+    }
 </style>
+@endpush
 
-<section class="editorial-hero">
-    @if($product->image)
-        <img src="{{ asset('storage/' . $product->image) }}" alt="Cover" class="hero-bg">
-    @else
-        <img src="https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?q=80&w=2070&auto=format&fit=crop" alt="Cover" class="hero-bg">
-    @endif
-    
-    <div class="hero-content fade-up is-visible">
-        <span class="hero-category font-serif tracking-widest">Editorial Choice</span>
-        <h1 class="hero-title font-serif">{{ $product->name }}</h1>
-        <p class="hero-subtitle">Mendefinisikan ulang batas performa dan keanggunan. Diciptakan khusus untuk para profesional tanpa kompromi.</p>
-    </div>
-</section>
+@section('content')
+<div class="detail-page">
 
-<section class="story-section container">
-    <div class="fade-up">
-        <div class="text-center"><span class="quote-mark">“</span></div>
-        <h2 class="story-text font-serif">
-            Bukan sekadar perangkat keras. Ini adalah kanvas digital yang dirancang untuk mewujudkan visi terbesar Anda dengan presisi absolut.
-        </h2>
-    </div>
-    
-    <div class="row justify-content-center mt-5 pt-4 fade-up delay-100">
-        <div class="col-md-8 text-center text-muted leading-relaxed">
-            <p>{{ $product->description }} Setiap milimeter dari perangkat ini diukir dengan ketelitian tingkat tinggi, menghadirkan estetika minimalis yang menyembunyikan tenaga buas di dalamnya. Pengalaman visual yang tak tertandingi berpadu dengan arsitektur termal revolusioner.</p>
+    {{-- HERO SECTION --}}
+    <section class="detail-hero">
+        @if($product->image)
+            <img src="{{ asset('storage/' . $product->image) }}" alt="Cover" class="detail-hero-bg">
+        @else
+            <img src="https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?q=80&w=2070&auto=format&fit=crop" alt="Cover" class="detail-hero-bg">
+        @endif
+        
+        <div class="detail-hero-content">
+            <span class="detail-hero-category">Mahakarya Teknologi</span>
+            <h1 class="detail-hero-title">{{ $product->name }}</h1>
+            <p class="detail-hero-subtitle">Mendefinisikan ulang batas performa dan keanggunan. Diciptakan khusus untuk para profesional tanpa kompromi.</p>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="container pb-5">
-    <div class="mag-grid fade-up">
-        <div class="mag-img-wrapper img-tall">
-            @if($product->image)
-                <img src="{{ asset('storage/' . $product->image) }}" alt="Detail 1" class="mag-img">
-            @else
-                <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1926&auto=format&fit=crop" alt="Detail" class="mag-img">
-            @endif
+    {{-- OVERVIEW STORY --}}
+    <section class="detail-story">
+        <div class="reveal-up">
+            <div class="quote-mark">“</div>
+            <h2 class="story-text">
+                Bukan sekadar perangkat keras. Ini adalah kanvas digital yang dirancang untuk mewujudkan visi terbesar Anda dengan presisi absolut.
+            </h2>
         </div>
-        <div class="d-flex flex-column gap-4">
-            <div class="mag-img-wrapper img-short">
-                <img src="https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?q=80&w=1964&auto=format&fit=crop" alt="Detail" class="mag-img">
-            </div>
-            <div class="p-4" style="background: var(--edit-light);">
-                <h4 class="font-serif mb-3">Keindahan Fungsional</h4>
-                <p class="text-muted small leading-relaxed mb-0">Keyboard taktil yang disempurnakan dan trackpad luas berbahan kaca menghadirkan kenyamanan absolut untuk sesi kerja panjang.</p>
-            </div>
+        
+        <div class="reveal-up delay-100">
+            <p class="story-desc">
+                {{ $product->description ?? 'Setiap milimeter dari perangkat ini diukir dengan ketelitian tingkat tinggi, menghadirkan estetika minimalis yang menyembunyikan tenaga buas di dalamnya. Pengalaman visual yang tak tertandingi berpadu dengan arsitektur termal revolusioner.' }}
+            </p>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="spec-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-4 mb-5 mb-lg-0 fade-up">
-                <h2 class="font-serif display-5 fw-bold mb-4">Mendobrak<br>Batas.</h2>
-                <p class="text-muted leading-relaxed">Arsitektur kustom yang mengoptimalkan aliran daya secara real-time. Efisiensi luar biasa tanpa mengorbankan setetes pun performa grafis.</p>
+    {{-- MAGAZINE GALLERY GRID --}}
+    <section class="mag-grid-wrap">
+        <div class="mag-grid reveal-up">
+            <div class="mag-img-card img-tall">
+                <div class="mag-img-inner">
+                    @if($product->image)
+                        <img src="{{ asset('storage/' . $product->image) }}" alt="Detail 1" class="mag-img">
+                    @else
+                        <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1926&auto=format&fit=crop" alt="Detail" class="mag-img">
+                    @endif
+                </div>
             </div>
-            <div class="col-lg-7 offset-lg-1">
-                <div class="row">
-                    <div class="col-md-6 spec-highlight fade-up delay-100">
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                <div class="mag-img-card img-short">
+                    <div class="mag-img-inner">
+                        <img src="https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?q=80&w=1964&auto=format&fit=crop" alt="Detail" class="mag-img">
+                    </div>
+                </div>
+                <div class="mag-text-card">
+                    <h4>Keindahan Fungsional</h4>
+                    <p>Keyboard taktil yang disempurnakan dan trackpad luas berbahan kaca menghadirkan kenyamanan absolut untuk sesi kerja atau gaming yang panjang tanpa henti.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- PERFORMANCE HIGHLIGHTS --}}
+    <section class="spec-section">
+        <div class="spec-inner">
+            <div class="spec-left reveal-up">
+                <h2>Mendobrak<br>Batas.</h2>
+                <p>Arsitektur kustom yang mengoptimalkan aliran daya secara real-time. Efisiensi luar biasa tanpa mengorbankan setetes pun performa grafis maupun komputasi.</p>
+            </div>
+            <div class="spec-right">
+                <div class="spec-grid">
+                    <div class="reveal-up delay-100">
                         <div class="spec-line"></div>
                         <div class="spec-title">Arsitektur Inti</div>
-                        <div class="spec-value font-serif">M-Class Pro</div>
-                        <div class="spec-desc">Neural engine 16-core terintegrasi.</div>
+                        <div class="spec-value">Pro-Class</div>
+                        <div class="spec-desc">Prosesor generasi terbaru terintegrasi.</div>
                     </div>
-                    <div class="col-md-6 spec-highlight fade-up delay-200">
+                    <div class="reveal-up delay-200">
                         <div class="spec-line"></div>
-                        <div class="spec-title">Memori Bersatu</div>
-                        <div class="spec-value font-serif">32 GB</div>
-                        <div class="spec-desc">Bandwidth memori hingga 200GB/s.</div>
+                        <div class="spec-title">Memori Ekstrem</div>
+                        <div class="spec-value">Up to 32GB</div>
+                        <div class="spec-desc">Bandwidth memori sangat cepat tanpa lag.</div>
                     </div>
-                    <div class="col-md-6 spec-highlight fade-up delay-100">
+                    <div class="reveal-up delay-100">
                         <div class="spec-line"></div>
                         <div class="spec-title">Penyimpanan</div>
-                        <div class="spec-value font-serif">1 TB SSD</div>
-                        <div class="spec-desc">Kecepatan baca superior 7.4GB/s.</div>
+                        <div class="spec-value">1 TB SSD</div>
+                        <div class="spec-desc">Kecepatan baca & tulis superior.</div>
                     </div>
-                    <div class="col-md-6 spec-highlight fade-up delay-200">
+                    <div class="reveal-up delay-200">
                         <div class="spec-line"></div>
-                        <div class="spec-title">Retina XDR</div>
-                        <div class="spec-value font-serif">1000 Nits</div>
-                        <div class="spec-desc">Akurasi warna standar sinema (DCI-P3).</div>
+                        <div class="spec-title">Layar Memukau</div>
+                        <div class="spec-value">True Color</div>
+                        <div class="spec-desc">Akurasi warna standar sinema profesional.</div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="testimonial-section container">
-    <div class="testimonial-card fade-up">
-        <div class="testi-stars">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+    {{-- TESTIMONIALS --}}
+    <section class="testimonial-section">
+        <div class="testimonial-card reveal-up">
+            <div class="testi-stars">
+                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+            </div>
+            <h3 class="testi-quote">
+                "Ini bukan sekadar peningkatan spesifikasi. Ini adalah revolusi cara saya bekerja. Sangat senyap, sangat brilian, performa tanpa batas."
+            </h3>
+            <p class="testi-author">— Sarah Williams, Creative Director</p>
         </div>
-        <h3 class="testi-quote font-serif">
-            "Ini bukan sekadar peningkatan spesifikasi. Ini adalah revolusi cara saya menyunting video 8K. Sangat senyap, sangat brilian."
-        </h3>
-        <p class="testi-author">— Sarah Williams, Lead Editor di Vogue</p>
-    </div>
-</section>
+    </section>
 
-<div class="action-bar">
-    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-        <div class="d-flex align-items-center gap-3">
-            <h4 class="font-serif fw-bold m-0 d-none d-md-block">{{ $product->name }}</h4>
-            <span class="d-none d-md-block text-muted">|</span>
-            <p class="price-editorial">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
+    {{-- STICKY ACTION BAR --}}
+    <div class="action-bar">
+        <div class="action-inner">
+            <div class="action-info">
+                <h4 class="action-name">{{ $product->name }}</h4>
+                <p class="action-price">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
+            </div>
+            <div class="action-btns">
+                <a href="{{ url()->previous() !== url()->current() ? url()->previous() : url('/') }}" class="btn-action-outline">
+                    Kembali
+                </a>
+                <button class="btn-action-solid" onclick="addToCartDetail('{{ $product->name }}', {{ $product->price }})">
+                    <i class="bi bi-bag-plus"></i> Masukkan Keranjang
+                </button>
+            </div>
         </div>
-        <div class="d-flex gap-2 w-100 w-md-auto">
-            <form action="#" method="POST" class="w-50 w-md-auto">
-                @csrf
-                <button type="submit" class="btn-ghost w-100">Tote Bag</button> </form>
-            <button class="btn-solid w-50 w-md-auto">Acquire</button> </div>
     </div>
+
 </div>
 
+@push('scripts')
 <script>
+    // Intersection Observer untuk animasi scroll
     document.addEventListener("DOMContentLoaded", function() {
         const observerOptions = {
             root: null,
             rootMargin: '0px',
-            threshold: 0.15 // Elemen muncul saat 15% bagiannya terlihat
+            threshold: 0.15
         };
 
         const observer = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('is-visible');
-                    observer.unobserve(entry.target); // Hanya animasi 1x
+                    observer.unobserve(entry.target);
                 }
             });
         }, observerOptions);
 
-        const fadeElements = document.querySelectorAll('.fade-up');
-        fadeElements.forEach(el => observer.observe(el));
+        document.querySelectorAll('.reveal-up').forEach(el => observer.observe(el));
     });
+
+    // Fungsi Add to Cart untuk Demo Mode
+    function addToCartDetail(productName, price) {
+        const btn = document.querySelector('.btn-action-solid');
+        const originalText = btn.innerHTML;
+        
+        btn.innerHTML = '<i class="bi bi-check-lg"></i> Berhasil Ditambahkan!';
+        btn.disabled = true;
+        btn.style.background = '#10b981';
+        btn.style.color = '#fff';
+        
+        let cart = JSON.parse(localStorage.getItem('my_cart') || '[]');
+        let existing = cart.find(item => item.name === productName);
+        
+        if (existing) {
+            existing.quantity += 1;
+        } else {
+            cart.push({ name: productName, quantity: 1, price: price });
+        }
+        
+        localStorage.setItem('my_cart', JSON.stringify(cart));
+        
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const cartBadge = document.getElementById('cartCount');
+        if (cartBadge) {
+            cartBadge.textContent = totalItems;
+            cartBadge.style.transform = 'scale(1.2)';
+            setTimeout(() => cartBadge.style.transform = '', 200);
+        }
+        
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            btn.style.background = '';
+            btn.style.color = '';
+        }, 1500);
+    }
 </script>
+@endpush
 @endsection
