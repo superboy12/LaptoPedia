@@ -15,6 +15,13 @@
         padding-top: 52px;
         transition: background 0.4s ease;
     }
+    .hero-right {
+        perspective: 1000px;
+    }
+    .hero-laptop {
+        transform-style: preserve-3d;
+        will-change: transform;
+    }
 
     /* Ambient orbs */
     .orb {
@@ -482,41 +489,40 @@
         <div class="hero-left">
             <div class="hero-eyebrow">
                 <span class="eyebrow-pulse"></span>
-                New Collection 2024
+                Koleksi Baru 2024
             </div>
 
             <h1 class="hero-title">
-                Best<br>
-                Laptops<br>
-                <span class="gradient-word">For You.</span>
+                Laptop<br>
+                Terbaik<br>
+                <span class="gradient-word">Untuk Anda.</span>
             </h1>
 
             <p class="hero-sub">
-                Discover premium laptops designed for work, gaming, and creativity.
-                Find your perfect match from top brands.
+                Temukan laptop premium yang dirancang untuk kerja, gaming, dan kreativitas. Dapatkan pilihan terbaik dari merek terkemuka.
             </p>
 
             <div class="hero-btns">
                 <a href="{{ url('/products') }}" class="btn-white">
-                    Shop Now <i class="bi bi-arrow-right"></i>
+                    Beli Sekarang <i class="bi bi-arrow-right"></i>
                 </a>
                 <a href="#featured" class="btn-outline">
-                    Learn More <i class="bi bi-chevron-down"></i>
+                    Pelajari Lanjut <i class="bi bi-chevron-down"></i>
                 </a>
             </div>
 
             <div class="hero-stats">
                 <div>
                     <div class="stat-num">500+</div>
-                    <div class="stat-lbl">Laptop Models</div>
+                    <div class="stat-lbl">Model Laptop</div>
                 </div>
                 <div>
                     <div class="stat-num">50K+</div>
-                    <div class="stat-lbl">Happy Customers</div>
+                    <div class="stat-lbl">Pelanggan Puas</div>
                 </div>
                 <div>
                     <div class="stat-num">4.9</div>
-                    <div class="stat-lbl">Rating</div>
+                    <div class="stat-lbl">Penilaian</div>
                 </div>
             </div>
         </div>
@@ -538,12 +544,12 @@
 <section class="featured-section" id="featured">
     <div class="featured-top">
         <div>
-            <span class="section-label">Handpicked for you</span>
-            <h2 class="section-h2">Featured Laptops</h2>
-            <p class="section-desc">Our best-selling and most popular models this season.</p>
+            <span class="section-label">Pilihan Khusus Untuk Anda</span>
+            <h2 class="section-h2">Laptop Unggulan</h2>
+            <p class="section-desc">Model terlaris dan paling populer kami musim ini.</p>
         </div>
         <a href="{{ url('/products') }}" class="btn-see-all">
-            View All <i class="bi bi-arrow-right"></i>
+            Lihat Semua <i class="bi bi-arrow-right"></i>
         </a>
     </div>
 
@@ -569,7 +575,7 @@
                         <small>Harga terbaik</small>
                     </div>
                     <button class="btn-cart" onclick="addToCart(this)">
-                        <i class="bi bi-bag-plus"></i> Add
+                        <i class="bi bi-bag-plus"></i> Tambah
                     </button>
                 </div>
             </div>
@@ -596,7 +602,7 @@
                         <small>Harga terbaik</small>
                     </div>
                     <button class="btn-cart" onclick="addToCart(this)">
-                        <i class="bi bi-bag-plus"></i> Add
+                        <i class="bi bi-bag-plus"></i> Tambah
                     </button>
                 </div>
             </div>
@@ -623,7 +629,7 @@
                         <small>Harga terbaik</small>
                     </div>
                     <button class="btn-cart" onclick="addToCart(this)">
-                        <i class="bi bi-bag-plus"></i> Add
+                        <i class="bi bi-bag-plus"></i> Tambah
                     </button>
                 </div>
             </div>
@@ -649,7 +655,7 @@
                         <small>Harga terbaik</small>
                     </div>
                     <button class="btn-cart" onclick="addToCart(this)">
-                        <i class="bi bi-bag-plus"></i> Add
+                        <i class="bi bi-bag-plus"></i> Tambah
                     </button>
                 </div>
             </div>
@@ -667,7 +673,7 @@ function addToCart(button) {
     
     // Ubah tampilan tombol
     const originalText = button.innerHTML;
-    button.innerHTML = '<i class="bi bi-check-lg"></i> Added!';
+    button.innerHTML = '<i class="bi bi-check-lg"></i> Ditambahkan!';
     button.disabled = true;
     button.style.background = '#10b981';
     button.style.borderColor = '#10b981';
@@ -710,6 +716,37 @@ function addToCart(button) {
         button.style.borderColor = '';
     }, 1000);
 }
+
+// 3D Tilt Effect on Laptop Image
+document.addEventListener('DOMContentLoaded', () => {
+    const laptopImg = document.querySelector('.hero-laptop');
+    const heroRight = document.querySelector('.hero-right');
+
+    if (heroRight && laptopImg) {
+        heroRight.addEventListener('mousemove', (e) => {
+            const rect = heroRight.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = ((y - centerY) / centerY) * -15; // Max 15 deg
+            const rotateY = ((x - centerX) / centerX) * 15;
+            
+            laptopImg.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        heroRight.addEventListener('mouseleave', () => {
+            laptopImg.style.transform = `rotateX(0deg) rotateY(0deg)`;
+            laptopImg.style.transition = `transform 0.5s ease`;
+        });
+        
+        heroRight.addEventListener('mouseenter', () => {
+            laptopImg.style.transition = `transform 0.1s ease-out`;
+        });
+    }
+});
 </script>
 @endpush
 @endsection
