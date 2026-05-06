@@ -3,10 +3,8 @@
 @push('styles')
 <style>
     /* =============================================
-       CART PAGE — consistent with dashboard dark theme
+       CART PAGE — Premium Minimalist Redesign
     ============================================= */
-
-    /* Page wrapper — matches featured-section background */
     .cart-page {
         min-height: 100vh;
         background: var(--bg);
@@ -14,17 +12,23 @@
         transition: background 0.4s ease;
     }
 
-    /* ---- Page Header ---- */
+    /* ---- Page Header — Cinematic Banner ---- */
     .cart-header {
         background: var(--bg-2);
         border-bottom: 1px solid var(--border);
-        padding: 56px 48px 48px;
+        padding: 72px 48px 52px;
         position: relative;
         overflow: hidden;
         transition: background 0.4s ease;
     }
+    .cart-header::before {
+        content: '';
+        position: absolute; inset: 0;
+        background-image: radial-gradient(circle, rgba(212,168,67,0.04) 1px, transparent 1px);
+        background-size: 32px 32px;
+        pointer-events: none;
+    }
 
-    /* Subtle ambient orb — same as hero */
     .cart-header .orb-blue {
         position: absolute;
         width: 600px; height: 600px;
@@ -33,6 +37,7 @@
         top: -300px; right: -80px;
         filter: blur(90px);
         pointer-events: none;
+        animation: drift-orb 8s ease-in-out infinite alternate;
     }
     .cart-header .orb-gold {
         position: absolute;
@@ -42,6 +47,11 @@
         bottom: -160px; left: -60px;
         filter: blur(70px);
         pointer-events: none;
+        animation: drift-orb 10s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes drift-orb {
+        from { transform: translate(0, 0) scale(1); }
+        to   { transform: translate(30px, -20px) scale(1.06); }
     }
 
     .cart-header-inner {
@@ -51,23 +61,29 @@
         z-index: 2;
     }
 
-    .cart-header .section-label { margin-bottom: 8px; }
-
     .cart-header h1 {
         font-family: 'Manrope', sans-serif;
-        font-size: clamp(2rem, 4vw, 3.2rem);
+        font-size: clamp(2.2rem, 4.5vw, 3.6rem);
         font-weight: 900;
         letter-spacing: -0.05em;
         color: var(--text);
         line-height: 1;
+        margin-bottom: 12px;
         transition: color 0.4s ease;
-        margin-bottom: 10px;
+    }
+    .cart-header h1 .gradient-word {
+        background: linear-gradient(135deg, #f0d080 0%, #d4a843 40%, #a0721a 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
     .cart-header p {
-        font-size: 0.88rem;
+        font-size: 0.92rem;
         color: var(--text-muted);
         font-weight: 300;
+        line-height: 1.6;
+        max-width: 420px;
         transition: color 0.4s ease;
     }
 
@@ -82,10 +98,9 @@
         font-size: 0.72rem;
         font-weight: 700;
         letter-spacing: 0.08em;
-        padding: 4px 12px;
+        padding: 5px 14px;
         border-radius: 100px;
-        margin-top: 14px;
-        display: inline-flex;
+        margin-top: 18px;
     }
 
     /* ---- Main Layout ---- */
@@ -138,42 +153,44 @@
         border-color: rgba(248,113,113,0.4);
     }
 
-    /* Cart Item Card — reuses .p-card aesthetic */
+    /* Cart Item Card — Premium Glassmorphic */
     .cart-item {
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 22px;
+        border-radius: 24px;
         display: grid;
-        grid-template-columns: 120px 1fr auto;
-        gap: 24px;
+        grid-template-columns: 140px 1fr auto;
+        gap: 28px;
         align-items: center;
-        padding: 20px;
-        margin-bottom: 14px;
-        transition: border-color 0.3s var(--transition), box-shadow 0.3s var(--transition);
+        padding: 24px;
+        margin-bottom: 16px;
+        transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
     }
     .cart-item:hover {
         border-color: var(--border-hover);
-        box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+        box-shadow: 0 24px 64px rgba(0,0,0,0.08);
+        transform: translateY(-4px);
     }
 
     .cart-item-img {
         background: var(--surface-2);
-        border-radius: 14px;
+        border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 100px;
+        height: 120px;
         overflow: hidden;
         transition: background 0.4s ease;
+        padding: 10px;
     }
     .cart-item-img img {
-        max-height: 80px;
+        max-height: 90px;
         max-width: 100%;
         object-fit: contain;
-        transition: transform 0.4s var(--transition);
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .cart-item:hover .cart-item-img img {
-        transform: scale(1.06) translateY(-3px);
+        transform: scale(1.1) translateY(-3px);
     }
 
     .cart-item-info { display: flex; flex-direction: column; gap: 4px; }
@@ -263,10 +280,12 @@
     .cart-summary {
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 22px;
-        padding: 28px;
+        border-radius: 24px;
+        padding: 32px;
         position: sticky;
-        top: 72px; /* 52px navbar + 20px gap */
+        top: 72px;
+        box-shadow: 0 16px 48px rgba(0,0,0,0.04);
+        transition: background 0.4s ease, border-color 0.4s ease;
     }
 
     .summary-title {
@@ -320,39 +339,40 @@
     /* Promo input */
     .promo-wrap {
         display: flex;
-        gap: 8px;
-        margin-bottom: 20px;
+        gap: 10px;
+        margin-bottom: 24px;
     }
     .promo-input {
         flex: 1;
-        background: var(--surface-2);
+        background: var(--bg);
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: 12px;
         color: var(--text);
         font-family: 'DM Sans', sans-serif;
-        font-size: 0.82rem;
-        padding: 10px 14px;
+        font-size: 0.85rem;
+        padding: 12px 16px;
         outline: none;
-        transition: border-color 0.2s;
+        transition: border-color 0.3s ease, background 0.3s ease;
     }
     .promo-input::placeholder { color: var(--text-muted); }
-    .promo-input:focus { border-color: rgba(212,168,67,0.35); }
+    .promo-input:focus { border-color: var(--gold); background: var(--surface); }
     .btn-apply-promo {
         background: var(--gold-dim);
-        border: 1px solid rgba(212,168,67,0.25);
+        border: 1px solid rgba(212,168,67,0.3);
         color: var(--gold);
         font-family: 'Manrope', sans-serif;
-        font-size: 0.78rem;
+        font-size: 0.82rem;
         font-weight: 700;
-        padding: 10px 16px;
-        border-radius: 10px;
+        padding: 12px 20px;
+        border-radius: 12px;
         cursor: pointer;
-        transition: background 0.2s, border-color 0.2s;
+        transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
         white-space: nowrap;
     }
     .btn-apply-promo:hover {
-        background: rgba(212,168,67,0.2);
-        border-color: rgba(212,168,67,0.45);
+        background: rgba(212,168,67,0.15);
+        border-color: var(--gold);
+        transform: translateY(-1px);
     }
 
     /* Checkout button — matches .btn-white from hero */
@@ -535,7 +555,7 @@
         <div class="orb-gold"></div>
         <div class="cart-header-inner">
             <span class="section-label">Belanja Anda</span>
-            <h1>Keranjang Belanja</h1>
+            <h1><span class="gradient-word">Keranjang</span> Belanja</h1>
             <p>Tinjau dan kelola produk sebelum melanjutkan ke pembayaran.</p>
 
             @if(count($cart) > 0)
