@@ -6,83 +6,62 @@
        HERO — Full viewport, cinematic dark
     ============================================= */
     .hero {
-        min-height: 100vh;
+        height: 90vh;
+        min-height: 600px;
+        position: relative;
         display: flex;
         align-items: center;
-        position: relative;
+        justify-content: center;
+        text-align: center;
+        background-color: var(--bg);
         overflow: hidden;
-        background: var(--bg);
-        padding-top: 52px;
-        transition: background 0.4s ease;
+        padding-top: 52px; /* navbar height */
     }
+
+    .hero-bg {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        object-fit: cover;
+        opacity: 0.4;
+        transform: scale(1.05);
+        transition: transform 10s ease-out;
+        z-index: 0;
+    }
+    .hero:hover .hero-bg { transform: scale(1); }
+
+    /* Vignette effect adaptive to theme */
     .hero::after {
         content: '';
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle at center, transparent 0%, var(--bg) 100%);
+        background: radial-gradient(circle, transparent 15%, var(--bg) 100%);
         pointer-events: none;
         z-index: 1;
     }
-    .hero-right {
-        perspective: 1000px;
-    }
-    .hero-laptop {
-        transform-style: preserve-3d;
-        will-change: transform;
-    }
-
-    /* Ambient orbs */
-    .orb {
-        position: absolute;
-        border-radius: 50%;
-        filter: blur(110px);
-        pointer-events: none;
-        will-change: transform;
-    }
-    .orb-blue {
-        width: 800px; height: 800px;
-        background: radial-gradient(circle, rgba(0,113,227,0.16) 0%, transparent 65%);
-        top: -250px; right: -150px;
-        animation: drift-orb 8s ease-in-out infinite alternate;
-    }
-    .orb-gold {
-        width: 500px; height: 500px;
-        background: radial-gradient(circle, rgba(212,168,67,0.10) 0%, transparent 65%);
-        bottom: -120px; left: -80px;
-        animation: drift-orb 10s ease-in-out infinite alternate-reverse;
-    }
-
-    @keyframes drift-orb {
-        from { transform: translate(0, 0) scale(1); }
-        to   { transform: translate(30px, -20px) scale(1.06); }
-    }
-
-    /* Subtle dot-grid */
-    .hero-grid {
-        position: absolute;
-        inset: 0;
-        background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
-        background-size: 36px 36px;
-        mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
-        -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
-        pointer-events: none;
-    }
 
     .hero-inner {
-        max-width: 1280px;
-        margin: 0 auto;
-        padding: 0 48px;
-        width: 100%;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        align-items: center;
-        gap: 80px;
         position: relative;
-        z-index: 2;
+        z-index: 10;
+        max-width: 900px;
+        padding: 0 2rem;
+        color: var(--text);
+        animation: fade-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    /* ---- Left ---- */
-    .hero-left { animation: fade-up 0.9s ease both; }
+    .reveal {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    @keyframes fade-up {
+        from { opacity: 0; transform: translateY(28px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
 
     @keyframes fade-up {
         from { opacity: 0; transform: translateY(28px); }
@@ -225,42 +204,7 @@
         transition: color 0.4s ease;
     }
 
-    /* ---- Right (Visual) ---- */
-    .hero-right {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        animation: fade-up 0.9s 0.15s ease both;
-    }
-
-    .hero-glow {
-        position: absolute;
-        width: 540px; height: 540px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(0,113,227,0.14) 0%, transparent 65%);
-        animation: breathe 5s ease-in-out infinite alternate;
-    }
-
-    @keyframes breathe {
-        from { transform: scale(0.9); opacity: 0.6; }
-        to   { transform: scale(1.1); opacity: 1; }
-    }
-
-    .hero-laptop {
-        position: relative;
-        z-index: 2;
-        max-width: 100%;
-        max-height: 460px;
-        object-fit: contain;
-        filter: drop-shadow(0 50px 100px rgba(0,0,0,0.7));
-        animation: float 6s ease-in-out infinite alternate;
-    }
-
-    @keyframes float {
-        from { transform: translateY(0) rotate(-1deg); }
-        to   { transform: translateY(-20px) rotate(0.5deg); }
-    }
+    /* No longer needed hero-right */
 
     /* =============================================
        FEATURED SECTION
@@ -270,6 +214,13 @@
         padding: 112px 48px 104px;
         border-top: 1px solid var(--border);
         transition: background 0.4s ease;
+    }
+    
+    .featured-top.reveal {
+        transition-delay: 0.1s;
+    }
+    .products-grid.reveal {
+        transition-delay: 0.2s;
     }
 
     .featured-top {
@@ -506,60 +457,42 @@
 <!-- =============================================
      HERO
 ============================================= -->
-<section class="hero">
-    <div class="orb orb-blue"></div>
-    <div class="orb orb-gold"></div>
-    <div class="hero-grid"></div>
+<section class="hero detail-hero" style="justify-content: center;">
+    <img src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?q=80&w=2000" class="hero-bg" alt="Premium Laptops">
+    
+    <div class="hero-inner" style="text-align: center; max-width: 900px;">
 
-    <div class="hero-inner">
-        <div class="hero-left">
-            <div class="hero-eyebrow">
-                <span class="eyebrow-pulse"></span>
-                Koleksi Baru 2024
-            </div>
+        <h1 class="hero-title" style="margin-bottom: 1.5rem; color: var(--text);">
+            Laptop Terbaik<br>
+            <span class="gradient-word">Untuk Anda.</span>
+        </h1>
 
-            <h1 class="hero-title">
-                Laptop<br>
-                Terbaik<br>
-                <span class="gradient-word">Untuk Anda.</span>
-            </h1>
+        <p class="hero-sub" style="margin-left: auto; margin-right: auto; max-width: 600px; font-size: 1.15rem; color: var(--text-muted);">
+            Menemukan ulang batas performa dan keanggunan. Diciptakan khusus untuk para profesional tanpa kompromi.
+        </p>
 
-            <p class="hero-sub">
-                Temukan laptop premium yang dirancang untuk kerja, gaming, dan kreativitas. Dapatkan pilihan terbaik dari merek terkemuka.
-            </p>
-
-            <div class="hero-btns">
-                <a href="{{ url('/products') }}" class="btn-white">
-                    Beli Sekarang <i class="bi bi-arrow-right"></i>
-                </a>
-                <a href="#featured" class="btn-outline">
-                    Pelajari Lanjut <i class="bi bi-chevron-down"></i>
-                </a>
-            </div>
-
-            <div class="hero-stats">
-                <div>
-                    <div class="stat-num">500+</div>
-                    <div class="stat-lbl">Model Laptop</div>
-                </div>
-                <div>
-                    <div class="stat-num">50K+</div>
-                    <div class="stat-lbl">Pelanggan Puas</div>
-                </div>
-                <div>
-                    <div class="stat-num">4.9</div>
-                    <div class="stat-lbl">Penilaian</div>
-                </div>
-            </div>
+        <div class="hero-btns" style="justify-content: center; margin-bottom: 50px;">
+            <a href="{{ url('/products') }}" class="btn-white">
+                Beli Sekarang <i class="bi bi-arrow-right"></i>
+            </a>
+            <a href="#featured" class="btn-outline" style="color: var(--text); border-color: var(--border);">
+                Pelajari Lanjut <i class="bi bi-chevron-down"></i>
+            </a>
         </div>
 
-        <div class="hero-right">
-            <div class="hero-glow"></div>
-            <img
-                class="hero-laptop"
-                src="{{ asset('images/Dashboard.png') }}"
-                alt="Premium Laptop"
-                onerror="this.src='https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=700&q=85';this.onerror=null;">
+        <div class="hero-stats reveal" style="justify-content: center; border-top: none; padding-top: 0;">
+            <div>
+                <div class="stat-num" style="color: var(--text);">500+</div>
+                <div class="stat-lbl" style="color: var(--text-muted);">Model Laptop</div>
+            </div>
+            <div>
+                <div class="stat-num" style="color: var(--text);">50K+</div>
+                <div class="stat-lbl" style="color: var(--text-muted);">Pelanggan Puas</div>
+            </div>
+            <div>
+                <div class="stat-num" style="color: var(--text);">4.9</div>
+                <div class="stat-lbl" style="color: var(--text-muted);">Penilaian</div>
+            </div>
         </div>
     </div>
 </section>
@@ -568,7 +501,7 @@
      FEATURED LAPTOPS (DEMO PRODUCTS)
 ============================================= -->
 <section class="featured-section" id="featured">
-    <div class="featured-top">
+    <div class="featured-top reveal">
         <div>
             <span class="section-label">Pilihan Khusus Untuk Anda</span>
             <h2 class="section-h2">Laptop Unggulan</h2>
@@ -579,7 +512,7 @@
         </a>
     </div>
 
-    <div class="products-grid">
+    <div class="products-grid reveal">
         {{-- PRODUCT 1 - Bestseller --}}
         <div class="p-card" onclick="window.location='{{ url('/product-demo/macbook-pro-16') }}'">
             <span class="p-badge p-badge-bs">Bestseller</span>
@@ -743,35 +676,29 @@ function addToCart(button) {
     }, 1000);
 }
 
-// 3D Tilt Effect on Laptop Image
+// 3D Tilt Effect on Laptop Image (Removed for cinematic layout)
+// document.addEventListener('DOMContentLoaded', () => { ... });
+
+// Intersection Observer for Scroll Reveal
 document.addEventListener('DOMContentLoaded', () => {
-    const laptopImg = document.querySelector('.hero-laptop');
-    const heroRight = document.querySelector('.hero-right');
+    const reveals = document.querySelectorAll('.reveal');
+    
+    const revealOnScroll = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        root: null,
+        threshold: 0.15,
+        rootMargin: "0px 0px -50px 0px"
+    });
 
-    if (heroRight && laptopImg) {
-        heroRight.addEventListener('mousemove', (e) => {
-            const rect = heroRight.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const rotateX = ((y - centerY) / centerY) * -15; // Max 15 deg
-            const rotateY = ((x - centerX) / centerX) * 15;
-            
-            laptopImg.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-        });
-
-        heroRight.addEventListener('mouseleave', () => {
-            laptopImg.style.transform = `rotateX(0deg) rotateY(0deg)`;
-            laptopImg.style.transition = `transform 0.5s ease`;
-        });
-        
-        heroRight.addEventListener('mouseenter', () => {
-            laptopImg.style.transition = `transform 0.1s ease-out`;
-        });
-    }
+    reveals.forEach(reveal => {
+        revealOnScroll.observe(reveal);
+    });
 });
 </script>
 @endpush
