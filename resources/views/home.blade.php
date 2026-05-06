@@ -110,19 +110,22 @@
     }
 
     .hero-title {
-        font-size: clamp(3rem, 5.5vw, 5.8rem);
-        font-weight: 900;
-        line-height: 0.97;
-        letter-spacing: -0.05em;
-        color: var(--white);
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(3.5rem, 6.5vw, 6.8rem);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        color: var(--text);
         margin-bottom: 22px;
+        transition: color 0.4s ease;
     }
 
     .hero-title .gradient-word {
-        background: linear-gradient(135deg, #f0d080 0%, var(--gold) 40%, #a0721a 100%);
+        background: linear-gradient(135deg, #f0d080 0%, #d4a843 40%, #a0721a 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
+        font-style: italic;
     }
 
     .hero-sub {
@@ -381,6 +384,16 @@
         transition: color 0.4s ease;
     }
 
+    .section-h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2.5rem, 4vw, 3.2rem);
+        font-weight: 800;
+        color: var(--text);
+        letter-spacing: -0.03em;
+        margin-bottom: 8px;
+        transition: color 0.4s ease;
+    }
+
     .p-stars {
         display: flex;
         align-items: center;
@@ -469,7 +482,7 @@
         .products-grid { grid-template-columns: repeat(2,1fr); gap: 14px; }
     }
     @media (max-width: 520px) {
-        .hero-title { font-size: 2.8rem; }
+        .hero-title { font-size: 3.2rem; }
         .products-grid { grid-template-columns: 1fr; }
     }
 </style>
