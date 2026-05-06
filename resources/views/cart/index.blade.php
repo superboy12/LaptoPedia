@@ -9,17 +9,19 @@
     /* Page wrapper — matches featured-section background */
     .cart-page {
         min-height: 100vh;
-        background: var(--black);
-        padding-top: 52px; /* navbar height */
+        background: var(--bg);
+        padding-top: 52px;
+        transition: background 0.4s ease;
     }
 
     /* ---- Page Header ---- */
     .cart-header {
-        background: var(--off-black);
+        background: var(--bg-2);
         border-bottom: 1px solid var(--border);
         padding: 56px 48px 48px;
         position: relative;
         overflow: hidden;
+        transition: background 0.4s ease;
     }
 
     /* Subtle ambient orb — same as hero */
@@ -56,15 +58,17 @@
         font-size: clamp(2rem, 4vw, 3.2rem);
         font-weight: 900;
         letter-spacing: -0.05em;
-        color: var(--white);
+        color: var(--text);
         line-height: 1;
+        transition: color 0.4s ease;
         margin-bottom: 10px;
     }
 
     .cart-header p {
         font-size: 0.88rem;
-        color: var(--muted);
+        color: var(--text-muted);
         font-weight: 300;
+        transition: color 0.4s ease;
     }
 
     .cart-count-badge {
@@ -111,7 +115,7 @@
         font-weight: 700;
         letter-spacing: 0.1em;
         text-transform: uppercase;
-        color: rgba(255,255,255,0.28);
+        color: var(--text-muted);
     }
 
     .btn-clear-all {
@@ -148,18 +152,19 @@
         transition: border-color 0.3s var(--transition), box-shadow 0.3s var(--transition);
     }
     .cart-item:hover {
-        border-color: rgba(255,255,255,0.14);
-        box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+        border-color: var(--border-hover);
+        box-shadow: 0 16px 48px rgba(0,0,0,0.12);
     }
 
     .cart-item-img {
-        background: linear-gradient(145deg, #1f1f1f, #161616);
+        background: var(--surface-2);
         border-radius: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
         height: 100px;
         overflow: hidden;
+        transition: background 0.4s ease;
     }
     .cart-item-img img {
         max-height: 80px;
@@ -177,13 +182,14 @@
         font-family: 'Manrope', sans-serif;
         font-size: 0.97rem;
         font-weight: 700;
-        color: var(--white);
+        color: var(--text);
         letter-spacing: -0.02em;
+        transition: color 0.4s ease;
     }
 
     .cart-item-unit-price {
         font-size: 0.78rem;
-        color: var(--muted);
+        color: var(--text-muted);
         font-weight: 300;
         margin-top: 2px;
     }
@@ -192,9 +198,10 @@
         font-family: 'Manrope', sans-serif;
         font-size: 1.05rem;
         font-weight: 800;
-        color: var(--white);
+        color: var(--text);
         letter-spacing: -0.03em;
         margin-top: 8px;
+        transition: color 0.4s ease;
     }
 
     /* Quantity stepper */
@@ -202,7 +209,7 @@
         display: inline-flex;
         align-items: center;
         background: var(--surface-2);
-        border: 1px solid rgba(255,255,255,0.08);
+        border: 1px solid var(--border);
         border-radius: 100px;
         overflow: hidden;
         margin-top: 12px;
@@ -210,7 +217,7 @@
     .qty-btn {
         background: none;
         border: none;
-        color: rgba(255,255,255,0.6);
+        color: var(--text-muted);
         font-size: 0.9rem;
         padding: 6px 13px;
         cursor: pointer;
@@ -220,14 +227,14 @@
         line-height: 1;
     }
     .qty-btn:hover {
-        color: var(--white);
-        background: rgba(255,255,255,0.06);
+        color: var(--text);
+        background: var(--search-bg);
     }
     .qty-val {
         font-family: 'Manrope', sans-serif;
         font-size: 0.85rem;
         font-weight: 700;
-        color: var(--white);
+        color: var(--text);
         min-width: 28px;
         text-align: center;
     }
@@ -237,8 +244,8 @@
 
     .btn-remove {
         background: none;
-        border: 1px solid rgba(255,255,255,0.07);
-        color: rgba(255,255,255,0.35);
+        border: 1px solid var(--border);
+        color: var(--text-muted);
         font-size: 0.95rem;
         width: 34px; height: 34px;
         border-radius: 9px;
@@ -268,7 +275,7 @@
         font-weight: 700;
         letter-spacing: 0.1em;
         text-transform: uppercase;
-        color: rgba(255,255,255,0.28);
+        color: var(--text-muted);
         margin-bottom: 22px;
     }
 
@@ -277,16 +284,16 @@
         align-items: center;
         justify-content: space-between;
         font-size: 0.86rem;
-        color: var(--muted);
+        color: var(--text-muted);
         padding: 10px 0;
-        border-bottom: 1px solid rgba(255,255,255,0.04);
+        border-bottom: 1px solid var(--border);
     }
     .summary-row:last-of-type { border-bottom: none; }
-    .summary-row span:last-child { color: var(--white); font-weight: 600; }
+    .summary-row span:last-child { color: var(--text); font-weight: 600; }
 
     .summary-divider {
         height: 1px;
-        background: rgba(255,255,255,0.07);
+        background: var(--border);
         margin: 16px 0;
     }
 
@@ -300,13 +307,13 @@
         font-family: 'Manrope', sans-serif;
         font-size: 0.9rem;
         font-weight: 700;
-        color: var(--white);
+        color: var(--text);
     }
     .summary-total-price {
         font-family: 'Manrope', sans-serif;
         font-size: 1.5rem;
         font-weight: 900;
-        color: var(--white);
+        color: var(--text);
         letter-spacing: -0.04em;
     }
 
@@ -319,16 +326,16 @@
     .promo-input {
         flex: 1;
         background: var(--surface-2);
-        border: 1px solid rgba(255,255,255,0.08);
+        border: 1px solid var(--border);
         border-radius: 10px;
-        color: var(--white);
+        color: var(--text);
         font-family: 'DM Sans', sans-serif;
         font-size: 0.82rem;
         padding: 10px 14px;
         outline: none;
         transition: border-color 0.2s;
     }
-    .promo-input::placeholder { color: rgba(255,255,255,0.25); }
+    .promo-input::placeholder { color: var(--text-muted); }
     .promo-input:focus { border-color: rgba(212,168,67,0.35); }
     .btn-apply-promo {
         background: var(--gold-dim);
@@ -355,7 +362,7 @@
         justify-content: center;
         gap: 8px;
         width: 100%;
-        background: var(--white);
+        background: linear-gradient(135deg, #d4a843, #b8870e);
         color: #000;
         font-family: 'Manrope', sans-serif;
         font-weight: 800;
@@ -364,12 +371,12 @@
         border-radius: 100px;
         border: none;
         cursor: pointer;
-        transition: background 0.2s, transform 0.2s;
+        transition: transform 0.2s, box-shadow 0.2s;
         letter-spacing: -0.01em;
     }
     .btn-checkout:hover {
-        background: #e8e8e8;
-        transform: scale(1.01);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 24px rgba(212,168,67,0.3);
     }
     .btn-checkout:disabled {
         opacity: 0.4;
@@ -384,29 +391,29 @@
         gap: 7px;
         width: 100%;
         background: transparent;
-        color: rgba(255,255,255,0.55);
+        color: var(--text-muted);
         font-family: 'Manrope', sans-serif;
         font-weight: 600;
         font-size: 0.82rem;
         padding: 12px 20px;
         border-radius: 100px;
-        border: 1px solid rgba(255,255,255,0.1);
+        border: 1px solid var(--border);
         cursor: pointer;
         margin-top: 10px;
         transition: border-color 0.2s, color 0.2s, background 0.2s;
         text-decoration: none;
     }
     .btn-continue:hover {
-        border-color: rgba(255,255,255,0.22);
-        color: var(--white);
-        background: rgba(255,255,255,0.03);
+        border-color: var(--border-hover);
+        color: var(--text);
+        background: var(--search-bg);
     }
 
     /* Guarantee strip */
     .guarantee-strip {
         margin-top: 22px;
         padding-top: 18px;
-        border-top: 1px solid rgba(255,255,255,0.05);
+        border-top: 1px solid var(--border);
         display: flex;
         flex-direction: column;
         gap: 10px;
@@ -416,7 +423,7 @@
         align-items: center;
         gap: 9px;
         font-size: 0.77rem;
-        color: rgba(255,255,255,0.4);
+        color: var(--text-muted);
     }
     .guarantee-item i { color: var(--gold); font-size: 0.88rem; }
 
@@ -430,20 +437,21 @@
     }
     .cart-empty-icon {
         font-size: 3.5rem;
-        color: rgba(255,255,255,0.1);
+        color: var(--text-muted);
         margin-bottom: 20px;
+        opacity: 0.3;
     }
     .cart-empty h3 {
         font-family: 'Manrope', sans-serif;
         font-size: 1.3rem;
         font-weight: 800;
-        color: var(--white);
+        color: var(--text);
         letter-spacing: -0.03em;
         margin-bottom: 8px;
     }
     .cart-empty p {
         font-size: 0.87rem;
-        color: var(--muted);
+        color: var(--text-muted);
         font-weight: 300;
         margin-bottom: 28px;
         line-height: 1.65;
@@ -453,7 +461,7 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        background: var(--white);
+        background: linear-gradient(135deg, #d4a843, #b8870e);
         color: #000;
         font-family: 'Manrope', sans-serif;
         font-weight: 700;
@@ -462,11 +470,11 @@
         border-radius: 100px;
         border: none;
         cursor: pointer;
-        transition: background 0.2s, transform 0.2s;
+        transition: transform 0.2s, box-shadow 0.2s;
         letter-spacing: -0.01em;
         text-decoration: none;
     }
-    .btn-white:hover { background: #e8e8e8; color: #000; transform: scale(1.02); }
+    .btn-white:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(212,168,67,0.3); color: #000; }
 
     /* ---- Toast notification ---- */
     .toast-wrap {
@@ -487,13 +495,13 @@
         display: flex;
         align-items: center;
         gap: 10px;
-        background: #1a1a1a;
-        border: 1px solid rgba(255,255,255,0.1);
+        background: var(--surface);
+        border: 1px solid var(--border);
         padding: 12px 20px;
         border-radius: 100px;
         font-size: 0.83rem;
-        color: var(--white);
-        box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+        color: var(--text);
+        box-shadow: 0 16px 48px rgba(0,0,0,0.25);
     }
     .toast-inner i { color: var(--gold); }
 
