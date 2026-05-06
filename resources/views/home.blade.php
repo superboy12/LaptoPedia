@@ -15,6 +15,14 @@
         padding-top: 52px;
         transition: background 0.4s ease;
     }
+    .hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at center, transparent 0%, var(--bg) 100%);
+        pointer-events: none;
+        z-index: 1;
+    }
     .hero-right {
         perspective: 1000px;
     }
@@ -149,22 +157,23 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        background: var(--gold);
+        background: linear-gradient(135deg, #f0d080 0%, #d4a843 40%, #a0721a 100%);
         color: #000;
         font-family: 'Manrope', sans-serif;
-        font-weight: 700;
-        font-size: 0.87rem;
-        padding: 14px 28px;
+        font-weight: 800;
+        font-size: 0.9rem;
+        padding: 15px 32px;
         border-radius: 100px;
         border: none;
         cursor: pointer;
-        transition: background 0.2s, transform 0.2s;
+        transition: transform 0.2s, box-shadow 0.2s;
         letter-spacing: -0.01em;
+        box-shadow: 0 4px 14px rgba(212,168,67,0.2);
     }
     .btn-white:hover {
-        background: var(--gold-light);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(212,168,67,0.35);
         color: #000;
-        transform: scale(1.02);
     }
 
     .btn-outline {
@@ -198,11 +207,11 @@
     }
 
     .stat-num {
-        font-family: 'Manrope', sans-serif;
-        font-size: 2.2rem;
-        font-weight: 900;
+        font-family: 'Playfair Display', serif;
+        font-size: 2.6rem;
+        font-weight: 800;
         color: var(--text);
-        letter-spacing: -0.05em;
+        letter-spacing: -0.02em;
         line-height: 1;
         transition: color 0.4s ease;
     }
@@ -303,21 +312,22 @@
     .p-card {
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 22px;
+        border-radius: 24px;
         overflow: hidden;
         display: flex;
         flex-direction: column;
         position: relative;
+        padding: 6px;
         transition:
-            border-color 0.35s var(--transition),
-            transform 0.35s var(--transition),
-            box-shadow 0.35s var(--transition);
+            border-color 0.4s ease,
+            transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+            box-shadow 0.4s ease;
         cursor: pointer;
     }
     .p-card:hover {
         border-color: var(--border-hover);
-        transform: translateY(-8px);
-        box-shadow: 0 28px 70px rgba(0,0,0,0.18);
+        transform: translateY(-10px);
+        box-shadow: 0 32px 80px rgba(0,0,0,0.12);
     }
 
     .p-badge {
@@ -338,11 +348,12 @@
 
     .p-img-wrap {
         background: var(--surface-2);
+        border-radius: 18px;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 36px 24px 28px;
-        height: 210px;
+        height: 240px;
         overflow: hidden;
         position: relative;
         transition: background 0.4s ease;
@@ -441,24 +452,26 @@
     .btn-cart {
         display: inline-flex;
         align-items: center;
-        gap: 5px;
+        justify-content: center;
+        gap: 6px;
         background: var(--search-bg);
         border: 1px solid var(--border);
         color: var(--text);
         font-family: 'Manrope', sans-serif;
-        font-size: 0.75rem;
+        font-size: 0.8rem;
         font-weight: 700;
-        padding: 9px 16px;
+        padding: 10px 18px;
         border-radius: 100px;
         cursor: pointer;
-        transition: background 0.25s, border-color 0.25s, transform 0.2s, color 0.25s;
+        transition: all 0.3s ease;
         white-space: nowrap;
     }
     .btn-cart:hover:not(:disabled) {
         background: var(--gold-dim);
         border-color: var(--gold);
         color: var(--gold);
-        transform: scale(1.04);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(212,168,67,0.15);
     }
     .btn-cart:disabled { cursor: not-allowed; }
 
