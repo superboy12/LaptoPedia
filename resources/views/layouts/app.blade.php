@@ -638,57 +638,8 @@ function showToast(message, isSuccess = true) {
     }, 2500);
 }
 
-    // Ambil data produk dari card
-    const card = btn.closest('.p-card');
-    const productName = card?.querySelector('.p-name')?.textContent?.trim() ?? 'Product';
-    
-    // Simpan HTML asli button
-    const originalHTML = btn.innerHTML;
-    
-    // Loading state
-    btn.disabled = true;
-    btn.classList.add('loading');
-    btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Adding...';
-    
-    // Simulasi proses (biar keliatan animasinya)
-    setTimeout(() => {
-        // Ambil cart dari localStorage
-        let cart = JSON.parse(localStorage.getItem('demo_cart') || '[]');
-        
-        // Cek apakah produk sudah ada di cart
-        const existingIndex = cart.findIndex(item => item.name === productName);
-        
-        if (existingIndex !== -1) {
-            cart[existingIndex].quantity += 1;
-        } else {
-            cart.push({
-                name: productName,
-                quantity: 1,
-                addedAt: new Date().toISOString()
-            });
-        }
-        
-        // Simpan ke localStorage
-        localStorage.setItem('demo_cart', JSON.stringify(cart));
-        
-        // Hitung total item
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        
-        // Update badge di navbar
-        updateCartCount(totalItems);
-        
-        // Tampilkan notifikasi
-        showToast(`${productName} added to cart!`, true);
-        
-        // Reset button
-        setTimeout(() => {
-            btn.disabled = false;
-            btn.classList.remove('loading');
-            btn.innerHTML = originalHTML;
-        }, 800);
-        
-    }, 400);
-}
+
+
 
 // Load cart count saat halaman dimuat
 document.addEventListener('DOMContentLoaded', function() {
