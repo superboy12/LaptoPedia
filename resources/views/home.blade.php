@@ -555,7 +555,7 @@
 
     <div class="products-grid">
         {{-- PRODUCT 1 - Bestseller --}}
-        <div class="p-card">
+        <div class="p-card" onclick="window.location='{{ url('/product-demo/macbook-pro-16') }}'">
             <span class="p-badge p-badge-bs">Bestseller</span>
             <div class="p-img-wrap">
                 <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80" alt="MacBook Pro">
@@ -574,7 +574,7 @@
                         Rp 28.999.000
                         <small>Harga terbaik</small>
                     </div>
-                    <button class="btn-cart" onclick="addToCart(this)">
+                    <button class="btn-cart" onclick="event.stopPropagation(); addToCart(this)">
                         <i class="bi bi-bag-plus"></i> Tambah
                     </button>
                 </div>
@@ -582,7 +582,7 @@
         </div>
 
         {{-- PRODUCT 2 - 15% Off --}}
-        <div class="p-card">
+        <div class="p-card" onclick="window.location='{{ url('/product-demo/dell-xps-15') }}'">
             <span class="p-badge p-badge-off">15% Off</span>
             <div class="p-img-wrap">
                 <img src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400&q=80" alt="Dell XPS">
@@ -601,7 +601,7 @@
                         Rp 25.999.000
                         <small>Harga terbaik</small>
                     </div>
-                    <button class="btn-cart" onclick="addToCart(this)">
+                    <button class="btn-cart" onclick="event.stopPropagation(); addToCart(this)">
                         <i class="bi bi-bag-plus"></i> Tambah
                     </button>
                 </div>
@@ -609,7 +609,7 @@
         </div>
 
         {{-- PRODUCT 3 - New --}}
-        <div class="p-card">
+        <div class="p-card" onclick="window.location='{{ url('/product-demo/asus-rog-strix-g16') }}'">
             <span class="p-badge p-badge-new">New</span>
             <div class="p-img-wrap">
                 <img src="https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&q=80" alt="ASUS ROG">
@@ -628,7 +628,7 @@
                         Rp 32.999.000
                         <small>Harga terbaik</small>
                     </div>
-                    <button class="btn-cart" onclick="addToCart(this)">
+                    <button class="btn-cart" onclick="event.stopPropagation(); addToCart(this)">
                         <i class="bi bi-bag-plus"></i> Tambah
                     </button>
                 </div>
@@ -636,7 +636,7 @@
         </div>
 
         {{-- PRODUCT 4 - Regular --}}
-        <div class="p-card">
+        <div class="p-card" onclick="window.location='{{ url('/product-demo/hp-spectre-x360') }}'">
             <div class="p-img-wrap">
                 <img src="https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=400&q=80" alt="HP Spectre">
             </div>
@@ -654,7 +654,7 @@
                         Rp 19.999.000
                         <small>Harga terbaik</small>
                     </div>
-                    <button class="btn-cart" onclick="addToCart(this)">
+                    <button class="btn-cart" onclick="event.stopPropagation(); addToCart(this)">
                         <i class="bi bi-bag-plus"></i> Tambah
                     </button>
                 </div>
