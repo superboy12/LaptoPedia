@@ -6,10 +6,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('page_title', 'Dashboard') — LaptoPedia Admin</title>
 
-    {{-- Fonts: same as customer app.blade.php --}}
+    {{-- Fonts: Premium Editorial & Modern --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
 
     {{-- Icons --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -38,12 +38,15 @@
         body {
             font-family: 'DM Sans', sans-serif;
             background: var(--black);
+            background-image: radial-gradient(circle at top right, rgba(212,168,67,0.05), transparent 400px),
+                              radial-gradient(circle at bottom left, rgba(0,113,227,0.03), transparent 400px);
             color: var(--white);
             -webkit-font-smoothing: antialiased;
             min-height: 100vh;
         }
 
-        h1,h2,h3,h4,h5,h6 { font-family: 'Manrope', sans-serif; letter-spacing: -0.03em; }
+        h1,h2,h3,h4,h5,h6 { font-family: 'Playfair Display', serif; }
+        .font-sans { font-family: 'Manrope', sans-serif; }
         a { text-decoration: none; color: inherit; }
 
         ::-webkit-scrollbar { width: 5px; }
@@ -128,7 +131,9 @@
         .admin-topbar {
             grid-column: 2;
             grid-row: 1;
-            background: var(--deep);
+            background: rgba(17, 17, 17, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
             padding: 0 48px;
             display: flex;
@@ -225,15 +230,17 @@
             animation: fadeUp 0.5s var(--transition);
         }
         .page-title {
-            font-size: 1.75rem;
-            font-weight: 800;
-            letter-spacing: -0.04em;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
             margin-bottom: 4px;
+            color: var(--white);
         }
         .page-desc {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: var(--muted);
             font-weight: 300;
+            font-family: 'DM Sans', sans-serif;
         }
 
         @keyframes fadeUp {

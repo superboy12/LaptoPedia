@@ -15,11 +15,14 @@
     }
 
     .admin-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 12px;
+        background: rgba(26, 26, 26, 0.4);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 16px;
         padding: 24px;
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.15);
     }
     
     .admin-card:hover {
@@ -29,7 +32,7 @@
     }
 
     .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .card-title { font-size: 1rem; font-weight: 700; letter-spacing: -0.02em; color: var(--white); }
+    .card-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; letter-spacing: 0.02em; color: var(--white); }
 
     .badge-trend { font-size: 0.72rem; background: rgba(76, 175, 80, 0.12); color: #4ade80; padding: 4px 8px; border-radius: 4px; font-weight: 700; }
     
@@ -65,8 +68,8 @@
             <i class="bi bi-currency-dollar" style="font-size: 1.8rem; color: var(--gold);"></i>
             <span class="badge-trend">+12.5%</span>
         </div>
-        <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px;">Total Revenue</p>
-        <h3 style="font-size: 1.75rem; font-weight: 800;">$128,430</h3>
+        <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; font-family: 'DM Sans', sans-serif;">Total Revenue</p>
+        <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--gold);">$128,430</h3>
     </div>
 
     {{-- Orders --}}
@@ -75,8 +78,8 @@
             <i class="bi bi-bag" style="font-size: 1.8rem; color: var(--gold);"></i>
             <span class="badge-trend">+5.1%</span>
         </div>
-        <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px;">Total Orders</p>
-        <h3 style="font-size: 1.75rem; font-weight: 800;">1,240</h3>
+        <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; font-family: 'DM Sans', sans-serif;">Total Orders</p>
+        <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700;">1,240</h3>
     </div>
 
     {{-- Products --}}
@@ -85,8 +88,8 @@
             <i class="bi bi-box" style="font-size: 1.8rem; color: var(--gold);"></i>
             <span class="badge-trend">+2.3%</span>
         </div>
-        <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px;">Total Products</p>
-        <h3 style="font-size: 1.75rem; font-weight: 800;">450</h3>
+        <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; font-family: 'DM Sans', sans-serif;">Total Products</p>
+        <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700;">450</h3>
     </div>
 
     {{-- Customers --}}
@@ -95,8 +98,8 @@
             <i class="bi bi-people" style="font-size: 1.8rem; color: var(--gold);"></i>
             <span class="badge-trend">+14.7%</span>
         </div>
-        <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px;">Total Customers</p>
-        <h3 style="font-size: 1.75rem; font-weight: 800;">8,200</h3>
+        <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; font-family: 'DM Sans', sans-serif;">Total Customers</p>
+        <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700;">8,200</h3>
     </div>
 </div>
 
