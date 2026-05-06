@@ -41,6 +41,10 @@ Route::middleware('auth')->group(function () {
         return redirect()->route('home');
     })->name('dashboard');
 
+    // ── Profil Pengguna ──────────────────────────────────
+    Route::get('/profile', [HomeController::class, 'profile'])->name('profile');
+    Route::put('/profile', [HomeController::class, 'updateProfile'])->name('profile.update');
+
     Route::get('/product/{slug}', [HomeController::class, 'detail'])->name('product.detail');
 
     // ── Shopping Cart ──────────────────────────────────────

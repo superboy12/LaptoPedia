@@ -46,4 +46,34 @@ class HomeController extends Controller
         // dan bawa data $product ke halaman tersebut
         return view('product.detail', compact('product'));
     }
+
+    /**
+     * Menampilkan halaman profil pengguna.
+     */
+    public function profile()
+    {
+        $user = auth()->user();
+        return view('profile', compact('user'));
+    }
+
+    /**
+     * Update data profil pengguna.
+     */
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            'nama_lengkap' => 'required|string|max:100',
+            'no_telepon'   => 'nullable|string|max:20',
+            'alamat'       => 'nullable|string|max:255',
+        ]);
+
+        $user = auth()->user();
+        $user->update([
+            'nama_lengkap' => $request->nama_lengkap,
+            'no_telepon'   => $request->no_telepon,
+            'alamat'       => $request->alamat,
+        ]);
+
+        return back()->with('success', 'Profil berhasil diperbarui!');
+    }
 }

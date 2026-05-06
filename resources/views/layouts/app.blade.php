@@ -334,6 +334,20 @@
         .footer-legal a { font-size: 0.75rem; color: var(--text-muted); transition: color 0.2s; }
         .footer-legal a:hover { color: var(--text); }
 
+        /* ===== USER DROPDOWN ===== */
+        .user-dd-link {
+            display: flex; align-items: center; gap: 9px;
+            padding: 9px 12px; border-radius: 7px;
+            font-size: 0.82rem; color: var(--text-muted);
+            transition: background 0.2s, color 0.2s;
+            background: none; border: none; cursor: pointer;
+            font-family: 'DM Sans', sans-serif; width: 100%;
+            text-align: left;
+        }
+        .user-dd-link:hover { background: var(--search-bg); color: var(--text); }
+        .user-dd-logout { color: #f87171; }
+        .user-dd-logout:hover { background: rgba(248,113,113,0.1); color: #f87171; }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 900px) {
             .nav-wrap { padding: 0 24px; }
@@ -378,7 +392,7 @@
     @auth
         {{-- Sudah login: tampilkan nama + dropdown logout --}}
         <div style="position:relative;" id="userMenuWrap">
-            <button class="nav-icon" onclick="toggleUserMenu()" style="display:flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.75);">
+            <button class="nav-icon" onclick="toggleUserMenu()" style="display:flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-size:0.82rem;">
                 <i class="bi bi-person-circle" style="font-size:1.1rem;"></i>
                 <span style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
                     {{ Str::before(Auth::user()->nama_lengkap, ' ') }}
@@ -392,36 +406,33 @@
                 position:absolute;
                 top:calc(100% + 10px);
                 right:0;
-                background:#1a1a1a;
-                border:1px solid rgba(255,255,255,0.1);
+                background:var(--surface);
+                border:1px solid var(--border);
                 border-radius:10px;
                 min-width:190px;
                 padding:6px;
                 z-index:9999;
-                box-shadow:0 16px 40px rgba(0,0,0,0.6);
+                box-shadow:0 16px 40px rgba(0,0,0,0.25);
+                transition:background 0.4s ease;
             ">
-                <div style="padding:10px 12px 8px;border-bottom:1px solid rgba(255,255,255,0.07);margin-bottom:4px;">
-                    <p style="font-size:0.8rem;font-weight:600;color:#fff;">{{ Auth::user()->nama_lengkap }}</p>
-                    <p style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-top:2px;">{{ Auth::user()->email }}</p>
+                <div style="padding:10px 12px 8px;border-bottom:1px solid var(--border);margin-bottom:4px;">
+                    <p style="font-size:0.8rem;font-weight:600;color:var(--text);">{{ Auth::user()->nama_lengkap }}</p>
+                    <p style="font-size:0.72rem;color:var(--text-muted);margin-top:2px;">{{ Auth::user()->email }}</p>
                     <span style="
                         display:inline-block;margin-top:5px;
                         font-size:0.65rem;font-weight:700;
                         text-transform:uppercase;letter-spacing:0.08em;
-                        background:rgba(212,168,67,0.15);color:#d4a843;
+                        background:var(--gold-dim);color:var(--gold);
                         padding:2px 7px;border-radius:4px;
                     ">{{ Auth::user()->role }}</span>
                 </div>
 
-                <a href="#" style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:7px;font-size:0.82rem;color:rgba(255,255,255,0.65);transition:background 0.2s,color 0.2s;"
-                   onmouseover="this.style.background='rgba(255,255,255,0.06)';this.style.color='#fff'"
-                   onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,0.65)'">
+                <a href="{{ route('profile') }}" class="user-dd-link">
                     <i class="bi bi-person"></i> Profil Saya
                 </a>
 
                 {{-- Link ke Keranjang --}}
-                <a href="{{ route('cart.index') }}" style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:7px;font-size:0.82rem;color:rgba(255,255,255,0.65);transition:background 0.2s,color 0.2s;"
-                   onmouseover="this.style.background='rgba(255,255,255,0.06)';this.style.color='#fff'"
-                   onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,0.65)'">
+                <a href="{{ route('cart.index') }}" class="user-dd-link">
                     <i class="bi bi-cart3"></i> Keranjang Saya
                     @if(collect(session('cart', []))->sum('quantity') > 0)
                     <span style="margin-left:auto;background:var(--gold);color:#000;font-size:0.62rem;font-weight:800;padding:1px 6px;border-radius:4px;">
@@ -430,26 +441,15 @@
                     @endif
                 </a>
 
-                <a href="#" style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:7px;font-size:0.82rem;color:rgba(255,255,255,0.65);transition:background 0.2s,color 0.2s;"
-                   onmouseover="this.style.background='rgba(255,255,255,0.06)';this.style.color='#fff'"
-                   onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,0.65)'">
+                <a href="#" class="user-dd-link">
                     <i class="bi bi-bag"></i> Pesanan Saya
                 </a>
 
-                <div style="height:1px;background:rgba(255,255,255,0.07);margin:4px 0;"></div>
+                <div style="height:1px;background:var(--border);margin:4px 0;"></div>
 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" style="
-                        display:flex;align-items:center;gap:9px;
-                        width:100%;padding:9px 12px;border-radius:7px;
-                        font-size:0.82rem;color:#f87171;
-                        background:none;border:none;cursor:pointer;
-                        font-family:'DM Sans',sans-serif;
-                        transition:background 0.2s;
-                    "
-                    onmouseover="this.style.background='rgba(248,113,113,0.1)'"
-                    onmouseout="this.style.background='transparent'">
+                    <button type="submit" class="user-dd-link user-dd-logout">
                         <i class="bi bi-box-arrow-right"></i> Keluar
                     </button>
                 </form>
