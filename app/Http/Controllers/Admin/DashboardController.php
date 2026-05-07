@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     public function __construct()
     {
-        // Pastikan hanya admin yang bisa akses
         $this->middleware('auth');
         $this->middleware(function ($request, $next) {
             if (auth()->user()->role !== 'admin') {
@@ -20,190 +24,116 @@ class DashboardController extends Controller
     }
 
     /**
-     * Dashboard Overview
+     * Dashboard Overview — data dinamis dari database
      */
     public function index()
     {
-        // Data statis untuk sekarang (nanti diganti dinamis)
+        // ── STATS CARDS ──────────────────────────────────────────────────
+        $totalRevenue        = Order::where('status', '!=', 'cancelled')->sum('total_price');
+        $totalOrders         = Order::count();
+        $totalProducts       = Product::count();
+        $totalCustomers      = User::where('role', 'user')->count();
+
+        // Perubahan bulan ini vs bulan lalu
+        $thisMonth  = Carbon::now()->startOfMonth();
+        $lastMonth  = Carbon::now()->subMonth()->startOfMonth();
+        $lastMonthEnd = Carbon::now()->subMonth()->endOfMonth();
+
+        $revenueThisMonth = Order::where('status', '!=', 'cancelled')
+            ->where('created_at', '>=', $thisMonth)->sum('total_price');
+        $revenueLastMonth = Order::where('status', '!=', 'cancelled')
+            ->whereBetween('created_at', [$lastMonth, $lastMonthEnd])->sum('total_price');
+
+        $ordersThisMonth = Order::where('created_at', '>=', $thisMonth)->count();
+        $ordersLastMonth = Order::whereBetween('created_at', [$lastMonth, $lastMonthEnd])->count();
+
+        $productsThisMonth = Product::where('created_at', '>=', $thisMonth)->count();
+        $productsLastMonth = Product::whereBetween('created_at', [$lastMonth, $lastMonthEnd])->count();
+
+        $customersThisMonth = User::where('role', 'user')->where('created_at', '>=', $thisMonth)->count();
+        $customersLastMonth = User::where('role', 'user')->whereBetween('created_at', [$lastMonth, $lastMonthEnd])->count();
+
         $stats = [
-            'total_revenue' => '$128,430',
-            'total_revenue_change' => '+12.5%',
-            'total_orders' => 1240,
-            'total_orders_change' => '+4.3%',
-            'total_products' => 450,
-            'total_products_change' => '+2.1%',
-            'total_customers' => 8200,
-            'total_customers_change' => '+14%',
+            'total_revenue'          => $totalRevenue,
+            'total_revenue_change'   => $this->calcChange($revenueThisMonth, $revenueLastMonth),
+            'total_orders'           => $totalOrders,
+            'total_orders_change'    => $this->calcChange($ordersThisMonth, $ordersLastMonth),
+            'total_products'         => $totalProducts,
+            'total_products_change'  => $this->calcChange($productsThisMonth, $productsLastMonth),
+            'total_customers'        => $totalCustomers,
+            'total_customers_change' => $this->calcChange($customersThisMonth, $customersLastMonth),
         ];
 
-        // Sample data untuk grafik (statis)
-        $revenueData = [
-            ['date' => 'Jan', 'value' => 45000],
-            ['date' => 'Feb', 'value' => 52000],
-            ['date' => 'Mar', 'value' => 48000],
-            ['date' => 'Apr', 'value' => 61000],
-            ['date' => 'May', 'value' => 55000],
-            ['date' => 'Jun', 'value' => 67000],
-            ['date' => 'Jul', 'value' => 72000],
-        ];
+        // ── REVENUE CHART — 7 bulan terakhir ─────────────────────────────
+        $revenueData = Order::where('status', '!=', 'cancelled')
+            ->where('created_at', '>=', Carbon::now()->subMonths(6)->startOfMonth())
+            ->select(
+                DB::raw("DATE_FORMAT(created_at, '%b') as date"),
+                DB::raw("MONTH(created_at) as month_num"),
+                DB::raw("YEAR(created_at) as year_num"),
+                DB::raw('SUM(total_price) as value')
+            )
+            ->groupBy('year_num', 'month_num', 'date')
+            ->orderBy('year_num')
+            ->orderBy('month_num')
+            ->get()
+            ->map(fn($r) => ['date' => $r->date, 'value' => (int) $r->value])
+            ->toArray();
 
-        $ordersData = [
-            ['day' => 'Mon', 'value' => 120],
-            ['day' => 'Tue', 'value' => 150],
-            ['day' => 'Wed', 'value' => 100],
-            ['day' => 'Thu', 'value' => 180],
-            ['day' => 'Fri', 'value' => 200],
-            ['day' => 'Sat', 'value' => 160],
-            ['day' => 'Sun', 'value' => 140],
-        ];
+        // ── ORDERS CHART — 7 hari terakhir ───────────────────────────────
+        $ordersData = Order::where('created_at', '>=', Carbon::now()->subDays(6)->startOfDay())
+            ->select(
+                DB::raw("DATE_FORMAT(created_at, '%a') as day"),
+                DB::raw('DATE(created_at) as date_val'),
+                DB::raw('COUNT(*) as value')
+            )
+            ->groupBy('date_val', 'day')
+            ->orderBy('date_val')
+            ->get()
+            ->map(fn($r) => ['day' => $r->day, 'value' => (int) $r->value])
+            ->toArray();
 
-        $recentOrders = [
-            [
-                'order_id' => '#ORD-001',
-                'customer' => 'John Doe',
-                'product' => 'MacBook Pro M2',
-                'payment' => 'Credit Card',
-                'amount' => '$2,400',
-                'status' => 'Paid',
-                'date' => 'Oct 24, 2024',
-            ],
-            [
-                'order_id' => '#ORD-002',
-                'customer' => 'Sarah Wilson',
-                'product' => 'Dell XPS 15',
-                'payment' => 'PayPal',
-                'amount' => '$1,750',
-                'status' => 'Pending',
-                'date' => 'Oct 23, 2024',
-            ],
-            [
-                'order_id' => '#ORD-003',
-                'customer' => 'Michael Chen',
-                'product' => 'Lenovo ThinkPad X1',
-                'payment' => 'Bank Transfer',
-                'amount' => '$1,450',
-                'status' => 'Cancelled',
-                'date' => 'Oct 22, 2024',
-            ],
-            [
-                'order_id' => '#ORD-004',
-                'customer' => 'Emily Watson',
-                'product' => 'ASUS ROG Zephyrus G14',
-                'payment' => 'Credit Card',
-                'amount' => '$1,800',
-                'status' => 'Pending',
-                'date' => 'Oct 21, 2024',
-            ],
-            [
-                'order_id' => '#ORD-005',
-                'customer' => 'Robert James',
-                'product' => 'HP Spectre x360',
-                'payment' => 'QRIS',
-                'amount' => '$1,600',
-                'status' => 'Paid',
-                'date' => 'Oct 20, 2024',
-            ],
-        ];
+        // ── RECENT ORDERS ─────────────────────────────────────────────────
+        $recentOrders = Order::with(['user', 'items.product'])
+            ->latest()
+            ->limit(5)
+            ->get();
 
-        return view('admin.dashboard', compact('stats', 'revenueData', 'ordersData', 'recentOrders'));
+        // ── TOP TRENDING PRODUCTS (by qty sold) ───────────────────────────
+        $trendingProducts = DB::table('order_items')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->where('orders.status', '!=', 'cancelled')
+            ->select(
+                'products.id',
+                'products.name',
+                'products.image',
+                DB::raw('SUM(order_items.quantity) as total_sold')
+            )
+            ->groupBy('products.id', 'products.name', 'products.image')
+            ->orderByDesc('total_sold')
+            ->limit(5)
+            ->get();
+
+        return view('admin.dashboard', compact(
+            'stats',
+            'revenueData',
+            'ordersData',
+            'recentOrders',
+            'trendingProducts'
+        ));
     }
 
     /**
-     * Product Management Page
+     * Hitung perubahan persen antara dua nilai
      */
-    public function products()
+    private function calcChange(int|float $current, int|float $previous): string
     {
-        $products = [
-            [
-                'id' => 1,
-                'name' => 'MacBook Pro M2',
-                'category' => 'Apple',
-                'price' => '$1,999',
-                'stock' => 45,
-                'image' => 'macbook-pro.jpg',
-            ],
-            [
-                'id' => 2,
-                'name' => 'Dell XPS 15',
-                'category' => 'Dell',
-                'price' => '$1,799',
-                'stock' => 32,
-                'image' => 'dell-xps.jpg',
-            ],
-            [
-                'id' => 3,
-                'name' => 'Lenovo ThinkPad X1',
-                'category' => 'Lenovo',
-                'price' => '$1,599',
-                'stock' => 28,
-                'image' => 'lenovo-thinkpad.jpg',
-            ],
-            [
-                'id' => 4,
-                'name' => 'ASUS ROG Zephyrus G14',
-                'category' => 'ASUS',
-                'price' => '$1,899',
-                'stock' => 18,
-                'image' => 'asus-rog.jpg',
-            ],
-        ];
-
-        return view('admin.products', compact('products'));
-    }
-
-    /**
-     * Orders Management Page
-     */
-    public function orders()
-    {
-        $orders = [
-            [
-                'order_id' => '#ORD-73829',
-                'customer' => 'Jess Cohen',
-                'product' => 'MacBook Pro M2',
-                'payment_method' => 'BCA Transfer',
-                'total_price' => '$3,499.00',
-                'status' => 'Paid',
-                'date' => 'Oct 24, 2023',
-            ],
-            [
-                'order_id' => '#ORD-73828',
-                'customer' => 'Alex Morgan',
-                'product' => 'Dell XPS 15 OLED',
-                'payment_method' => 'QRIS',
-                'total_price' => '$2,150.00',
-                'status' => 'Pending',
-                'date' => 'Oct 24, 2023',
-            ],
-            [
-                'order_id' => '#ORD-73827',
-                'customer' => 'Sarah Rogers',
-                'product' => 'Lenovo ThinkPad X1',
-                'payment_method' => 'DANA',
-                'total_price' => '$1,890.00',
-                'status' => 'Shipped',
-                'date' => 'Oct 23, 2023',
-            ],
-            [
-                'order_id' => '#ORD-73826',
-                'customer' => 'David Chen',
-                'product' => 'ASUS ROG Zephyrus G14',
-                'payment_method' => 'BCA Transfer',
-                'total_price' => '$1,650.00',
-                'status' => 'Cancelled',
-                'date' => 'Oct 23, 2023',
-            ],
-            [
-                'order_id' => '#ORD-73825',
-                'customer' => 'Michael King',
-                'product' => 'MacBook Air M2 13"',
-                'payment_method' => 'QRIS',
-                'total_price' => '$1,350.00',
-                'status' => 'Paid',
-                'date' => 'Oct 22, 2023',
-            ],
-        ];
-
-        return view('admin.orders', compact('orders'));
+        if ($previous == 0) {
+            return $current > 0 ? '+100%' : '0%';
+        }
+        $change = (($current - $previous) / $previous) * 100;
+        $prefix = $change >= 0 ? '+' : '';
+        return $prefix . number_format($change, 1) . '%';
     }
 }

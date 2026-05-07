@@ -28,18 +28,23 @@
     .admin-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
-        border-color: rgba(212, 168, 67, 0.4); /* Gold glow */
+        border-color: rgba(212, 168, 67, 0.4);
     }
 
     .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
     .card-title { font-family: 'Manrope', sans-serif; font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em; color: var(--white); }
 
-    .badge-trend { font-size: 0.72rem; background: rgba(76, 175, 80, 0.12); color: #4ade80; padding: 4px 8px; border-radius: 4px; font-weight: 700; }
+    .badge-trend { font-size: 0.72rem; padding: 4px 8px; border-radius: 4px; font-weight: 700; }
+    .badge-trend.positive { background: rgba(76, 175, 80, 0.12); color: #4ade80; }
+    .badge-trend.negative { background: rgba(239, 68, 68, 0.12); color: #f87171; }
+    .badge-trend.neutral  { background: rgba(255,255,255,0.08); color: var(--muted); }
     
     .status-badge { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-block; }
-    .status-paid { background: rgba(34, 197, 94, 0.12); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); box-shadow: 0 0 8px rgba(34, 197, 94, 0.15); }
-    .status-pending { background: rgba(251, 146, 60, 0.12); color: #fb923c; border: 1px solid rgba(251, 146, 60, 0.3); box-shadow: 0 0 8px rgba(251, 146, 60, 0.15); }
-    .status-cancelled { background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); box-shadow: 0 0 8px rgba(239, 68, 68, 0.15); }
+    .status-paid      { background: rgba(34, 197, 94, 0.12);  color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3);  box-shadow: 0 0 8px rgba(34, 197, 94, 0.15); }
+    .status-pending   { background: rgba(251, 146, 60, 0.12); color: #fb923c; border: 1px solid rgba(251, 146, 60, 0.3); box-shadow: 0 0 8px rgba(251, 146, 60, 0.15); }
+    .status-shipped   { background: rgba(99, 179, 237, 0.12); color: #63b3ed; border: 1px solid rgba(99, 179, 237, 0.3); box-shadow: 0 0 8px rgba(99, 179, 237, 0.15); }
+    .status-completed { background: rgba(167, 139, 250, 0.12); color: #a78bfa; border: 1px solid rgba(167, 139, 250, 0.3); box-shadow: 0 0 8px rgba(167, 139, 250, 0.15); }
+    .status-cancelled { background: rgba(239, 68, 68, 0.12);  color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);  box-shadow: 0 0 8px rgba(239, 68, 68, 0.15); }
 
     .admin-table { width: 100%; font-size: 0.85rem; border-collapse: collapse; }
     .admin-table th { padding: 12px 0; text-align: left; font-weight: 600; color: var(--muted); border-bottom: 1px solid var(--border); }
@@ -48,13 +53,16 @@
 
     .trending-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.04); }
     .trending-item:last-child { border-bottom: none; }
-    .trending-img { width: 48px; height: 48px; background: var(--deep); border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); }
+    .trending-img { width: 48px; height: 48px; background: var(--deep); border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); overflow: hidden; flex-shrink: 0; }
+    .trending-img img { width: 100%; height: 100%; object-fit: cover; }
 
     .fade-up { animation: fadeUp 0.5s var(--transition) both; }
     .delay-1 { animation-delay: 0.1s; }
     .delay-2 { animation-delay: 0.2s; }
     .delay-3 { animation-delay: 0.3s; }
     .delay-4 { animation-delay: 0.4s; }
+
+    .empty-state { text-align: center; padding: 32px 0; color: var(--muted); font-size: 0.9rem; }
 </style>
 @endpush
 
@@ -62,45 +70,71 @@
 
 {{-- STATS CARDS --}}
 <div class="dashboard-grid stats-grid">
+
     {{-- Revenue --}}
+    @php
+        $revenueChange = $stats['total_revenue_change'];
+        $revClass = str_starts_with($revenueChange, '+') ? 'positive' : (str_starts_with($revenueChange, '-') ? 'negative' : 'neutral');
+    @endphp
     <div class="admin-card fade-up">
         <div class="card-header" style="margin-bottom: 12px;">
             <i class="bi bi-currency-dollar" style="font-size: 1.8rem; color: var(--gold);"></i>
-            <span class="badge-trend">+12.5%</span>
+            <span class="badge-trend {{ $revClass }}">{{ $revenueChange }}</span>
         </div>
         <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; font-family: 'DM Sans', sans-serif;">Total Revenue</p>
-        <h3 style="font-family: 'Manrope', sans-serif; font-size: 2rem; font-weight: 800; color: var(--gold); letter-spacing: -0.02em;">$128,430</h3>
+        <h3 style="font-family: 'Manrope', sans-serif; font-size: 2rem; font-weight: 800; color: var(--gold); letter-spacing: -0.02em;">
+            Rp {{ number_format($stats['total_revenue'], 0, ',', '.') }}
+        </h3>
     </div>
 
     {{-- Orders --}}
+    @php
+        $ordChange = $stats['total_orders_change'];
+        $ordClass = str_starts_with($ordChange, '+') ? 'positive' : (str_starts_with($ordChange, '-') ? 'negative' : 'neutral');
+    @endphp
     <div class="admin-card fade-up delay-1">
         <div class="card-header" style="margin-bottom: 12px;">
             <i class="bi bi-bag" style="font-size: 1.8rem; color: var(--gold);"></i>
-            <span class="badge-trend">+5.1%</span>
+            <span class="badge-trend {{ $ordClass }}">{{ $ordChange }}</span>
         </div>
         <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; font-family: 'DM Sans', sans-serif;">Total Orders</p>
-        <h3 style="font-family: 'Manrope', sans-serif; font-size: 2rem; font-weight: 800; letter-spacing: -0.02em;">1,240</h3>
+        <h3 style="font-family: 'Manrope', sans-serif; font-size: 2rem; font-weight: 800; letter-spacing: -0.02em;">
+            {{ number_format($stats['total_orders']) }}
+        </h3>
     </div>
 
     {{-- Products --}}
+    @php
+        $prodChange = $stats['total_products_change'];
+        $prodClass = str_starts_with($prodChange, '+') ? 'positive' : (str_starts_with($prodChange, '-') ? 'negative' : 'neutral');
+    @endphp
     <div class="admin-card fade-up delay-2">
         <div class="card-header" style="margin-bottom: 12px;">
             <i class="bi bi-box" style="font-size: 1.8rem; color: var(--gold);"></i>
-            <span class="badge-trend">+2.3%</span>
+            <span class="badge-trend {{ $prodClass }}">{{ $prodChange }}</span>
         </div>
         <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; font-family: 'DM Sans', sans-serif;">Total Products</p>
-        <h3 style="font-family: 'Manrope', sans-serif; font-size: 2rem; font-weight: 800; letter-spacing: -0.02em;">450</h3>
+        <h3 style="font-family: 'Manrope', sans-serif; font-size: 2rem; font-weight: 800; letter-spacing: -0.02em;">
+            {{ number_format($stats['total_products']) }}
+        </h3>
     </div>
 
     {{-- Customers --}}
+    @php
+        $custChange = $stats['total_customers_change'];
+        $custClass = str_starts_with($custChange, '+') ? 'positive' : (str_starts_with($custChange, '-') ? 'negative' : 'neutral');
+    @endphp
     <div class="admin-card fade-up delay-3">
         <div class="card-header" style="margin-bottom: 12px;">
             <i class="bi bi-people" style="font-size: 1.8rem; color: var(--gold);"></i>
-            <span class="badge-trend">+14.7%</span>
+            <span class="badge-trend {{ $custClass }}">{{ $custChange }}</span>
         </div>
         <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; font-family: 'DM Sans', sans-serif;">Total Customers</p>
-        <h3 style="font-family: 'Manrope', sans-serif; font-size: 2rem; font-weight: 800; letter-spacing: -0.02em;">8,200</h3>
+        <h3 style="font-family: 'Manrope', sans-serif; font-size: 2rem; font-weight: 800; letter-spacing: -0.02em;">
+            {{ number_format($stats['total_customers']) }}
+        </h3>
     </div>
+
 </div>
 
 {{-- CHARTS SECTION --}}
@@ -109,9 +143,7 @@
     <div class="admin-card">
         <div class="card-header">
             <h3 class="card-title">Revenue Over Time</h3>
-            <div style="display:flex; gap:8px;">
-                <button style="background:var(--gold-dim); border:1px solid rgba(212,168,67,0.3); color:var(--gold); padding:6px 12px; border-radius:6px; font-size:0.75rem; cursor:pointer;">Monthly</button>
-            </div>
+            <span style="font-size:0.75rem; color:var(--muted);">Last 6 months</span>
         </div>
         <div style="position: relative; height: 250px; width: 100%;">
             <canvas id="revenueChart"></canvas>
@@ -122,6 +154,7 @@
     <div class="admin-card">
         <div class="card-header">
             <h3 class="card-title">Orders per Day</h3>
+            <span style="font-size:0.75rem; color:var(--muted);">Last 7 days</span>
         </div>
         <div style="position: relative; height: 250px; width: 100%;">
             <canvas id="ordersChart"></canvas>
@@ -139,6 +172,12 @@
             <a href="{{ route('admin.orders') }}" style="font-size: 0.85rem; color: var(--gold); font-weight: 600;">View All →</a>
         </div>
         <div style="overflow-x: auto;">
+            @if($recentOrders->isEmpty())
+                <div class="empty-state">
+                    <i class="bi bi-inbox" style="font-size: 2rem; display:block; margin-bottom:8px;"></i>
+                    No orders yet.
+                </div>
+            @else
             <table class="admin-table">
                 <thead>
                     <tr>
@@ -150,29 +189,27 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach($recentOrders as $order)
                     <tr>
-                        <td style="color: var(--gold); font-weight: 600;">#ORD-73829</td>
-                        <td>Jess Cohen</td>
-                        <td style="color: var(--muted);">MacBook Pro M2</td>
-                        <td style="font-weight: 600;">$3,499.00</td>
-                        <td><span class="status-badge status-paid">Paid</span></td>
+                        <td style="color: var(--gold); font-weight: 600;">{{ $order->order_number }}</td>
+                        <td>{{ $order->user->nama_lengkap ?? '-' }}</td>
+                        <td style="color: var(--muted);">
+                            {{ $order->items->first()?->product?->name ?? '-' }}
+                            @if($order->items->count() > 1)
+                                <span style="font-size:0.72rem; color:var(--muted);"> +{{ $order->items->count() - 1 }} more</span>
+                            @endif
+                        </td>
+                        <td style="font-weight: 600;">Rp {{ number_format($order->total_price, 0, ',', '.') }}</td>
+                        <td>
+                            <span class="status-badge status-{{ strtolower($order->status) }}">
+                                {{ ucfirst($order->status) }}
+                            </span>
+                        </td>
                     </tr>
-                    <tr>
-                        <td style="color: var(--gold); font-weight: 600;">#ORD-73828</td>
-                        <td>Alex Morgan</td>
-                        <td style="color: var(--muted);">Dell XPS 15</td>
-                        <td style="font-weight: 600;">$2,150.00</td>
-                        <td><span class="status-badge status-pending">Pending</span></td>
-                    </tr>
-                    <tr>
-                        <td style="color: var(--gold); font-weight: 600;">#ORD-73827</td>
-                        <td>David Chen</td>
-                        <td style="color: var(--muted);">ASUS ROG Zephyrus</td>
-                        <td style="font-weight: 600;">$1,650.00</td>
-                        <td><span class="status-badge status-cancelled">Cancelled</span></td>
-                    </tr>
+                    @endforeach
                 </tbody>
             </table>
+            @endif
         </div>
     </div>
 
@@ -182,30 +219,31 @@
             <h3 class="card-title">Top Trending Laptops</h3>
         </div>
         <div class="trending-list">
+            @forelse($trendingProducts as $index => $product)
             <div class="trending-item">
-                <div class="trending-img"><i class="bi bi-laptop" style="color: var(--muted); font-size: 1.5rem;"></i></div>
-                <div style="flex: 1;">
-                    <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--white); margin-bottom: 2px;">MacBook Pro M2</h4>
-                    <p style="font-size: 0.75rem; color: var(--muted);">Apple • 124 sold</p>
+                <div class="trending-img">
+                    @if($product->image)
+                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
+                    @else
+                        <i class="bi bi-laptop" style="color: var(--muted); font-size: 1.5rem;"></i>
+                    @endif
                 </div>
-                <div style="font-weight: 700; color: var(--gold); font-size: 0.85rem;">#1</div>
-            </div>
-            <div class="trending-item">
-                <div class="trending-img"><i class="bi bi-laptop" style="color: var(--muted); font-size: 1.5rem;"></i></div>
-                <div style="flex: 1;">
-                    <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--white); margin-bottom: 2px;">Dell XPS 15 OLED</h4>
-                    <p style="font-size: 0.75rem; color: var(--muted);">Dell • 98 sold</p>
+                <div style="flex: 1; min-width: 0;">
+                    <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--white); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        {{ $product->name }}
+                    </h4>
+                    <p style="font-size: 0.75rem; color: var(--muted);">{{ number_format($product->total_sold) }} sold</p>
                 </div>
-                <div style="font-weight: 700; color: var(--muted); font-size: 0.85rem;">#2</div>
-            </div>
-            <div class="trending-item">
-                <div class="trending-img"><i class="bi bi-laptop" style="color: var(--muted); font-size: 1.5rem;"></i></div>
-                <div style="flex: 1;">
-                    <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--white); margin-bottom: 2px;">Lenovo ThinkPad X1</h4>
-                    <p style="font-size: 0.75rem; color: var(--muted);">Lenovo • 76 sold</p>
+                <div style="font-weight: 700; font-size: 0.85rem; flex-shrink: 0; color: {{ $index === 0 ? 'var(--gold)' : 'var(--muted)' }};">
+                    #{{ $index + 1 }}
                 </div>
-                <div style="font-weight: 700; color: var(--muted); font-size: 0.85rem;">#3</div>
             </div>
+            @empty
+            <div class="empty-state">
+                <i class="bi bi-bar-chart" style="font-size: 2rem; display:block; margin-bottom:8px;"></i>
+                No sales data yet.
+            </div>
+            @endforelse
         </div>
     </div>
 
@@ -214,30 +252,33 @@
 @endsection
 
 @push('scripts')
-{{-- Memuat Library Chart.js dari CDN --}}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
     Chart.defaults.color = 'rgba(255, 255, 255, 0.45)';
     Chart.defaults.font.family = "'DM Sans', sans-serif";
 
-    const ctxRev = document.getElementById('revenueChart').getContext('2d');
+    // ── REVENUE CHART ──────────────────────────────────────────────────
+    const revenueRaw  = @json($revenueData);
+    const revenueLabels = revenueRaw.map(r => r.date);
+    const revenueValues = revenueRaw.map(r => r.value);
 
+    const ctxRev = document.getElementById('revenueChart').getContext('2d');
     let gradientGold = ctxRev.createLinearGradient(0, 0, 0, 250);
-    gradientGold.addColorStop(0, 'rgba(212, 168, 67, 0.4)'); // Gold transparan
-    gradientGold.addColorStop(1, 'rgba(212, 168, 67, 0)');   // Memudar ke bawah
+    gradientGold.addColorStop(0, 'rgba(212, 168, 67, 0.4)');
+    gradientGold.addColorStop(1, 'rgba(212, 168, 67, 0)');
 
     new Chart(ctxRev, {
         type: 'line',
         data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+            labels: revenueLabels,
             datasets: [{
-                label: 'Revenue ($)',
-                data: [45000, 52000, 48000, 61000, 59000, 75000, 82000],
-                borderColor: '#d4a843', // Solid Gold
+                label: 'Revenue (Rp)',
+                data: revenueValues,
+                borderColor: '#d4a843',
                 backgroundColor: gradientGold,
                 borderWidth: 2,
-                tension: 0.4, // Membuat garis melengkung halus
+                tension: 0.4,
                 fill: true,
                 pointBackgroundColor: '#1a1a1a',
                 pointBorderColor: '#d4a843',
@@ -249,23 +290,40 @@
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ' Rp ' + ctx.parsed.y.toLocaleString('id-ID')
+                    }
+                }
+            },
             scales: {
                 x: { grid: { display: false, drawBorder: false } },
-                y: { grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false }, beginAtZero: true }
+                y: {
+                    grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false },
+                    beginAtZero: true,
+                    ticks: {
+                        callback: val => 'Rp ' + (val >= 1000000 ? (val/1000000).toFixed(1) + 'M' : val.toLocaleString('id-ID'))
+                    }
+                }
             }
         }
     });
+
+    const ordersRaw    = @json($ordersData);
+    const ordersLabels = ordersRaw.map(r => r.day);
+    const ordersValues = ordersRaw.map(r => r.value);
 
     const ctxOrd = document.getElementById('ordersChart').getContext('2d');
     new Chart(ctxOrd, {
         type: 'bar',
         data: {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            labels: ordersLabels,
             datasets: [{
                 label: 'Orders',
-                data: [45, 62, 55, 78, 112, 125, 85],
-                backgroundColor: '#d4a843', // Gold
+                data: ordersValues,
+                backgroundColor: '#d4a843',
                 borderRadius: 4,
                 barThickness: 12
             }]
@@ -276,7 +334,11 @@
             plugins: { legend: { display: false } },
             scales: {
                 x: { grid: { display: false, drawBorder: false } },
-                y: { grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false }, beginAtZero: true }
+                y: {
+                    grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false },
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
             }
         }
     });
