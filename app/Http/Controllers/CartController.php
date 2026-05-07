@@ -30,22 +30,27 @@ class CartController extends Controller
 
         $product  = Product::findOrFail($request->product_id);
         $qty      = (int) ($request->quantity ?? 1);
+        $name     = $request->name ?? $product->name;
+        $price    = $request->price ?? $product->price;
         $cart     = session()->get('cart', []);
-        $key      = (string) $product->id;
+        
+        // Generate a unique key for this product+variation
+        $key      = (string) $product->id . '_' . md5($name);
 
         if (isset($cart[$key])) {
             $cart[$key]['quantity'] = min($cart[$key]['quantity'] + $qty, 99);
         } else {
             $cart[$key] = [
                 'id'       => $product->id,
-                'name'     => $product->name,
-                'price'    => $product->price,
+                'name'     => $name,
+                'price'    => $price,
                 'image'    => $product->image,
                 'quantity' => $qty,
             ];
         }
 
         session()->put('cart', $cart);
+        session()->save(); // Ensure session is saved for AJAX
         $cartCount = collect($cart)->sum('quantity');
 
         if ($request->wantsJson()) {
@@ -71,6 +76,7 @@ class CartController extends Controller
         if (isset($cart[(string) $id])) {
             $cart[(string) $id]['quantity'] = (int) $request->quantity;
             session()->put('cart', $cart);
+            session()->save();
         }
 
         $total     = collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']);
@@ -95,6 +101,7 @@ class CartController extends Controller
         $cart = session()->get('cart', []);
         unset($cart[(string) $id]);
         session()->put('cart', $cart);
+        session()->save();
 
         $total     = collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']);
         $cartCount = collect($cart)->sum('quantity');
@@ -112,6 +119,7 @@ class CartController extends Controller
     public function clear()
     {
         session()->forget('cart');
+        session()->save();
 
         return response()->json(['success' => true, 'cartCount' => 0]);
     }
@@ -141,20 +149,28 @@ class CartController extends Controller
         $sessionCart = [];
 
         foreach ($demoCart as $index => $item) {
-            // Karena demo cart kadang tidak punya ID produk asli, kita generate ID dummy atau cari by name
-            $product = \App\Models\Product::where('name', $item['name'])->first();
+            $product = null;
+            if (isset($item['id'])) {
+                $product = \App\Models\Product::find($item['id']);
+            } elseif (isset($item['baseName'])) {
+                $product = \App\Models\Product::where('name', $item['baseName'])->first();
+            } else {
+                $product = \App\Models\Product::where('name', $item['name'])->first();
+            }
             
             if ($product) {
-                $sessionCart[(string)$product->id] = [
+                // Generate a unique key for the session cart to separate variations
+                $cartKey = $product->id . '_' . md5($item['name']);
+                $sessionCart[$cartKey] = [
                     'id'       => $product->id,
-                    'name'     => $product->name,
-                    'price'    => $product->price,
+                    'name'     => $item['name'], // Contains variation string
+                    'price'    => $item['price'] ?? $product->price,
                     'image'    => $product->image,
                     'quantity' => $item['quantity'],
                 ];
             } else {
                 // Fallback untuk dummy product
-                $dummyId = 'demo_' . $index;
+                $dummyId = 'demo_' . md5($item['name'] . $index);
                 $price = $item['price'] ?? 15000000;
                 $sessionCart[$dummyId] = [
                     'id'       => $dummyId,

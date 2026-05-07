@@ -24,7 +24,7 @@ class ProductAdminController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Product::with('category');
+        $query = Product::with(['category', 'variations', 'highlights']);
 
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
@@ -63,7 +63,7 @@ class ProductAdminController extends Controller
             $imagePath = $request->file('image')->store('products', 'public');
         }
 
-        Product::create([
+        $product = Product::create([
             'category_id' => $request->category_id,
             'name'        => $request->name,
             'slug'        => $slug,
@@ -71,7 +71,44 @@ class ProductAdminController extends Controller
             'price'       => $request->price,
             'stock'       => $request->stock,
             'image'       => $imagePath,
+            'spec_title'  => $request->spec_title,
+            'spec_description' => $request->spec_description,
         ]);
+
+        if ($request->has('highlights')) {
+            foreach ($request->highlights as $hl) {
+                if (!empty($hl['label']) && !empty($hl['title'])) {
+                    $product->highlights()->create([
+                        'label' => $hl['label'],
+                        'title' => $hl['title'],
+                        'description' => $hl['description']
+                    ]);
+                }
+            }
+        }
+
+        if ($request->has('capacities')) {
+            foreach ($request->capacities as $cap) {
+                if (!empty($cap['value']) && !empty($cap['price'])) {
+                    $product->variations()->create([
+                        'type' => 'capacity',
+                        'value' => $cap['value'],
+                        'price' => $cap['price']
+                    ]);
+                }
+            }
+        }
+
+        if ($request->has('colors')) {
+            foreach ($request->colors as $col) {
+                if (!empty($col['value'])) {
+                    $product->variations()->create([
+                        'type' => 'color',
+                        'value' => $col['value']
+                    ]);
+                }
+            }
+        }
 
         return redirect()->route('admin.products')->with('success', 'Produk "' . $request->name . '" berhasil ditambahkan!');
     }
@@ -108,7 +145,50 @@ class ProductAdminController extends Controller
             'price'       => $request->price,
             'stock'       => $request->stock,
             'image'       => $imagePath,
+            'spec_title'  => $request->spec_title,
+            'spec_description' => $request->spec_description,
         ]);
+
+        // Hapus & Simpan Highlights
+        $product->highlights()->delete();
+        if ($request->has('highlights')) {
+            foreach ($request->highlights as $hl) {
+                if (!empty($hl['label']) && !empty($hl['title'])) {
+                    $product->highlights()->create([
+                        'label' => $hl['label'],
+                        'title' => $hl['title'],
+                        'description' => $hl['description']
+                    ]);
+                }
+            }
+        }
+
+        // Hapus variasi lama
+        $product->variations()->delete();
+
+        // Simpan variasi baru
+        if ($request->has('capacities')) {
+            foreach ($request->capacities as $cap) {
+                if (!empty($cap['value']) && !empty($cap['price'])) {
+                    $product->variations()->create([
+                        'type' => 'capacity',
+                        'value' => $cap['value'],
+                        'price' => $cap['price']
+                    ]);
+                }
+            }
+        }
+
+        if ($request->has('colors')) {
+            foreach ($request->colors as $col) {
+                if (!empty($col['value'])) {
+                    $product->variations()->create([
+                        'type' => 'color',
+                        'value' => $col['value']
+                    ]);
+                }
+            }
+        }
 
         return redirect()->route('admin.products')->with('success', 'Produk berhasil diperbarui!');
     }

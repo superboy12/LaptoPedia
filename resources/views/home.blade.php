@@ -259,69 +259,78 @@
         gap: 48px;
     }
 
-    /* ===== PRODUCT CARD (High-End Minimalist) ===== */
+    /* ===== PRODUCT CARD (Elegant Apple-Style) ===== */
     .p-card {
         background: transparent;
         border: none;
-        border-radius: 0;
-        overflow: visible;
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
-        position: relative;
-        padding: 0;
         cursor: pointer;
+        transition: transform 0.3s ease;
     }
-    .p-card:hover .p-img-wrap {
-        transform: translateY(-8px);
-        box-shadow: 0 24px 60px rgba(0,0,0,0.08);
-    }
-
-
-
+    
     .p-img-wrap {
         background: var(--surface);
         border-radius: 32px;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 60px;
+        padding: 40px;
         height: 380px;
         width: 100%;
+        margin-bottom: 24px;
+        transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
         position: relative;
-        transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.5s ease;
-        margin-bottom: 32px;
     }
     .p-img-wrap img {
-        max-height: 240px;
+        max-height: 260px;
         max-width: 100%;
         object-fit: contain;
-        position: relative;
-        z-index: 2;
         transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        z-index: 2;
     }
     .p-card:hover .p-img-wrap img {
-        transform: scale(1.06) translateY(-4px);
+        transform: scale(1.04);
     }
 
-    .p-body {
-        padding: 0 20px;
+    .p-swatches {
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        flex: 1;
-        width: 100%;
+        gap: 8px;
+        justify-content: center;
+        margin-bottom: 12px;
+    }
+    .swatch {
+        width: 12px; height: 12px;
+        border-radius: 50%;
+        border: 1px solid rgba(0,0,0,0.1);
+        cursor: pointer;
+        transition: transform 0.2s, outline 0.2s;
+        outline: 1.5px solid transparent;
+        outline-offset: 2px;
+    }
+    .swatch:hover {
+        transform: scale(1.1);
+    }
+    .swatch.active {
+        outline-color: var(--text-muted);
+    }
+    
+    .p-badge {
+        font-size: 0.7rem;
+        color: #d97706;
+        font-weight: 700;
+        margin-bottom: 6px;
     }
 
     .p-name {
         font-family: 'Manrope', sans-serif;
-        font-size: 1.8rem;
-        font-weight: 800;
+        font-size: 1.6rem;
+        font-weight: 700;
         color: var(--text);
-        letter-spacing: -0.04em;
-        margin-bottom: 12px;
-        transition: color 0.4s ease;
+        letter-spacing: -0.03em;
+        margin-bottom: 8px;
     }
 
     .section-h2 {
@@ -334,73 +343,53 @@
         transition: color 0.4s ease;
     }
 
-    .p-stars {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 4px;
-        margin-bottom: 16px;
-    }
-    .p-stars i { font-size: 0.8rem; color: var(--gold); }
-    .p-stars span { font-size: 0.85rem; color: var(--text-muted); margin-left: 6px; }
-
-    .p-spec {
-        font-size: 0.95rem;
-        color: var(--text-muted);
-        line-height: 1.6;
-        font-weight: 400;
-        flex: 1;
-        max-width: 85%;
-        margin-bottom: 32px;
-        transition: color 0.4s ease;
-    }
-
-    .p-footer {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 16px;
-        padding-top: 0;
-        border-top: none;
-        width: 100%;
-    }
-
-    .p-price {
-        font-family: 'Manrope', sans-serif;
-        font-size: 1.25rem;
-        font-weight: 800;
-        color: var(--text);
-        letter-spacing: -0.03em;
-        transition: color 0.4s ease;
-    }
-    .p-price small {
-        display: none; /* Removed for cleaner look */
-    }
-
-    .btn-cart {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        background: var(--text);
-        color: var(--bg);
-        border: none;
-        font-family: 'Manrope', sans-serif;
+    .p-desc {
         font-size: 0.9rem;
-        font-weight: 800;
-        padding: 14px 32px;
+        color: var(--text-muted);
+        line-height: 1.5;
+        max-width: 85%;
+        margin: 0 auto 24px;
+    }
+
+    .p-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        justify-content: center;
+    }
+    
+    .btn-selengkapnya {
+        background: #0071e3;
+        color: #fff;
+        padding: 8px 18px;
         border-radius: 100px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.2s, transform 0.2s;
+    }
+    .btn-selengkapnya:hover {
+        background: #0077ED;
+        color: #fff;
+        transform: scale(1.02);
+    }
+
+    .btn-beli {
+        color: #0071e3;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: none;
+        border: none;
         cursor: pointer;
-        transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
-        white-space: nowrap;
+        padding: 0;
     }
-    .btn-cart:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-        opacity: 0.9;
+    .btn-beli:hover {
+        text-decoration: underline;
     }
-    .btn-cart:disabled { cursor: not-allowed; }
 
     /* Responsive */
     @media (max-width: 1100px) {
@@ -505,23 +494,27 @@
                     <i class="bi bi-laptop" style="font-size:5rem;color:var(--text-muted);opacity:0.25;"></i>
                 @endif
             </div>
-            <div class="p-body">
-                <div class="p-name">{{ $product->name }}</div>
-                <div class="p-stars">
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-half"></i>
-                    <span>(4.8)</span>
-                </div>
-                <div class="p-spec">{{ Str::limit($product->description, 70) }}</div>
-                <div class="p-footer">
-                    <div class="p-price">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
-                    <a href="{{ route('product.detail', $product->slug) }}"
-                       class="btn-cart" onclick="event.stopPropagation();"
-                       style="text-decoration:none;">
-                        <i class="bi bi-arrow-right"></i> Lihat Detail
-                    </a>
-                </div>
+            
+            <div class="p-swatches">
+                <div class="swatch active" style="background:#5e5e60;" onclick="selectColor(this, event)"></div>
+                <div class="swatch" style="background:#e3e4e5;" onclick="selectColor(this, event)"></div>
+                <div class="swatch" style="background:#fce0d8;" onclick="selectColor(this, event)"></div>
+            </div>
+            
+            @if($loop->first)
+            <div class="p-badge">Baru</div>
+            @endif
+
+            <div class="p-name">{{ $product->name }}</div>
+            <div class="p-desc">{{ Str::limit($product->description, 50) }}</div>
+
+            <div class="p-actions">
+                <a href="{{ route('product.detail', $product->slug) }}" class="btn-selengkapnya" onclick="event.stopPropagation();">
+                    Selengkapnya
+                </a>
+                <button class="btn-beli" onclick="event.stopPropagation(); addToCart(this, {{ $product->id }});">
+                    Beli <i class="bi bi-bag-plus" style="font-size:0.9rem;"></i>
+                </button>
             </div>
         </div>
         @empty
@@ -530,13 +523,8 @@
             <div class="p-img-wrap">
                 <i class="bi bi-laptop" style="font-size:5rem;color:var(--text-muted);opacity:0.2;"></i>
             </div>
-            <div class="p-body">
-                <div class="p-name">Belum Ada Produk</div>
-                <div class="p-spec">Admin belum menambahkan produk. Silakan login sebagai admin untuk menambahkan produk.</div>
-                <div class="p-footer">
-                    <div class="p-price">—</div>
-                </div>
-            </div>
+            <div class="p-name">Belum Ada Produk</div>
+            <div class="p-desc">Admin belum menambahkan produk. Silakan login sebagai admin untuk menambahkan produk.</div>
         </div>
         @endforelse
     </div>
@@ -544,56 +532,58 @@
 
 @push('scripts')
 <script>
-// ADD TO CART FUNCTION (TANPA POPUP ALERT)
-function addToCart(button) {
-    // Ambil data produk dari card
-    const card = button.closest('.p-card');
-    const productName = card.querySelector('.p-name').innerText;
-    
-    // Ubah tampilan tombol
+// SWATCH COLOR SELECTION
+function selectColor(element, event) {
+    event.stopPropagation();
+    const swatches = element.parentElement.querySelectorAll('.swatch');
+    swatches.forEach(s => s.classList.remove('active'));
+    element.classList.add('active');
+}
+
+// ADD TO CART FUNCTION DENGAN AJAX (SESSION)
+async function addToCart(button, productId) {
     const originalText = button.innerHTML;
-    button.innerHTML = '<i class="bi bi-check-lg"></i> Ditambahkan!';
+    button.innerHTML = '<i class="bi bi-hourglass-split"></i>...';
     button.disabled = true;
-    button.style.background = '#10b981';
-    button.style.borderColor = '#10b981';
-    
-    // Ambil cart dari localStorage
-    let cart = JSON.parse(localStorage.getItem('my_cart') || '[]');
-    
-    // Cek apakah produk sudah ada
-    let existing = cart.find(item => item.name === productName);
-    
-    if (existing) {
-        existing.quantity += 1;
-    } else {
-        cart.push({
-            name: productName,
-            quantity: 1
+
+    try {
+        const res = await fetch('/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                quantity: 1
+            })
         });
+        const data = await res.json();
+        
+        if (data.success) {
+            button.innerHTML = '<i class="bi bi-check-lg"></i>';
+            button.style.background = '#10b981';
+            button.style.borderColor = '#10b981';
+            button.style.color = '#fff';
+            
+            // Update badge cart menggunakan fungsi global di app.blade.php
+            if (typeof refreshCartCount === 'function') {
+                refreshCartCount(data.cartCount);
+            }
+        }
+    } catch(e) {
+        console.error(e);
+        button.innerHTML = '<i class="bi bi-exclamation-triangle"></i>';
     }
     
-    // Simpan ke localStorage
-    localStorage.setItem('my_cart', JSON.stringify(cart));
-    
-    // Update badge cart
-    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    const cartBadge = document.getElementById('cartCount');
-    if (cartBadge) {
-        cartBadge.textContent = totalItems;
-        cartBadge.style.transform = 'scale(1.2)';
-        setTimeout(() => cartBadge.style.transform = '', 200);
-    }
-    
-    // HAPUS ALERT! (udah gak pake popup)
-    // alert(productName + ' added to cart!');
-    
-    // Reset tombol setelah 1 detik
     setTimeout(() => {
         button.innerHTML = originalText;
         button.disabled = false;
         button.style.background = '';
         button.style.borderColor = '';
-    }, 1000);
+        button.style.color = '';
+    }, 1500);
 }
 
 // 3D Tilt Effect on Laptop Image (Removed for cinematic layout)

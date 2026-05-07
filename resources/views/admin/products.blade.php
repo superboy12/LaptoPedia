@@ -253,7 +253,11 @@
                     {{ json_encode($product->description) }},
                     {{ $product->price }},
                     {{ $product->stock }},
-                    {{ json_encode($product->image ? asset("storage/" . $product->image) : null) }}
+                    {{ json_encode($product->image ? asset("storage/" . $product->image) : null) }},
+                    {{ json_encode($product->variations) }},
+                    {{ json_encode($product->spec_title) }},
+                    {{ json_encode($product->spec_description) }},
+                    {{ json_encode($product->highlights) }}
                 )'>
                     <i class="bi bi-pencil"></i> Edit
                 </button>
@@ -344,6 +348,58 @@
                 <textarea name="description" class="f-textarea" placeholder="M3 Pro chip · 18GB RAM · 512GB SSD · Liquid Retina XDR..." required></textarea>
             </div>
 
+            <!-- Spec Highlights Section -->
+            <div style="margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid var(--border);">
+                <h4 style="margin-bottom: 15px; font-family: 'Manrope', sans-serif; font-size: 0.95rem; color: var(--gold); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+                    <i class="bi bi-star-fill"></i> Spec Highlights (Max 4)
+                </h4>
+                <div class="f-row" style="margin-bottom: 12px;">
+                    <div class="f-group">
+                        <label class="f-label">Judul Highlight Section</label>
+                        <input type="text" name="spec_title" class="f-input" placeholder="cth: Mendobrak Batas.">
+                    </div>
+                </div>
+                <div class="f-group" style="margin-bottom: 15px;">
+                    <label class="f-label">Deskripsi Highlight Section</label>
+                    <textarea name="spec_description" class="f-textarea" style="height: 60px;" placeholder="Arsitektur kustom yang mengoptimalkan..."></textarea>
+                </div>
+
+                <div id="addHighlightsList">
+                    @for($i=0; $i<4; $i++)
+                    <div style="padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div class="f-row" style="margin-bottom: 8px;">
+                            <input type="text" name="highlights[{{$i}}][label]" class="f-input" placeholder="Label (cth: PROCESSOR)">
+                            <input type="text" name="highlights[{{$i}}][title]" class="f-input" placeholder="Title (cth: Pro-Class)">
+                        </div>
+                        <input type="text" name="highlights[{{$i}}][description]" class="f-input" placeholder="Deskripsi Singkat">
+                    </div>
+                    @endfor
+                </div>
+            </div>
+
+            <!-- Variasi Kapasitas -->
+            <div class="f-group">
+                <label class="f-label">Kapasitas & Harga Spesifik <span style="color:var(--muted);font-weight:400;">(Opsional)</span></label>
+                <div id="addCapacitiesList">
+                    <div class="f-row" style="margin-bottom:8px;">
+                        <input type="text" name="capacities[0][value]" class="f-input" placeholder="cth: 256GB | 12GB">
+                        <input type="number" name="capacities[0][price]" class="f-input" placeholder="Harga Total (Rp)" min="0">
+                    </div>
+                </div>
+                <button type="button" onclick="addCapacityRow('addCapacitiesList')" style="background:none;border:none;color:var(--gold);font-size:0.8rem;cursor:pointer;padding:0;margin-top:4px;">+ Tambah Kapasitas</button>
+            </div>
+
+            <!-- Variasi Warna -->
+            <div class="f-group">
+                <label class="f-label">Warna <span style="color:var(--muted);font-weight:400;">(Opsional)</span></label>
+                <div id="addColorsList">
+                    <div style="display:flex;gap:14px;margin-bottom:8px;">
+                        <input type="text" name="colors[0][value]" class="f-input" placeholder="cth: Space Gray" style="flex:1;">
+                    </div>
+                </div>
+                <button type="button" onclick="addColorRow('addColorsList')" style="background:none;border:none;color:var(--gold);font-size:0.8rem;cursor:pointer;padding:0;margin-top:4px;">+ Tambah Warna</button>
+            </div>
+
             <div class="f-group">
                 <label class="f-label">Gambar Produk</label>
                 <div class="img-upload-zone" id="addUploadZone" onclick="document.getElementById('addImageInput').click()">
@@ -407,7 +463,50 @@
 
             <div class="f-group">
                 <label class="f-label">Deskripsi / Spesifikasi <span>*</span></label>
-                <textarea name="description" id="editDesc" class="f-textarea" required></textarea>
+                <textarea name="description" id="editDescription" class="f-textarea" required></textarea>
+            </div>
+
+            <!-- Spec Highlights Section -->
+            <div style="margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid var(--border);">
+                <h4 style="margin-bottom: 15px; font-family: 'Manrope', sans-serif; font-size: 0.95rem; color: var(--gold); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+                    <i class="bi bi-star-fill"></i> Spec Highlights (Max 4)
+                </h4>
+                <div class="f-row" style="margin-bottom: 12px;">
+                    <div class="f-group">
+                        <label class="f-label">Judul Highlight Section</label>
+                        <input type="text" name="spec_title" id="editSpecTitle" class="f-input" placeholder="cth: Mendobrak Batas.">
+                    </div>
+                </div>
+                <div class="f-group" style="margin-bottom: 15px;">
+                    <label class="f-label">Deskripsi Highlight Section</label>
+                    <textarea name="spec_description" id="editSpecDescription" class="f-textarea" style="height: 60px;" placeholder="Arsitektur kustom yang mengoptimalkan..."></textarea>
+                </div>
+
+                <div id="editHighlightsList">
+                    @for($i=0; $i<4; $i++)
+                    <div style="padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div class="f-row" style="margin-bottom: 8px;">
+                            <input type="text" name="highlights[{{$i}}][label]" id="editHlLabel{{$i}}" class="f-input" placeholder="Label (cth: PROCESSOR)">
+                            <input type="text" name="highlights[{{$i}}][title]" id="editHlTitle{{$i}}" class="f-input" placeholder="Title (cth: Pro-Class)">
+                        </div>
+                        <input type="text" name="highlights[{{$i}}][description]" id="editHlDesc{{$i}}" class="f-input" placeholder="Deskripsi Singkat">
+                    </div>
+                    @endfor
+                </div>
+            </div>
+
+            <!-- Variasi Kapasitas -->
+            <div class="f-group">
+                <label class="f-label">Kapasitas & Harga Spesifik <span style="color:var(--muted);font-weight:400;">(Opsional)</span></label>
+                <div id="editCapacitiesList"></div>
+                <button type="button" onclick="addCapacityRow('editCapacitiesList')" style="background:none;border:none;color:var(--gold);font-size:0.8rem;cursor:pointer;padding:0;margin-top:4px;">+ Tambah Kapasitas</button>
+            </div>
+
+            <!-- Variasi Warna -->
+            <div class="f-group">
+                <label class="f-label">Warna <span style="color:var(--muted);font-weight:400;">(Opsional)</span></label>
+                <div id="editColorsList"></div>
+                <button type="button" onclick="addColorRow('editColorsList')" style="background:none;border:none;color:var(--gold);font-size:0.8rem;cursor:pointer;padding:0;margin-top:4px;">+ Tambah Warna</button>
             </div>
 
             <div class="f-group">
@@ -462,17 +561,39 @@ function previewImg(input, previewId, zoneId) {
 }
 
 // Buka modal edit dengan data produk
-function openEdit(id, catId, name, desc, price, stock, imgUrl) {
-    document.getElementById('editForm').action = `/admin/products/${id}`;
-    document.getElementById('editName').value      = name;
-    document.getElementById('editDesc').value      = desc;
-    document.getElementById('editPrice').value     = price;
-    document.getElementById('editStock').value     = stock;
-    document.getElementById('editCategory').value  = catId;
+    function openEdit(id, category_id, name, description, price, stock, image, variations, spec_title, spec_description, highlights) {
+        const form = document.getElementById('editForm');
+        form.action = `/admin/products/${id}`;
+
+        document.getElementById('editName').value = name;
+        document.getElementById('editCategory').value = category_id;
+        document.getElementById('editPrice').value = price;
+        document.getElementById('editStock').value = stock;
+        document.getElementById('editDescription').value = description;
+        document.getElementById('editSpecTitle').value = spec_title || '';
+        document.getElementById('editSpecDescription').value = spec_description || '';
+
+        // Reset highlights
+        for(let i=0; i<4; i++) {
+            document.getElementById(`editHlLabel${i}`).value = '';
+            document.getElementById(`editHlTitle${i}`).value = '';
+            document.getElementById(`editHlDesc${i}`).value = '';
+        }
+
+        // Fill highlights
+        if (highlights && highlights.length > 0) {
+            highlights.forEach((hl, i) => {
+                if (i < 4) {
+                    document.getElementById(`editHlLabel${i}`).value = hl.label;
+                    document.getElementById(`editHlTitle${i}`).value = hl.title;
+                    document.getElementById(`editHlDesc${i}`).value = hl.description || '';
+                }
+            });
+        }
 
     const prevImg = document.getElementById('editImgPreview');
-    if (imgUrl) {
-        prevImg.src = imgUrl;
+    if (image) {
+        prevImg.src = image;
         prevImg.style.display = 'block';
     } else {
         prevImg.style.display = 'none';
@@ -484,7 +605,73 @@ function openEdit(id, catId, name, desc, price, stock, imgUrl) {
     uploadPrev.style.display = 'none';
     document.getElementById('editUploadZone').classList.remove('has-file');
 
+    // Populate Variations
+    const editCapList = document.getElementById('editCapacitiesList');
+    editCapList.innerHTML = '';
+    const editColList = document.getElementById('editColorsList');
+    editColList.innerHTML = '';
+
+    if (variations && variations.length > 0) {
+        variations.forEach(v => {
+            if (v.type === 'capacity') {
+                const div = document.createElement('div');
+                div.className = 'f-row';
+                div.style.marginBottom = '8px';
+                div.style.position = 'relative';
+                div.innerHTML = `
+                    <input type="text" name="capacities[${capIndex}][value]" class="f-input" value="${v.value}">
+                    <input type="number" name="capacities[${capIndex}][price]" class="f-input" value="${v.price}">
+                    <button type="button" onclick="this.parentElement.remove()" style="position:absolute;right:-30px;top:10px;background:none;border:none;color:#ef4444;cursor:pointer;"><i class="bi bi-trash"></i></button>
+                `;
+                editCapList.appendChild(div);
+                capIndex++;
+            } else if (v.type === 'color') {
+                const div = document.createElement('div');
+                div.style.display = 'flex';
+                div.style.gap = '14px';
+                div.style.marginBottom = '8px';
+                div.innerHTML = `
+                    <input type="text" name="colors[${colIndex}][value]" class="f-input" value="${v.value}" style="flex:1;">
+                    <button type="button" onclick="this.parentElement.remove()" style="background:none;border:none;color:#ef4444;cursor:pointer;"><i class="bi bi-trash"></i></button>
+                `;
+                editColList.appendChild(div);
+                colIndex++;
+            }
+        });
+    }
+
     openModal('editModal');
+}
+
+let capIndex = 100;
+function addCapacityRow(listId) {
+    const list = document.getElementById(listId);
+    const div = document.createElement('div');
+    div.className = 'f-row';
+    div.style.marginBottom = '8px';
+    div.style.position = 'relative';
+    div.innerHTML = `
+        <input type="text" name="capacities[${capIndex}][value]" class="f-input" placeholder="cth: 256GB | 12GB">
+        <input type="number" name="capacities[${capIndex}][price]" class="f-input" placeholder="Harga Total (Rp)" min="0">
+        <button type="button" onclick="this.parentElement.remove()" style="position:absolute;right:-30px;top:10px;background:none;border:none;color:#ef4444;cursor:pointer;"><i class="bi bi-trash"></i></button>
+    `;
+    list.appendChild(div);
+    capIndex++;
+}
+
+let colIndex = 100;
+function addColorRow(listId) {
+    const list = document.getElementById(listId);
+    const div = document.createElement('div');
+    div.style.display = 'flex';
+    div.style.gap = '14px';
+    div.style.marginBottom = '8px';
+    div.innerHTML = `
+        <input type="text" name="colors[${colIndex}][value]" class="f-input" placeholder="cth: Warna" style="flex:1;">
+        <button type="button" onclick="this.parentElement.remove()" style="background:none;border:none;color:#ef4444;cursor:pointer;"><i class="bi bi-trash"></i></button>
+    `;
+    list.appendChild(div);
+    colIndex++;
 }
 
 // ESC untuk close modal

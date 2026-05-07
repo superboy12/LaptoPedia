@@ -383,10 +383,15 @@
     </div>
 
     {{-- Keranjang — link ke halaman cart --}}
-    <a href="{{ url('/cart-demo') }}" class="nav-icon">
-    <i class="bi bi-bag"></i>
-    <span class="cart-dot" id="cartCount">0</span>
-</a>
+    @php
+        $cartCount = collect(session('cart', []))->sum('quantity');
+    @endphp
+    <a href="{{ route('cart.index') }}" class="nav-icon">
+        <i class="bi bi-bag"></i>
+        <span class="cart-dot" id="cartCount" style="{{ $cartCount > 0 ? '' : 'display:none;' }}">
+            {{ $cartCount }}
+        </span>
+    </a>
 
     {{-- User menu: tampil berbeda tergantung status login --}}
     @auth
@@ -426,6 +431,13 @@
                         padding:2px 7px;border-radius:4px;
                     ">{{ Auth::user()->role }}</span>
                 </div>
+
+                @if(Auth::user()->role === 'admin')
+                <a href="{{ route('admin.dashboard') }}" class="user-dd-link" style="color:var(--gold); font-weight: 700;">
+                    <i class="bi bi-speedometer2"></i> Dashboard Admin
+                </a>
+                <div style="height:1px;background:var(--border);margin:4px 0;"></div>
+                @endif
 
                 <a href="{{ route('profile') }}" class="user-dd-link">
                     <i class="bi bi-person"></i> Profil Saya
@@ -816,10 +828,7 @@ function updateThemeIcon(theme) {
 </div>
 
 <script>
-const GEMINI_KEY = 'AIzaSyDMOYwwumj2zXHXm1p0NJoLQzD8Va09ui0';
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_KEY}`;
 let csHistory = [];
-const SYSTEM_PROMPT = `Kamu adalah asisten CS LaptoPedia, toko laptop online Indonesia. Jawab singkat 2-3 kalimat dalam Bahasa Indonesia. Bantu soal laptop, rekomendasi, spesifikasi, pembelian, pengiriman, dan garansi. Ramah dan to the point.`;
 
 // Chat state
 let chatIsOpen    = false;
@@ -911,23 +920,27 @@ function addAdminMsg(text, id, createdAt) {
 }
 
 function escapeHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// ── Save message to DB ────────────────────────────────
-async function saveMsgToDB(userMsg, aiReply) {
-    if (!IS_AUTH) return;
+// ── Save message to DB and get AI Reply ─────────────────
+async function saveMsgToDBAndGetReply(userMsg) {
+    if (!IS_AUTH) return null;
     try {
-        await fetch('/chat/send', {
+        const res = await fetch('/chat/send', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': CS_CSRF,
                 'Accept': 'application/json'
             },
-            body: JSON.stringify({ message: userMsg, ai_reply: aiReply || '' })
+            body: JSON.stringify({ message: userMsg, history: csHistory })
         });
-    } catch(e) {}
+        const data = await res.json();
+        return data.reply;
+    } catch(e) {
+        return null;
+    }
 }
 
 // ── Main send function (AI + save to DB) ─────────────
@@ -940,42 +953,32 @@ async function sendCsMessage() {
     addMsg(escapeHtml(text), 'user');
     input.value = '';
     btn.disabled = true;
-    csHistory.push({ role: 'user', parts: [{ text }] });
 
     const typing = addMsg('⋯ Mengetik...', 'typing');
 
-    let aiReply = '';
-    try {
-        const res  = await fetch(GEMINI_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-                contents: csHistory
-            })
-        });
-        const data = await res.json();
-        typing.remove();
+    const reply = await saveMsgToDBAndGetReply(text);
+    
+    typing.remove();
 
-        const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (reply) {
-            const fmt = reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
-            addMsg(fmt, 'bot');
-            csHistory.push({ role: 'model', parts: [{ text: reply }] });
-            aiReply = reply;
-        } else {
-            addMsg('Maaf, coba tanyakan lagi ya. 🙏', 'bot');
-        }
-    } catch(e) {
-        typing.remove();
-        addMsg('Koneksi bermasalah, coba lagi. 🔌', 'bot');
+    if (reply) {
+        addMsg(reply, 'bot');
+        csHistory.push({ role: 'user', parts: [{ text }] });
+        csHistory.push({ role: 'model', parts: [{ text: reply }] });
+    } else {
+        addMsg('Maaf, koneksi ke asisten AI terputus. 🙏', 'bot');
     }
-
-    // Simpan ke DB (user msg + AI reply)
-    saveMsgToDB(text, aiReply);
 
     btn.disabled = false;
     input.focus();
+}
+
+// ── Cart Helpers ────────────────────────────────────────
+function refreshCartCount(count) {
+    const el = document.getElementById('cartCount');
+    if (el) {
+        el.textContent = count;
+        el.style.display = count > 0 ? 'flex' : 'none';
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

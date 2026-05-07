@@ -12,440 +12,289 @@
         transition: background 0.4s ease;
     }
 
-    /* ---- Page Header — Cinematic Banner ---- */
+    /* ---- Page Header — Clean & Elegant ---- */
     .cart-header {
-        background: var(--bg-2);
-        border-bottom: 1px solid var(--border);
-        padding: 72px 48px 52px;
+        background: var(--bg);
+        padding: 100px 48px 60px;
         position: relative;
-        overflow: hidden;
-        transition: background 0.4s ease;
+        text-align: center;
     }
-    .cart-header::before {
-        content: '';
-        position: absolute; inset: 0;
-        background-image: radial-gradient(circle, rgba(212,168,67,0.04) 1px, transparent 1px);
-        background-size: 32px 32px;
-        pointer-events: none;
-    }
-
-    .cart-header .orb-blue {
-        position: absolute;
-        width: 600px; height: 600px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(0,113,227,0.10) 0%, transparent 65%);
-        top: -300px; right: -80px;
-        filter: blur(90px);
-        pointer-events: none;
-        animation: drift-orb 8s ease-in-out infinite alternate;
-    }
-    .cart-header .orb-gold {
-        position: absolute;
-        width: 340px; height: 340px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(212,168,67,0.08) 0%, transparent 65%);
-        bottom: -160px; left: -60px;
-        filter: blur(70px);
-        pointer-events: none;
-        animation: drift-orb 10s ease-in-out infinite alternate-reverse;
-    }
-    @keyframes drift-orb {
-        from { transform: translate(0, 0) scale(1); }
-        to   { transform: translate(30px, -20px) scale(1.06); }
-    }
-
     .cart-header-inner {
-        max-width: 1280px;
+        max-width: 800px;
         margin: 0 auto;
         position: relative;
         z-index: 2;
     }
-
     .cart-header h1 {
         font-family: 'Manrope', sans-serif;
-        font-size: clamp(2.2rem, 4.5vw, 3.6rem);
-        font-weight: 900;
-        letter-spacing: -0.05em;
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 800;
+        letter-spacing: -0.04em;
         color: var(--text);
-        line-height: 1;
-        margin-bottom: 12px;
-        transition: color 0.4s ease;
+        margin-bottom: 16px;
     }
-    .cart-header h1 .gradient-word {
-        background: linear-gradient(135deg, #f0d080 0%, #d4a843 40%, #a0721a 100%);
+    .cart-header h1 span {
+        background: linear-gradient(to right, #f0d080, #d4a843);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        background-clip: text;
     }
-
     .cart-header p {
-        font-size: 0.92rem;
+        font-size: 1rem;
         color: var(--text-muted);
-        font-weight: 300;
-        line-height: 1.6;
-        max-width: 420px;
-        transition: color 0.4s ease;
-    }
-
-    .cart-count-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: var(--gold-dim);
-        border: 1px solid rgba(212,168,67,0.25);
-        color: var(--gold);
-        font-family: 'Manrope', sans-serif;
-        font-size: 0.72rem;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        padding: 5px 14px;
-        border-radius: 100px;
-        margin-top: 18px;
+        font-weight: 400;
+        letter-spacing: 0.01em;
+        opacity: 0.8;
     }
 
     /* ---- Main Layout ---- */
     .cart-body {
-        max-width: 1280px;
+        max-width: 1200px;
         margin: 0 auto;
-        padding: 48px 48px 96px;
+        padding: 0 48px 120px;
         display: grid;
-        grid-template-columns: 1fr 360px;
-        gap: 32px;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 60px;
         align-items: start;
     }
 
     /* ---- Cart Items Column ---- */
-    .cart-items-col { display: flex; flex-direction: column; gap: 0; }
-
-    .cart-items-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 20px;
-    }
-
     .cart-items-title {
         font-family: 'Manrope', sans-serif;
-        font-size: 0.75rem;
+        font-size: 0.85rem;
         font-weight: 700;
-        letter-spacing: 0.1em;
+        letter-spacing: 0.05em;
         text-transform: uppercase;
         color: var(--text-muted);
+        margin-bottom: 24px;
+        display: block;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 12px;
     }
 
-    .btn-clear-all {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        background: none;
-        border: 1px solid rgba(248,113,113,0.2);
-        color: #f87171;
-        font-family: 'DM Sans', sans-serif;
-        font-size: 0.75rem;
-        font-weight: 600;
-        padding: 6px 14px;
-        border-radius: 100px;
-        cursor: pointer;
-        transition: background 0.2s, border-color 0.2s;
-    }
-    .btn-clear-all:hover {
-        background: rgba(248,113,113,0.08);
-        border-color: rgba(248,113,113,0.4);
-    }
-
-    /* Cart Item Card — Premium Glassmorphic */
     .cart-item {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 24px;
         display: grid;
-        grid-template-columns: 140px 1fr auto;
-        gap: 28px;
+        grid-template-columns: 120px 1fr auto;
+        gap: 32px;
         align-items: center;
-        padding: 24px;
-        margin-bottom: 16px;
-        transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+        padding: 32px 0;
+        border-bottom: 1px solid var(--border);
+        transition: transform 0.3s ease;
     }
     .cart-item:hover {
-        border-color: var(--border-hover);
-        box-shadow: 0 24px 64px rgba(0,0,0,0.08);
-        transform: translateY(-4px);
+        transform: translateX(8px);
     }
 
     .cart-item-img {
         background: var(--surface-2);
-        border-radius: 16px;
+        border-radius: 12px;
+        height: 120px;
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 120px;
+        padding: 15px;
         overflow: hidden;
-        transition: background 0.4s ease;
-        padding: 10px;
     }
     .cart-item-img img {
-        max-height: 90px;
+        max-height: 100%;
         max-width: 100%;
         object-fit: contain;
-        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .cart-item:hover .cart-item-img img {
-        transform: scale(1.1) translateY(-3px);
+        filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));
     }
 
-    .cart-item-info { display: flex; flex-direction: column; gap: 4px; }
-
+    .cart-item-info { display: flex; flex-direction: column; gap: 6px; }
     .cart-item-name {
         font-family: 'Manrope', sans-serif;
-        font-size: 0.97rem;
+        font-size: 1.15rem;
         font-weight: 700;
         color: var(--text);
-        letter-spacing: -0.02em;
-        transition: color 0.4s ease;
     }
-
     .cart-item-unit-price {
-        font-size: 0.78rem;
+        font-size: 0.85rem;
         color: var(--text-muted);
-        font-weight: 300;
-        margin-top: 2px;
     }
-
     .cart-item-subtotal {
         font-family: 'Manrope', sans-serif;
-        font-size: 1.05rem;
+        font-size: 1.1rem;
         font-weight: 800;
-        color: var(--text);
-        letter-spacing: -0.03em;
-        margin-top: 8px;
-        transition: color 0.4s ease;
+        color: var(--gold);
+        margin-top: 10px;
     }
 
-    /* Quantity stepper */
+    /* Quantity stepper - Minimalist */
     .qty-stepper {
         display: inline-flex;
         align-items: center;
-        background: var(--surface-2);
         border: 1px solid var(--border);
-        border-radius: 100px;
-        overflow: hidden;
-        margin-top: 12px;
+        border-radius: 8px;
+        margin-top: 15px;
+        width: fit-content;
     }
     .qty-btn {
         background: none;
         border: none;
-        color: var(--text-muted);
-        font-size: 0.9rem;
-        padding: 6px 13px;
+        color: var(--text);
+        padding: 8px 14px;
         cursor: pointer;
-        transition: color 0.2s, background 0.2s;
-        font-family: 'Manrope', sans-serif;
-        font-weight: 600;
-        line-height: 1;
+        font-size: 1rem;
+        transition: background 0.2s;
     }
-    .qty-btn:hover {
-        color: var(--text);
-        background: var(--search-bg);
-    }
+    .qty-btn:hover { background: var(--surface-2); }
     .qty-val {
-        font-family: 'Manrope', sans-serif;
-        font-size: 0.85rem;
+        padding: 0 10px;
         font-weight: 700;
-        color: var(--text);
-        min-width: 28px;
+        font-size: 0.9rem;
+        min-width: 30px;
         text-align: center;
     }
 
-    /* Right side: remove button */
-    .cart-item-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
-
     .btn-remove {
         background: none;
-        border: 1px solid var(--border);
+        border: none;
         color: var(--text-muted);
-        font-size: 0.95rem;
-        width: 34px; height: 34px;
-        border-radius: 9px;
+        font-size: 1.2rem;
         cursor: pointer;
-        display: flex; align-items: center; justify-content: center;
-        transition: border-color 0.2s, color 0.2s, background 0.2s;
+        transition: color 0.2s;
     }
-    .btn-remove:hover {
-        border-color: rgba(248,113,113,0.4);
-        color: #f87171;
-        background: rgba(248,113,113,0.07);
-    }
+    .btn-remove:hover { color: #f87171; }
 
-    /* ---- Order Summary Column ---- */
+    /* ---- Summary Sidebar - Glassmorphism ---- */
     .cart-summary {
         background: var(--surface);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         border: 1px solid var(--border);
-        border-radius: 24px;
-        padding: 32px;
+        border-radius: 32px;
+        padding: 40px;
         position: sticky;
-        top: 72px;
-        box-shadow: 0 16px 48px rgba(0,0,0,0.04);
-        transition: background 0.4s ease, border-color 0.4s ease;
+        top: 100px;
     }
-
     .summary-title {
         font-family: 'Manrope', sans-serif;
-        font-size: 0.75rem;
-        font-weight: 700;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: var(--text-muted);
-        margin-bottom: 22px;
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: var(--text);
+        margin-bottom: 30px;
     }
-
     .summary-row {
         display: flex;
-        align-items: center;
         justify-content: space-between;
-        font-size: 0.86rem;
+        margin-bottom: 18px;
+        font-size: 0.95rem;
         color: var(--text-muted);
-        padding: 10px 0;
-        border-bottom: 1px solid var(--border);
     }
-    .summary-row:last-of-type { border-bottom: none; }
     .summary-row span:last-child { color: var(--text); font-weight: 600; }
 
     .summary-divider {
         height: 1px;
         background: var(--border);
-        margin: 16px 0;
+        margin: 25px 0;
     }
 
     .summary-total-row {
         display: flex;
-        align-items: center;
         justify-content: space-between;
-        padding: 4px 0 20px;
+        align-items: baseline;
+        margin-bottom: 35px;
     }
-    .summary-total-label {
-        font-family: 'Manrope', sans-serif;
-        font-size: 0.9rem;
-        font-weight: 700;
-        color: var(--text);
-    }
+    .summary-total-label { font-weight: 700; color: var(--text); }
     .summary-total-price {
         font-family: 'Manrope', sans-serif;
-        font-size: 1.5rem;
+        font-size: 1.8rem;
         font-weight: 900;
         color: var(--text);
-        letter-spacing: -0.04em;
     }
 
-    /* Promo input */
     .promo-wrap {
         display: flex;
         gap: 10px;
-        margin-bottom: 24px;
+        margin-bottom: 25px;
     }
     .promo-input {
         flex: 1;
         background: var(--bg);
         border: 1px solid var(--border);
         border-radius: 12px;
+        padding: 12px 18px;
         color: var(--text);
-        font-family: 'DM Sans', sans-serif;
-        font-size: 0.85rem;
-        padding: 12px 16px;
-        outline: none;
-        transition: border-color 0.3s ease, background 0.3s ease;
+        font-size: 0.9rem;
     }
-    .promo-input::placeholder { color: var(--text-muted); }
-    .promo-input:focus { border-color: var(--gold); background: var(--surface); }
     .btn-apply-promo {
-        background: var(--gold-dim);
-        border: 1px solid rgba(212,168,67,0.3);
+        background: none;
+        border: 1px solid var(--gold);
         color: var(--gold);
-        font-family: 'Manrope', sans-serif;
-        font-size: 0.82rem;
-        font-weight: 700;
-        padding: 12px 20px;
+        padding: 0 20px;
         border-radius: 12px;
+        font-weight: 700;
         cursor: pointer;
-        transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
-        white-space: nowrap;
+        transition: all 0.3s;
     }
     .btn-apply-promo:hover {
-        background: rgba(212,168,67,0.15);
-        border-color: var(--gold);
-        transform: translateY(-1px);
+        background: var(--gold);
+        color: #000;
     }
 
-    /* Checkout button — matches .btn-white from hero */
     .btn-checkout {
+        background: linear-gradient(135deg, #f0d080, #d4a843);
+        color: #000;
+        width: 100%;
+        padding: 18px;
+        border-radius: 100px;
+        border: none;
+        font-family: 'Manrope', sans-serif;
+        font-weight: 800;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
-        width: 100%;
-        background: linear-gradient(135deg, #d4a843, #b8870e);
-        color: #000;
-        font-family: 'Manrope', sans-serif;
-        font-weight: 800;
-        font-size: 0.9rem;
-        padding: 15px 28px;
-        border-radius: 100px;
-        border: none;
-        cursor: pointer;
-        transition: transform 0.2s, box-shadow 0.2s;
-        letter-spacing: -0.01em;
+        gap: 10px;
+        text-decoration: none;
     }
     .btn-checkout:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 8px 24px rgba(212,168,67,0.3);
-    }
-    .btn-checkout:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-        transform: none;
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(212,168,67,0.3);
     }
 
     .btn-continue {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 7px;
-        width: 100%;
-        background: transparent;
+        display: block;
+        text-align: center;
+        margin-top: 20px;
         color: var(--text-muted);
-        font-family: 'Manrope', sans-serif;
-        font-weight: 600;
-        font-size: 0.82rem;
-        padding: 12px 20px;
-        border-radius: 100px;
-        border: 1px solid var(--border);
-        cursor: pointer;
-        margin-top: 10px;
-        transition: border-color 0.2s, color 0.2s, background 0.2s;
         text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: color 0.2s;
     }
-    .btn-continue:hover {
-        border-color: var(--border-hover);
-        color: var(--text);
-        background: var(--search-bg);
-    }
+    .btn-continue:hover { color: var(--text); }
 
     /* Guarantee strip */
     .guarantee-strip {
-        margin-top: 22px;
-        padding-top: 18px;
-        border-top: 1px solid var(--border);
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
+        margin-top: 40px;
+        display: grid;
+        gap: 15px;
     }
     .guarantee-item {
         display: flex;
         align-items: center;
-        gap: 9px;
-        font-size: 0.77rem;
+        gap: 12px;
+        font-size: 0.8rem;
         color: var(--text-muted);
     }
-    .guarantee-item i { color: var(--gold); font-size: 0.88rem; }
+    .guarantee-item i { color: var(--gold); font-size: 1rem; }
+
+    @media (max-width: 1000px) {
+        .cart-body { grid-template-columns: 1fr; padding: 0 24px 80px; }
+        .cart-summary { position: static; margin-top: 40px; }
+    }
+    @media (max-width: 600px) {
+        .cart-header { padding: 80px 24px 40px; }
+        .cart-item { grid-template-columns: 1fr; gap: 20px; text-align: center; }
+        .cart-item-img { height: 160px; margin: 0 auto; width: 100%; }
+        .qty-stepper { margin: 15px auto 0; }
+        .btn-remove { position: absolute; top: 20px; right: 0; }
+        .cart-item { position: relative; }
+    }
 
     /* ---- Empty State ---- */
     .cart-empty {
@@ -551,19 +400,9 @@
 <div class="cart-page">
 
     <div class="cart-header">
-        <div class="orb-blue"></div>
-        <div class="orb-gold"></div>
         <div class="cart-header-inner">
-            <span class="section-label">Belanja Anda</span>
-            <h1><span class="gradient-word">Keranjang</span> Belanja</h1>
-            <p>Tinjau dan kelola produk sebelum melanjutkan ke pembayaran.</p>
-
-            @if(count($cart) > 0)
-            <span class="cart-count-badge" id="cartItemCount">
-                <i class="bi bi-bag"></i>
-                {{ collect($cart)->sum('quantity') }} item
-            </span>
-            @endif
+            <h1><span>Keranjang</span> Belanja</h1>
+            <p>Tinjau produk pilihan Anda sebelum melanjutkan ke tahap pembayaran aman kami.</p>
         </div>
     </div>
 
@@ -577,12 +416,7 @@
 
             @if(count($cart) > 0)
 
-            <div class="cart-items-head">
-                <span class="cart-items-title">Produk ({{ collect($cart)->sum('quantity') }})</span>
-                <button class="btn-clear-all" onclick="clearCart()">
-                    <i class="bi bi-trash3"></i> Hapus Semua
-                </button>
-            </div>
+            <span class="cart-items-title">Produk ({{ collect($cart)->sum('quantity') }})</span>
 
             @foreach($cart as $id => $item)
             <div class="cart-item" id="cart-item-{{ $id }}">
@@ -604,9 +438,9 @@
 
                     {{-- Quantity Stepper --}}
                     <div class="qty-stepper">
-                        <button class="qty-btn" onclick="changeQty({{ $id }}, -1)">−</button>
+                        <button class="qty-btn" onclick="changeQty('{{ $id }}', -1)">−</button>
                         <span class="qty-val" id="qty-{{ $id }}">{{ $item['quantity'] }}</span>
-                        <button class="qty-btn" onclick="changeQty({{ $id }}, 1)">+</button>
+                        <button class="qty-btn" onclick="changeQty('{{ $id }}', 1)">+</button>
                     </div>
 
                     <div class="cart-item-subtotal" id="subtotal-{{ $id }}">
@@ -615,11 +449,9 @@
                 </div>
 
                 {{-- Actions --}}
-                <div class="cart-item-actions">
-                    <button class="btn-remove" onclick="removeItem({{ $id }})" title="Hapus item">
-                        <i class="bi bi-x-lg"></i>
-                    </button>
-                </div>
+                <button class="btn-remove" onclick="removeItem('{{ $id }}')" title="Hapus item">
+                    <i class="bi bi-x"></i>
+                </button>
 
             </div>
             @endforeach
@@ -732,9 +564,10 @@ function showToast(msg, success = true) {
     setTimeout(() => toast.classList.remove('show'), 2800);
 }
 
-function updateNavCart(count) {
-    const badge = document.getElementById('cartCount');
-    if (badge) badge.textContent = count;
+// Fungsi lokal untuk update label di halaman Cart saja
+function updateCartPageLabels(count) {
+    const title = document.querySelector('.cart-items-title');
+    if (title) title.textContent = 'Produk (' + count + ')';
 }
 
 /* ---- Change Quantity ---- */
@@ -755,8 +588,10 @@ function changeQty(id, delta) {
             qtyEl.textContent = qty;
             document.getElementById('subtotal-' + id).textContent = 'Rp ' + data.itemTotal;
             document.getElementById('summarySubtotal').textContent = 'Rp ' + data.total;
-            updateNavCart(data.cartCount);
-            refreshCartCount(data.cartCount);
+            if (typeof refreshCartCount === 'function') {
+                refreshCartCount(data.cartCount);
+            }
+            updateCartPageLabels(data.cartCount);
         }
     })
     .catch(() => showToast('Gagal memperbarui kuantitas', false));
@@ -779,8 +614,10 @@ function removeItem(id) {
             if (data.success) {
                 el.remove();
                 document.getElementById('summarySubtotal').textContent = 'Rp ' + data.total;
-                updateNavCart(data.cartCount);
-                refreshCartCount(data.cartCount);
+                if (typeof refreshCartCount === 'function') {
+                    refreshCartCount(data.cartCount);
+                }
+                updateCartPageLabels(data.cartCount);
                 showToast('Item berhasil dihapus dari keranjang');
                 if (data.cartCount === 0) location.reload();
             }
@@ -800,7 +637,9 @@ function clearCart() {
     .then(r => r.json())
     .then(data => {
         if (data.success) {
-            updateNavCart(0);
+            if (typeof refreshCartCount === 'function') {
+                refreshCartCount(0);
+            }
             location.reload();
         }
     })
@@ -814,10 +653,6 @@ function applyPromo() {
     showToast('Kode promo "' + code + '" tidak valid atau sudah kedaluwarsa', false);
 }
 
-/* ---- Refresh cart badge + count label ---- */
-function refreshCartCount(count) {
-    const badge = document.getElementById('cartItemCount');
-    if (badge) badge.innerHTML = '<i class="bi bi-bag"></i> ' + count + ' item';
-}
+
 </script>
 @endpush

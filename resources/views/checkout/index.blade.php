@@ -4,7 +4,6 @@
 <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 <style>
-/* Checkout Page Styles */
 .checkout-page {
     padding-top: 52px;
     min-height: 100vh;
@@ -12,62 +11,70 @@
 }
 
 .checkout-header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 36px 24px;
+    background: var(--bg);
+    padding: 100px 24px 60px;
     text-align: center;
 }
 .checkout-header h1 {
     font-family: 'Manrope', sans-serif;
-    font-size: 2.2rem;
-    font-weight: 900;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
     color: var(--text);
-    margin-bottom: 8px;
+    margin-bottom: 16px;
+    letter-spacing: -0.04em;
+}
+.checkout-header h1 span {
+    background: linear-gradient(to right, #f0d080, #d4a843);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 .checkout-header p {
     color: var(--text-muted);
-    font-size: 0.95rem;
+    font-size: 1rem;
+    opacity: 0.8;
 }
 
 .checkout-layout {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 40px 24px 80px;
+    padding: 0 48px 120px;
     display: grid;
     grid-template-columns: 1.5fr 1fr;
-    gap: 32px;
+    gap: 60px;
     align-items: start;
 }
 
 /* Sections */
 .co-section {
     background: var(--surface);
+    backdrop-filter: blur(10px);
     border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 28px;
-    margin-bottom: 24px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    border-radius: 24px;
+    padding: 40px;
+    margin-bottom: 32px;
 }
 .co-title {
     font-family: 'Manrope', sans-serif;
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     font-weight: 800;
     color: var(--text);
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
 }
 .co-title i { color: var(--gold); }
 
 /* Form Group */
-.form-group { margin-bottom: 20px; }
+.form-group { margin-bottom: 25px; }
 .form-label {
     display: block;
     font-size: 0.85rem;
     font-weight: 700;
-    color: var(--text);
-    margin-bottom: 8px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 .form-input, .form-textarea {
     width: 100%;
@@ -75,63 +82,50 @@
     border: 1px solid var(--border);
     color: var(--text);
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    padding: 12px 16px;
-    border-radius: 10px;
+    font-size: 0.95rem;
+    padding: 14px 20px;
+    border-radius: 12px;
     outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color 0.3s;
 }
 .form-input:focus, .form-textarea:focus {
     border-color: var(--gold);
-    box-shadow: 0 0 0 3px rgba(212,168,67,0.1);
 }
-.form-textarea { resize: vertical; min-height: 100px; }
+.form-textarea { resize: vertical; min-height: 120px; }
 
 /* Map */
 #map {
     width: 100%;
-    height: 300px;
-    border-radius: 10px;
+    height: 350px;
+    border-radius: 16px;
     border: 1px solid var(--border);
-    margin-bottom: 12px;
-    z-index: 1; /* Prevent overlapping with sticky header */
-}
-.map-hint {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    margin-bottom: 15px;
 }
 
 /* Payment Options */
 .payment-methods {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 20px;
 }
-.pay-method-label {
-    display: block;
-    cursor: pointer;
-}
+.pay-method-label { cursor: pointer; }
 .pay-method-label input { display: none; }
 .pay-method-box {
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
+    border-radius: 16px;
+    padding: 24px;
     text-align: center;
-    transition: all 0.2s;
+    transition: all 0.3s;
     background: var(--bg);
 }
 .pay-method-label input:checked + .pay-method-box {
     border-color: var(--gold);
-    background: var(--gold-dim);
-    box-shadow: 0 4px 12px rgba(212,168,67,0.15);
+    background: rgba(212,168,67,0.05);
 }
 .pay-method-box i {
-    font-size: 1.8rem;
+    font-size: 2rem;
     color: var(--text-muted);
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     display: block;
 }
 .pay-method-label input:checked + .pay-method-box i { color: var(--gold); }
@@ -144,68 +138,74 @@
 /* Order Summary Sidebar */
 .summary-box {
     background: var(--surface);
+    backdrop-filter: blur(20px);
     border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 28px;
+    border-radius: 32px;
+    padding: 40px;
     position: sticky;
-    top: 80px;
+    top: 100px;
 }
 .summary-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding-bottom: 16px;
+    gap: 15px;
+    padding-bottom: 18px;
     border-bottom: 1px solid var(--border);
-    margin-bottom: 16px;
+    margin-bottom: 18px;
 }
 .summary-img {
     width: 60px; height: 60px;
-    border-radius: 8px;
+    border-radius: 10px;
     background: var(--surface-2);
     display: flex; align-items: center; justify-content: center;
     padding: 8px;
 }
 .summary-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
-.summary-detail { flex: 1; }
-.summary-name { font-size: 0.85rem; font-weight: 700; color: var(--text); line-height: 1.3; margin-bottom: 4px; }
-.summary-qty { font-size: 0.75rem; color: var(--text-muted); }
-.summary-price { font-weight: 800; font-size: 0.85rem; color: var(--gold); }
+.summary-name { font-size: 0.9rem; font-weight: 700; color: var(--text); line-height: 1.4; }
+.summary-qty { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+.summary-price { font-weight: 800; font-size: 0.95rem; color: var(--gold); margin-left: auto; }
 
 .summary-row {
     display: flex;
     justify-content: space-between;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: var(--text-muted);
-    margin-bottom: 12px;
+    margin-bottom: 15px;
 }
 .summary-total {
     display: flex;
     justify-content: space-between;
-    font-size: 1.2rem;
+    align-items: baseline;
+    font-size: 1.5rem;
     font-weight: 900;
     color: var(--text);
-    padding-top: 16px;
-    border-top: 1px dashed var(--border);
-    margin-bottom: 24px;
+    padding-top: 25px;
+    border-top: 1px solid var(--border);
+    margin-bottom: 30px;
 }
 
 .btn-checkout {
     width: 100%;
-    background: linear-gradient(135deg, #f0d080 0%, #d4a843 40%, #a0721a 100%);
+    background: linear-gradient(135deg, #f0d080, #d4a843);
     color: #000;
     border: none;
-    padding: 16px;
-    border-radius: 12px;
+    padding: 18px;
+    border-radius: 100px;
     font-family: 'Manrope', sans-serif;
     font-weight: 800;
     font-size: 1rem;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: all 0.3s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
 }
 .btn-checkout:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(212,168,67,0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(212,168,67,0.3);
+}
+
+@media (max-width: 1000px) {
+    .checkout-layout { grid-template-columns: 1fr; padding: 0 24px 80px; }
+    .summary-box { position: static; margin-top: 40px; }
 }
 
 @media (max-width: 900px) {
@@ -219,8 +219,8 @@
 <div class="checkout-page">
 
     <div class="checkout-header">
-        <h1>Checkout</h1>
-        <p>Lengkapi detail pengiriman dan pembayaran Anda</p>
+        <h1><span>Proses</span> Checkout</h1>
+        <p>Lengkapi detail pengiriman dan konfirmasi pesanan Anda.</p>
     </div>
 
     <form action="{{ route('checkout.process') }}" method="POST" id="checkoutForm">

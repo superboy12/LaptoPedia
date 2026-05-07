@@ -156,20 +156,19 @@
     /* Cart Item Card — Premium Glassmorphic */
     .cart-item {
         background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 24px;
+        border-radius: 20px;
         display: grid;
         grid-template-columns: 140px 1fr auto;
-        gap: 28px;
+        gap: 32px;
         align-items: center;
-        padding: 24px;
-        margin-bottom: 16px;
-        transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+        padding: 24px 32px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.02);
+        transition: box-shadow 0.4s ease, transform 0.4s ease;
     }
     .cart-item:hover {
-        border-color: var(--border-hover);
-        box-shadow: 0 24px 64px rgba(0,0,0,0.08);
-        transform: translateY(-4px);
+        box-shadow: 0 12px 48px rgba(0,0,0,0.06);
+        transform: translateY(-2px);
     }
 
     .cart-item-img {
@@ -279,13 +278,12 @@
     /* ---- Order Summary Column ---- */
     .cart-summary {
         background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 24px;
-        padding: 32px;
+        border-radius: 20px;
+        padding: 36px;
         position: sticky;
-        top: 72px;
-        box-shadow: 0 16px 48px rgba(0,0,0,0.04);
-        transition: background 0.4s ease, border-color 0.4s ease;
+        top: 80px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.03);
+        transition: box-shadow 0.4s ease;
     }
 
     .summary-title {
@@ -451,10 +449,10 @@
     /* ---- Empty State ---- */
     .cart-empty {
         text-align: center;
-        padding: 80px 24px;
+        padding: 100px 24px;
         background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 24px;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.02);
     }
     .cart-empty-icon {
         font-size: 4rem;
@@ -525,9 +523,8 @@
         <div class="orb-blue"></div>
         <div class="orb-gold"></div>
         <div class="cart-header-inner">
-            <span class="section-label" style="font-size: 0.75rem; font-weight: 700; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; display: block;">Demo Mode</span>
             <h1><span class="gradient-word">Keranjang</span> Belanja</h1>
-            <p>Tinjau dan kelola produk demo sebelum melanjutkan ke pembayaran.</p>
+            <p>Tinjau dan kelola produk Anda sebelum melanjutkan ke pembayaran.</p>
 
             <span class="cart-count-badge" id="cartItemCountBadge" style="display: none;">
                 <i class="bi bi-bag"></i>
@@ -723,7 +720,7 @@ function removeItem(index) {
 }
 
 function clearCart() {
-    if (confirm('Hapus semua item dari keranjang demo?')) {
+    if (confirm('Hapus semua item dari keranjang?')) {
         localStorage.removeItem('my_cart');
         const cartBadge = document.getElementById('cartCount');
         if (cartBadge) cartBadge.textContent = 0;

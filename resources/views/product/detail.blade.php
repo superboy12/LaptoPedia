@@ -350,6 +350,80 @@
     .delay-200 { transition-delay: 200ms; }
     .delay-300 { transition-delay: 300ms; }
 
+    /* 5.5 SELECTION SECTION */
+    .selection-section {
+        background: var(--bg-2);
+        padding: 6rem 2rem;
+        border-top: 1px solid var(--border);
+        transition: background 0.4s ease;
+    }
+    .selection-inner {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 4rem;
+    }
+    @media (min-width: 900px) {
+        .selection-inner { grid-template-columns: 1fr 1fr; gap: 6rem; align-items: start; }
+    }
+    .selection-left h2 {
+        font-family: 'Manrope', sans-serif;
+        font-size: clamp(2.5rem, 4vw, 3.5rem);
+        font-weight: 900;
+        color: var(--text);
+        margin-bottom: 1rem;
+        line-height: 1.1;
+    }
+    .selection-left p { color: var(--text-muted); font-size: 1.05rem; }
+
+    .variation-title {
+        font-family: 'Manrope', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: var(--text);
+        margin-bottom: 1rem;
+    }
+    .variation-title span { font-weight: 400; color: var(--text-muted); font-size: 0.85rem; }
+
+    .capacity-options { display: flex; flex-direction: column; gap: 12px; }
+    .cap-box {
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        padding: 16px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: var(--surface);
+    }
+    .cap-box:hover { border-color: rgba(212,168,67,0.4); background: var(--search-bg); }
+    .cap-box.active {
+        border-color: #0071e3;
+        background: rgba(0, 113, 227, 0.05);
+    }
+    .cap-value { font-family: 'Manrope', sans-serif; font-weight: 700; color: var(--text); font-size: 1.05rem; }
+    .cap-price { color: var(--text-muted); font-size: 0.9rem; }
+    .cap-box.active .cap-price { color: #0071e3; font-weight: 700; }
+
+    .color-options { display: flex; gap: 20px; flex-wrap: wrap; }
+    .col-box {
+        display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer;
+    }
+    .col-swatch {
+        width: 40px; height: 40px; border-radius: 50%;
+        border: 2px solid transparent;
+        box-shadow: 0 0 0 1px var(--border);
+        transition: all 0.3s ease;
+    }
+    .col-box:hover .col-swatch { box-shadow: 0 0 0 1px var(--text-muted); }
+    .col-box.active .col-swatch {
+        box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px #0071e3;
+    }
+    .col-name { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+    .col-box.active .col-name { color: var(--text); font-weight: 800; }
+
     @media (max-width: 768px) {
         .action-inner { flex-direction: column; align-items: stretch; }
         .action-info { justify-content: space-between; margin-bottom: 1rem; }
@@ -423,39 +497,114 @@
     <section class="spec-section">
         <div class="spec-inner">
             <div class="spec-left reveal-up">
-                <h2>Mendobrak<br>Batas.</h2>
-                <p>Arsitektur kustom yang mengoptimalkan aliran daya secara real-time. Efisiensi luar biasa tanpa mengorbankan setetes pun performa grafis maupun komputasi.</p>
+                <h2>{!! $product->spec_title ?? 'Mendobrak<br>Batas.' !!}</h2>
+                <p>{{ $product->spec_description ?? 'Arsitektur kustom yang mengoptimalkan aliran daya secara real-time. Efisiensi luar biasa tanpa mengorbankan setetes pun performa grafis maupun komputasi.' }}</p>
             </div>
             <div class="spec-right">
                 <div class="spec-grid">
-                    <div class="reveal-up delay-100">
-                        <div class="spec-line"></div>
-                        <div class="spec-title">Arsitektur Inti</div>
-                        <div class="spec-value">Pro-Class</div>
-                        <div class="spec-desc">Prosesor generasi terbaru terintegrasi.</div>
-                    </div>
-                    <div class="reveal-up delay-200">
-                        <div class="spec-line"></div>
-                        <div class="spec-title">Memori Ekstrem</div>
-                        <div class="spec-value">Up to 32GB</div>
-                        <div class="spec-desc">Bandwidth memori sangat cepat tanpa lag.</div>
-                    </div>
-                    <div class="reveal-up delay-100">
-                        <div class="spec-line"></div>
-                        <div class="spec-title">Penyimpanan</div>
-                        <div class="spec-value">1 TB SSD</div>
-                        <div class="spec-desc">Kecepatan baca & tulis superior.</div>
-                    </div>
-                    <div class="reveal-up delay-200">
-                        <div class="spec-line"></div>
-                        <div class="spec-title">Layar Memukau</div>
-                        <div class="spec-value">True Color</div>
-                        <div class="spec-desc">Akurasi warna standar sinema profesional.</div>
-                    </div>
+                    @if($product->highlights && $product->highlights->count() > 0)
+                        @foreach($product->highlights as $index => $hl)
+                        <div class="reveal-up delay-{{ ($index % 2 + 1) * 100 }}">
+                            <div class="spec-line"></div>
+                            <div class="spec-title">{{ $hl->label }}</div>
+                            <div class="spec-value">{{ $hl->title }}</div>
+                            <div class="spec-desc">{{ $hl->description }}</div>
+                        </div>
+                        @endforeach
+                    @else
+                        {{-- Fallback Default --}}
+                        <div class="reveal-up delay-100">
+                            <div class="spec-line"></div>
+                            <div class="spec-title">Processor</div>
+                            <div class="spec-value">Pro-Class</div>
+                            <div class="spec-desc">Prosesor generasi terbaru terintegrasi.</div>
+                        </div>
+                        <div class="reveal-up delay-200">
+                            <div class="spec-line"></div>
+                            <div class="spec-title">RAM</div>
+                            <div class="spec-value">Up to 32GB</div>
+                            <div class="spec-desc">Bandwidth memori sangat cepat tanpa lag.</div>
+                        </div>
+                        <div class="reveal-up delay-100">
+                            <div class="spec-line"></div>
+                            <div class="spec-title">Penyimpanan</div>
+                            <div class="spec-value">1 TB SSD</div>
+                            <div class="spec-desc">Kecepatan baca & tulis superior.</div>
+                        </div>
+                        <div class="reveal-up delay-200">
+                            <div class="spec-line"></div>
+                            <div class="spec-title">Layar Memukau</div>
+                            <div class="spec-value">True Color</div>
+                            <div class="spec-desc">Akurasi warna standar sinema profesional.</div>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
     </section>
+
+    {{-- PRODUCT SELECTION --}}
+    @php
+        $capacities = $product->variations->where('type', 'capacity')->values();
+        $colors = $product->variations->where('type', 'color')->values();
+    @endphp
+
+    @if($capacities->count() > 0 || $colors->count() > 0)
+    <section class="selection-section">
+        <div class="selection-inner reveal-up">
+            <div class="selection-left">
+                <h2>Konfigurasi<br>Pilihan Anda.</h2>
+                <p>Pilih spesifikasi yang paling sesuai dengan kebutuhan komputasi dan gaya Anda.</p>
+            </div>
+            <div class="selection-right">
+                
+                @if($capacities->count() > 0)
+                <div class="variation-group">
+                    <h3 class="variation-title">Kapasitas <span>(Storage | RAM)</span></h3>
+                    <div class="capacity-options">
+                        @foreach($capacities as $index => $cap)
+                        <div class="cap-box {{ $index === 0 ? 'active' : '' }}" 
+                             onclick="selectCapacity(this, {{ $cap->price ?? $product->price }}, '{{ $cap->value }}')">
+                            <div class="cap-value">{{ $cap->value }}</div>
+                            <div class="cap-price">Rp {{ number_format($cap->price ?? $product->price, 0, ',', '.') }}</div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+                @if($colors->count() > 0)
+                <div class="variation-group" style="margin-top: 2.5rem;">
+                    <h3 class="variation-title">Warna <span>(Sesuai Ketersediaan)</span></h3>
+                    <div class="color-options">
+                        @foreach($colors as $index => $color)
+                        @php
+                            $bg = '#e3e4e5'; // default silver/grey
+                            $val = strtolower($color->value);
+                            if (str_contains($val, 'black') || str_contains($val, 'hitam') || str_contains($val, 'midnight')) $bg = '#1a1a1a';
+                            elseif (str_contains($val, 'silver') || str_contains($val, 'perak') || str_contains($val, 'starlight')) $bg = '#e3e4e5';
+                            elseif (str_contains($val, 'blue') || str_contains($val, 'biru') || str_contains($val, 'shadow')) $bg = '#2b446a';
+                            elseif (str_contains($val, 'gray') || str_contains($val, 'abu') || str_contains($val, 'space')) $bg = '#5e5e60';
+                            elseif (str_contains($val, 'white') || str_contains($val, 'putih')) $bg = '#f9f9f9';
+                            elseif (str_contains($val, 'gold') || str_contains($val, 'emas')) $bg = '#f0d080';
+                            elseif (str_contains($val, 'pink') || str_contains($val, 'merah muda')) $bg = '#fce0d8';
+                            elseif (str_contains($val, 'green') || str_contains($val, 'hijau')) $bg = '#3b5f41';
+                            elseif (str_contains($val, 'red') || str_contains($val, 'merah')) $bg = '#d93838';
+                        @endphp
+                        <div class="col-box {{ $index === 0 ? 'active' : '' }}" 
+                             onclick="selectColorOpt(this, '{{ $color->value }}')">
+                            <div class="col-swatch" style="background: {{ $bg }};"></div>
+                            <span class="col-name">{{ $color->value }}</span>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+            </div>
+        </div>
+    </section>
+    @endif
 
     {{-- TESTIMONIALS --}}
     <section class="testimonial-section">
@@ -475,7 +624,7 @@
         <div class="action-inner">
             <div class="action-info">
                 <h4 class="action-name">{{ $product->name }}</h4>
-                <p class="action-price">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
+                <p class="action-price">Rp {{ number_format($capacities->count() > 0 && $capacities[0]->price ? $capacities[0]->price : $product->price, 0, ',', '.') }}</p>
             </div>
             <div class="action-btns">
                 <a href="{{ url()->previous() !== url()->current() ? url()->previous() : url('/') }}" class="btn-action-outline">
@@ -512,33 +661,70 @@
         document.querySelectorAll('.reveal-up').forEach(el => observer.observe(el));
     });
 
-    // Fungsi Add to Cart untuk Demo Mode
-    function addToCartDetail(productName, price) {
+    // State Management for Variations
+    let selectedCapacity = '{!! $capacities->count() > 0 ? $capacities[0]->value : "" !!}';
+    let selectedColor = '{!! $colors->count() > 0 ? $colors[0]->value : "" !!}';
+    let currentPrice = {{ $capacities->count() > 0 && $capacities[0]->price ? $capacities[0]->price : $product->price }};
+
+    function selectCapacity(element, price, value) {
+        document.querySelectorAll('.cap-box').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+        currentPrice = price;
+        selectedCapacity = value;
+        document.querySelector('.action-price').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(price);
+    }
+
+    function selectColorOpt(element, value) {
+        document.querySelectorAll('.col-box').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+        selectedColor = value;
+    }
+
+    // Fungsi Add to Cart dengan AJAX untuk sinkronisasi Session
+    async function addToCartDetail(productName, _ignoredPrice) {
+        const price = currentPrice;
         const btn = document.querySelector('.btn-action-solid');
         const originalText = btn.innerHTML;
         
-        btn.innerHTML = '<i class="bi bi-check-lg"></i> Berhasil Ditambahkan!';
+        btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Menambahkan...';
         btn.disabled = true;
-        btn.style.background = '#10b981';
-        btn.style.color = '#fff';
-        
-        let cart = JSON.parse(localStorage.getItem('my_cart') || '[]');
-        let existing = cart.find(item => item.name === productName);
-        
-        if (existing) {
-            existing.quantity += 1;
-        } else {
-            cart.push({ name: productName, quantity: 1, price: price });
-        }
-        
-        localStorage.setItem('my_cart', JSON.stringify(cart));
-        
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        const cartBadge = document.getElementById('cartCount');
-        if (cartBadge) {
-            cartBadge.textContent = totalItems;
-            cartBadge.style.transform = 'scale(1.2)';
-            setTimeout(() => cartBadge.style.transform = '', 200);
+
+        // Format nama dengan variasi
+        let cartItemName = productName;
+        if (selectedCapacity) cartItemName += ' - ' + selectedCapacity;
+        if (selectedColor) cartItemName += ' (' + selectedColor + ')';
+
+        try {
+            const res = await fetch('/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    product_id: {{ $product->id }},
+                    quantity: 1,
+                    name: cartItemName,
+                    price: price
+                })
+            });
+            const data = await res.json();
+            
+            if (data.success) {
+                btn.innerHTML = '<i class="bi bi-check-lg"></i> Berhasil Ditambahkan!';
+                btn.style.background = '#10b981';
+                btn.style.color = '#fff';
+                
+                // Update Badge menggunakan fungsi global di app.blade.php
+                if (typeof refreshCartCount === 'function') {
+                    refreshCartCount(data.cartCount);
+                }
+            }
+        } catch(e) {
+            console.error(e);
+            btn.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Gagal';
+            btn.style.background = '#ef4444';
         }
         
         setTimeout(() => {
