@@ -297,6 +297,13 @@
                     Orders
                 </a>
             </li>
+            <li class="sidebar-menu-item">
+                <a href="{{ route('admin.chat') }}" class="sidebar-menu-link {{ request()->routeIs('admin.chat') ? 'active' : '' }}" style="position:relative;">
+                    <i class="bi bi-chat-dots"></i>
+                    Chat
+                    <span id="sidebarChatBadge" style="display:none;margin-left:auto;background:var(--gold);color:#000;font-size:0.62rem;font-weight:800;padding:1px 6px;border-radius:4px;"></span>
+                </a>
+            </li>
         </ul>
 
         <div class="sidebar-label">Other</div>
@@ -376,5 +383,24 @@
 </div>
 
 @stack('scripts')
+<script>
+// Poll unread chat count every 10s
+(function pollChatBadge() {
+    fetch('/admin/chat/unread-count', { headers: { 'Accept': 'application/json' } })
+        .then(r => r.json())
+        .then(data => {
+            const badge = document.getElementById('sidebarChatBadge');
+            if (!badge) return;
+            if (data.count > 0) {
+                badge.style.display = 'inline-block';
+                badge.textContent   = data.count;
+            } else {
+                badge.style.display = 'none';
+            }
+        })
+        .catch(() => {});
+    setTimeout(pollChatBadge, 10000);
+})();
+</script>
 </body>
 </html>

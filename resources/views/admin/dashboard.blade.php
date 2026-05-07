@@ -32,7 +32,7 @@
     }
 
     .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .card-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; letter-spacing: 0.02em; color: var(--white); }
+    .card-title { font-family: 'Manrope', sans-serif; font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em; color: var(--white); }
 
     .badge-trend { font-size: 0.72rem; background: rgba(76, 175, 80, 0.12); color: #4ade80; padding: 4px 8px; border-radius: 4px; font-weight: 700; }
     
@@ -69,7 +69,7 @@
             <span class="badge-trend">+12.5%</span>
         </div>
         <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; font-family: 'DM Sans', sans-serif;">Total Revenue</p>
-        <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--gold);">$128,430</h3>
+        <h3 style="font-family: 'Manrope', sans-serif; font-size: 2rem; font-weight: 800; color: var(--gold); letter-spacing: -0.02em;">$128,430</h3>
     </div>
 
     {{-- Orders --}}
@@ -79,7 +79,7 @@
             <span class="badge-trend">+5.1%</span>
         </div>
         <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; font-family: 'DM Sans', sans-serif;">Total Orders</p>
-        <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700;">1,240</h3>
+        <h3 style="font-family: 'Manrope', sans-serif; font-size: 2rem; font-weight: 800; letter-spacing: -0.02em;">1,240</h3>
     </div>
 
     {{-- Products --}}
@@ -89,7 +89,7 @@
             <span class="badge-trend">+2.3%</span>
         </div>
         <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; font-family: 'DM Sans', sans-serif;">Total Products</p>
-        <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700;">450</h3>
+        <h3 style="font-family: 'Manrope', sans-serif; font-size: 2rem; font-weight: 800; letter-spacing: -0.02em;">450</h3>
     </div>
 
     {{-- Customers --}}
@@ -99,7 +99,7 @@
             <span class="badge-trend">+14.7%</span>
         </div>
         <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; font-family: 'DM Sans', sans-serif;">Total Customers</p>
-        <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700;">8,200</h3>
+        <h3 style="font-family: 'Manrope', sans-serif; font-size: 2rem; font-weight: 800; letter-spacing: -0.02em;">8,200</h3>
     </div>
 </div>
 

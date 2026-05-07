@@ -127,10 +127,47 @@ class CartController extends Controller
             return back()->with('error', 'Your cart is empty.');
         }
 
-        // TODO: Save to orders & order_items tables, then redirect to payment page.
-        // For now, clear the cart and return a success message.
         session()->forget('cart');
 
-        return redirect()->route('home')->with('success', 'Order placed successfully! Thank you for shopping with us.');
+        return redirect()->route('home')->with('success', 'Order placed successfully!');
+    }
+
+    /**
+     * Sinkronisasi data cart localStorage (demo) ke session backend sebelum checkout.
+     */
+    public function syncDemoCart(Request $request)
+    {
+        $demoCart = $request->input('cart', []);
+        $sessionCart = [];
+
+        foreach ($demoCart as $index => $item) {
+            // Karena demo cart kadang tidak punya ID produk asli, kita generate ID dummy atau cari by name
+            $product = \App\Models\Product::where('name', $item['name'])->first();
+            
+            if ($product) {
+                $sessionCart[(string)$product->id] = [
+                    'id'       => $product->id,
+                    'name'     => $product->name,
+                    'price'    => $product->price,
+                    'image'    => $product->image,
+                    'quantity' => $item['quantity'],
+                ];
+            } else {
+                // Fallback untuk dummy product
+                $dummyId = 'demo_' . $index;
+                $price = $item['price'] ?? 15000000;
+                $sessionCart[$dummyId] = [
+                    'id'       => $dummyId,
+                    'name'     => $item['name'],
+                    'price'    => $price,
+                    'image'    => null,
+                    'quantity' => $item['quantity'],
+                ];
+            }
+        }
+
+        session()->put('cart', $sessionCart);
+
+        return response()->json(['success' => true, 'redirect' => route('checkout.index')]);
     }
 }

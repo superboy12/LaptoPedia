@@ -28,4 +28,9 @@ class User extends Authenticatable
     protected $casts = [
         'password' => 'hashed',
     ];
+
+    public function chatMessages()
+    {
+        return $this->hasMany(\App\Models\ChatMessage::class, 'user_id', 'id_user');
+    }
 }

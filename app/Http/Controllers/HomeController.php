@@ -24,10 +24,56 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // Menggunakan with('category') agar pengambilan data lebih efisien (Eager Loading)
-         $products = \App\Models\Product::with('category')->latest()->take(4)->get();
-        
-      return view('home', compact('products'));
+        $products = \App\Models\Product::with('category')->latest()->take(4)->get();
+        return view('home', compact('products'));
+    }
+
+    /**
+     * Halaman Katalog Produk dengan Search & Filter
+     */
+    public function products(Request $request)
+    {
+        $query = \App\Models\Product::with('category');
+
+        // Search by keyword (name atau description)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by category
+        if ($request->filled('category') && $request->category !== 'all') {
+            $query->whereHas('category', function($q) use ($request) {
+                $q->where('slug', $request->category);
+            });
+        }
+
+        // Filter by max price
+        if ($request->filled('max_price') && $request->max_price > 0) {
+            $query->where('price', '<=', $request->max_price);
+        }
+
+        // Filter by min price
+        if ($request->filled('min_price') && $request->min_price > 0) {
+            $query->where('price', '>=', $request->min_price);
+        }
+
+        // Sorting
+        $sort = $request->get('sort', 'latest');
+        switch ($sort) {
+            case 'price_asc':  $query->orderBy('price', 'asc'); break;
+            case 'price_desc': $query->orderBy('price', 'desc'); break;
+            case 'name':       $query->orderBy('name', 'asc'); break;
+            default:           $query->latest(); break;
+        }
+
+        $products   = $query->paginate(12)->withQueryString();
+        $categories = \App\Models\Category::orderBy('name')->get();
+
+        return view('product.catalog', compact('products', 'categories'));
     }
 
     /**

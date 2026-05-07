@@ -486,115 +486,59 @@
             <h2 class="section-h2">Laptop Unggulan</h2>
             <p class="section-desc">Model terlaris dan paling populer kami musim ini.</p>
         </div>
-        <a href="{{ url('/products') }}" class="btn-see-all">
+        <a href="{{ route('products.index') }}" class="btn-see-all">
             Lihat Semua <i class="bi bi-arrow-right"></i>
         </a>
     </div>
 
     <div class="products-grid reveal">
-        {{-- PRODUCT 1 - Bestseller --}}
-        <div class="p-card" onclick="window.location='{{ url('/product-demo/macbook-pro-16') }}'">
+        @forelse($products as $product)
+        <div class="p-card" onclick="window.location='{{ route('product.detail', $product->slug) }}'">
             <div class="p-img-wrap">
-                <img src="https://pngimg.com/d/macbook_PNG8.png" alt="MacBook Pro" onerror="this.src='https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80'">
-            </div>
-            <div class="p-body">
-                <div class="p-name">MacBook Pro 16"</div>
-                <div class="p-stars">
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-half"></i>
-                    <span>(4.9)</span>
-                </div>
-                <div class="p-spec">M3 Pro chip · 18GB RAM · 512GB SSD · Liquid Retina XDR</div>
-                <div class="p-footer">
-                    <div class="p-price">
-                        Rp 28.999.000
-                        <small>Harga terbaik</small>
+                @if($product->image)
+                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div style="display:none;align-items:center;justify-content:center;width:100%;height:100%;">
+                        <i class="bi bi-laptop" style="font-size:5rem;color:var(--text-muted);opacity:0.25;"></i>
                     </div>
-                    <button class="btn-cart" onclick="event.stopPropagation(); addToCart(this)">
-                        <i class="bi bi-bag-plus"></i> Tambah
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        {{-- PRODUCT 2 - 15% Off --}}
-        <div class="p-card" onclick="window.location='{{ url('/product-demo/dell-xps-15') }}'">
-            <div class="p-img-wrap">
-                <img src="https://pngimg.com/d/laptop_PNG5917.png" alt="Dell XPS" onerror="this.src='https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400&q=80'">
+                @else
+                    <i class="bi bi-laptop" style="font-size:5rem;color:var(--text-muted);opacity:0.25;"></i>
+                @endif
             </div>
             <div class="p-body">
-                <div class="p-name">Dell XPS 15</div>
-                <div class="p-stars">
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star"></i>
-                    <span>(4.7)</span>
-                </div>
-                <div class="p-spec">Intel i7-13700H · 16GB · 1TB SSD · 4K OLED Touch</div>
-                <div class="p-footer">
-                    <div class="p-price">
-                        Rp 25.999.000
-                        <small>Harga terbaik</small>
-                    </div>
-                    <button class="btn-cart" onclick="event.stopPropagation(); addToCart(this)">
-                        <i class="bi bi-bag-plus"></i> Tambah
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        {{-- PRODUCT 3 - New --}}
-        <div class="p-card" onclick="window.location='{{ url('/product-demo/asus-rog-strix-g16') }}'">
-            <div class="p-img-wrap">
-                <img src="https://pngimg.com/d/laptop_PNG101783.png" alt="ASUS ROG" onerror="this.src='https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&q=80'">
-            </div>
-            <div class="p-body">
-                <div class="p-name">ASUS ROG Strix G16</div>
+                <div class="p-name">{{ $product->name }}</div>
                 <div class="p-stars">
                     <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                     <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                     <i class="bi bi-star-half"></i>
                     <span>(4.8)</span>
                 </div>
-                <div class="p-spec">RTX 4070 · i9-13980HX · 32GB · 2TB SSD · 240Hz</div>
+                <div class="p-spec">{{ Str::limit($product->description, 70) }}</div>
                 <div class="p-footer">
-                    <div class="p-price">
-                        Rp 32.999.000
-                        <small>Harga terbaik</small>
-                    </div>
-                    <button class="btn-cart" onclick="event.stopPropagation(); addToCart(this)">
-                        <i class="bi bi-bag-plus"></i> Tambah
-                    </button>
+                    <div class="p-price">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
+                    <a href="{{ route('product.detail', $product->slug) }}"
+                       class="btn-cart" onclick="event.stopPropagation();"
+                       style="text-decoration:none;">
+                        <i class="bi bi-arrow-right"></i> Lihat Detail
+                    </a>
                 </div>
             </div>
         </div>
-
-        {{-- PRODUCT 4 - Regular --}}
-        <div class="p-card" onclick="window.location='{{ url('/product-demo/hp-spectre-x360') }}'">
+        @empty
+        {{-- Fallback jika belum ada produk di DB --}}
+        <div class="p-card">
             <div class="p-img-wrap">
-                <img src="https://pngimg.com/d/laptop_PNG5905.png" alt="HP Spectre" onerror="this.src='https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=400&q=80'">
+                <i class="bi bi-laptop" style="font-size:5rem;color:var(--text-muted);opacity:0.2;"></i>
             </div>
             <div class="p-body">
-                <div class="p-name">HP Spectre x360</div>
-                <div class="p-stars">
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star"></i>
-                    <span>(4.5)</span>
-                </div>
-                <div class="p-spec">Intel i7 · 16GB · 512GB SSD · OLED Touch · 2-in-1</div>
+                <div class="p-name">Belum Ada Produk</div>
+                <div class="p-spec">Admin belum menambahkan produk. Silakan login sebagai admin untuk menambahkan produk.</div>
                 <div class="p-footer">
-                    <div class="p-price">
-                        Rp 19.999.000
-                        <small>Harga terbaik</small>
-                    </div>
-                    <button class="btn-cart" onclick="event.stopPropagation(); addToCart(this)">
-                        <i class="bi bi-bag-plus"></i> Tambah
-                    </button>
+                    <div class="p-price">—</div>
                 </div>
             </div>
         </div>
+        @endforelse
     </div>
 </section>
 

@@ -737,11 +737,42 @@ function checkout() {
         alert('Keranjang kosong!');
         return;
     }
-    alert('Terima kasih telah berbelanja! (Mode Demo - Checkout berhasil simulasi)');
-    localStorage.removeItem('my_cart');
-    const cartBadge = document.getElementById('cartCount');
-    if (cartBadge) cartBadge.textContent = 0;
-    loadCart();
+
+    // Ubah teks tombol menjadi loading
+    const btn = document.querySelector('.btn-checkout');
+    const oriText = btn.innerHTML;
+    btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Memproses...';
+    btn.style.opacity = '0.7';
+    btn.disabled = true;
+
+    // Kirim data ke backend untuk sync ke session
+    fetch('{{ route("cart.sync-demo") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ cart: cart })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if(data.success) {
+            // Berhasil sinkronisasi, redirect ke halaman checkout asli
+            window.location.href = data.redirect;
+        } else {
+            alert('Gagal memproses pesanan demo.');
+            btn.innerHTML = oriText;
+            btn.style.opacity = '1';
+            btn.disabled = false;
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Terjadi kesalahan koneksi.');
+        btn.innerHTML = oriText;
+        btn.style.opacity = '1';
+        btn.disabled = false;
+    });
 }
 
 document.addEventListener('DOMContentLoaded', function() {

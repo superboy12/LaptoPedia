@@ -370,7 +370,7 @@
     <a href="{{ url('/') }}" class="nav-brand">Lapto<em>Pedia</em></a>
 
     <ul class="nav-links">
-        <li><a href="{{ url('/') }}">Laptops</a></li>
+        <li><a href="{{ url('/products') }}" {{ request()->is('products*') ? 'style=color:var(--text)' : '' }}>Laptops</a></li>
         <li><a href="#">Brands</a></li>
         <li><a href="#">Deals</a></li>
         <li><a href="#">Support</a></li>
@@ -821,18 +821,30 @@ const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemi
 let csHistory = [];
 const SYSTEM_PROMPT = `Kamu adalah asisten CS LaptoPedia, toko laptop online Indonesia. Jawab singkat 2-3 kalimat dalam Bahasa Indonesia. Bantu soal laptop, rekomendasi, spesifikasi, pembelian, pengiriman, dan garansi. Ramah dan to the point.`;
 
+// Chat state
+let chatIsOpen    = false;
+let lastAdminId   = 0;
+let adminPollTimer = null;
+const IS_AUTH     = {{ auth()->check() ? 'true' : 'false' }};
+const CS_CSRF     = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
 function toggleChat() {
-    const win = document.getElementById('csWindow');
+    const win  = document.getElementById('csWindow');
     const icon = document.getElementById('csFabIcon');
-    const isOpen = win.classList.contains('visible');
+    chatIsOpen = !win.classList.contains('visible');
     win.classList.toggle('visible');
-    icon.className = isOpen ? 'bi bi-chat-dots-fill' : 'bi bi-x-lg';
-    if (!isOpen) setTimeout(() => document.getElementById('csInput').focus(), 300);
+    icon.className = chatIsOpen ? 'bi bi-x-lg' : 'bi bi-chat-dots-fill';
+    if (chatIsOpen) {
+        setTimeout(() => document.getElementById('csInput').focus(), 300);
+        if (IS_AUTH) startAdminPoll();
+    } else {
+        stopAdminPoll();
+    }
 }
 
 function addMsg(text, sender) {
     const box = document.getElementById('csMessages');
-    const el = document.createElement('div');
+    const el  = document.createElement('div');
     el.className = `cs-msg ${sender}`;
     el.innerHTML = text;
     box.appendChild(el);
@@ -840,21 +852,101 @@ function addMsg(text, sender) {
     return el;
 }
 
+// ── Admin reply badge on FAB ──────────────────────────
+function showAdminBadge(show) {
+    let dot = document.getElementById('csFabBadge');
+    if (!dot) {
+        dot = document.createElement('span');
+        dot.id = 'csFabBadge';
+        dot.style.cssText = 'position:absolute;top:-4px;right:-4px;width:10px;height:10px;background:#ef4444;border-radius:50%;display:none;';
+        document.getElementById('csFab').style.position = 'relative';
+        document.getElementById('csFab').appendChild(dot);
+    }
+    dot.style.display = show ? 'block' : 'none';
+}
+
+// ── Poll admin replies ────────────────────────────────
+function startAdminPoll() {
+    if (!IS_AUTH) return;
+    stopAdminPoll();
+    pollAdminReplies();
+    adminPollTimer = setInterval(pollAdminReplies, 5000);
+}
+function stopAdminPoll() { clearInterval(adminPollTimer); }
+
+async function pollAdminReplies() {
+    if (!IS_AUTH) return;
+    try {
+        const res  = await fetch(`/chat/poll?last_id=${lastAdminId}`, {
+            headers: { 'X-CSRF-TOKEN': CS_CSRF, 'Accept': 'application/json' }
+        });
+        const msgs = await res.json();
+        msgs.forEach(msg => {
+            addAdminMsg(msg.message, msg.id, msg.created_at);
+        });
+        if (msgs.length > 0 && !chatIsOpen) showAdminBadge(true);
+    } catch(e) {}
+}
+
+function addAdminMsg(text, id, createdAt) {
+    if (id <= lastAdminId) return;
+    lastAdminId = id;
+    showAdminBadge(false);
+
+    const box  = document.getElementById('csMessages');
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;flex-direction:column;align-items:flex-start;gap:2px;';
+    const timeStr = createdAt ? new Date(createdAt).toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' }) : '';
+    wrap.innerHTML = `
+        <span style="font-size:0.65rem;color:rgba(255,255,255,0.4);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding-left:4px;">
+            ✉️ Admin
+        </span>
+        <div class="cs-msg bot" style="background:rgba(212,168,67,0.15);border:1px solid rgba(212,168,67,0.25);color:var(--gold,#d4a843);">
+            ${escapeHtml(text)}
+        </div>
+        <span style="font-size:0.67rem;color:rgba(255,255,255,0.3);padding-left:4px;">${timeStr}</span>
+    `;
+    box.appendChild(wrap);
+    box.scrollTop = box.scrollHeight;
+}
+
+function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+// ── Save message to DB ────────────────────────────────
+async function saveMsgToDB(userMsg, aiReply) {
+    if (!IS_AUTH) return;
+    try {
+        await fetch('/chat/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': CS_CSRF,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ message: userMsg, ai_reply: aiReply || '' })
+        });
+    } catch(e) {}
+}
+
+// ── Main send function (AI + save to DB) ─────────────
 async function sendCsMessage() {
     const input = document.getElementById('csInput');
-    const btn = document.getElementById('csSend');
-    const text = input.value.trim();
+    const btn   = document.getElementById('csSend');
+    const text  = input.value.trim();
     if (!text) return;
 
-    addMsg(text, 'user');
+    addMsg(escapeHtml(text), 'user');
     input.value = '';
     btn.disabled = true;
     csHistory.push({ role: 'user', parts: [{ text }] });
 
     const typing = addMsg('⋯ Mengetik...', 'typing');
 
+    let aiReply = '';
     try {
-        const res = await fetch(GEMINI_URL, {
+        const res  = await fetch(GEMINI_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -870,6 +962,7 @@ async function sendCsMessage() {
             const fmt = reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
             addMsg(fmt, 'bot');
             csHistory.push({ role: 'model', parts: [{ text: reply }] });
+            aiReply = reply;
         } else {
             addMsg('Maaf, coba tanyakan lagi ya. 🙏', 'bot');
         }
@@ -877,6 +970,9 @@ async function sendCsMessage() {
         typing.remove();
         addMsg('Koneksi bermasalah, coba lagi. 🔌', 'bot');
     }
+
+    // Simpan ke DB (user msg + AI reply)
+    saveMsgToDB(text, aiReply);
 
     btn.disabled = false;
     input.focus();
@@ -887,6 +983,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (inp) inp.addEventListener('keydown', e => {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendCsMessage(); }
     });
+    // Start polling jika sudah login
+    if (IS_AUTH) startAdminPoll();
 });
 </script>
 </body>

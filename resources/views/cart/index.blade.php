@@ -679,12 +679,9 @@
             </div>
 
             {{-- Checkout --}}
-            <form method="POST" action="{{ route('cart.checkout') }}">
-                @csrf
-                <button type="submit" class="btn-checkout" {{ count($cart) === 0 ? 'disabled' : '' }}>
-                    Lanjut Pembayaran <i class="bi bi-arrow-right"></i>
-                </button>
-            </form>
+            <a href="{{ route('checkout.index') }}" class="btn-checkout" {{ count($cart) === 0 ? 'style="pointer-events:none; opacity:0.5;"' : '' }}>
+                Lanjut Pembayaran <i class="bi bi-arrow-right"></i>
+            </a>
 
             <a href="{{ url('/') }}" class="btn-continue">
                 <i class="bi bi-chevron-left"></i> Lanjut Belanja
