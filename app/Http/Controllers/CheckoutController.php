@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Cart;
 use App\Models\Order;
-use App\Models\Coupon;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -13,210 +11,220 @@ use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
 {
-    // GET /checkout
     public function index()
     {
         $user = Auth::user();
-        
-        // Ambil data cart dari database
-        $cartItems = Cart::with('product')
-            ->where('user_id', Auth::id())
-            ->get();
-        
-        // Hitung subtotal
-        $subtotal = $cartItems->sum(function($item) {
-            return $item->price * $item->quantity;
-        });
-        
-        // Jika cart kosong, redirect ke halaman cart
-        if ($cartItems->isEmpty()) {
-            return redirect()->route('cart.index')->with('error', 'Keranjang belanja Anda kosong.');
+        $cart = session()->get('cart', []);
+
+        $subtotal = 0;
+        foreach ($cart as $item) {
+            $subtotal += $item['price'] * $item['quantity'];
         }
-        
-        // Default values
-        $shippingCost = 15000;
-        $insurance = 15000;
-        $discount = session('discount', 0);
-        
-        return view('checkout', compact('user', 'cartItems', 'subtotal', 'shippingCost', 'insurance', 'discount'));
-    }
-    
-    // POST /checkout/process
-    public function process(Request $request)
-    {
-        $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'nullable|string|max:255',
-            'phone' => 'required|string|max:20',
-            'address' => 'required|string',
-            'city' => 'required|string',
-            'postal_code' => 'required|string',
-            'province' => 'required|string',
-            'shipping_service' => 'required|string',
-            'payment_method' => 'required|string',
-            'notes' => 'nullable|string',
-            'coupon_code' => 'nullable|string'
-        ]);
-        
-        // Ambil cart items
-        $cartItems = Cart::with('product')->where('user_id', Auth::id())->get();
-        
-        if ($cartItems->isEmpty()) {
-            return redirect()->route('cart.index')->with('error', 'Keranjang belanja kosong.');
+
+        if (empty($cart)) {
+            return redirect()->route('cart.index')
+                ->with('error', 'Keranjang belanja Anda kosong.');
         }
-        
-        // Hitung total
-        $subtotal = $cartItems->sum(function($item) {
-            return $item->price * $item->quantity;
-        });
-        
-        $shippingCost = $this->calculateShippingCost($request->shipping_service, $request->province);
+
+        $shippingCost = session('shipping_cost', 15000);
         $insurance = 15000;
         $discount = session('discount', 0);
         $total = $subtotal + $shippingCost + $insurance - $discount;
-        
-        // Generate order number
+
+        return view('checkout', compact(
+            'user',
+            'cart',
+            'subtotal',
+            'shippingCost',
+            'insurance',
+            'discount',
+            'total'
+        ));
+    }
+
+    public function process(Request $request)
+    {
+        $request->validate([
+            'province'         => 'required|string',
+            'shipping_service' => 'required|string',
+            'address'          => 'required|string',
+            'phone'            => 'required|string|max:20',
+            'payment_method'   => 'required|string',
+            'notes'            => 'nullable|string|max:500',
+        ]);
+
+        $cart = session()->get('cart', []);
+
+        if (empty($cart)) {
+            return redirect()->route('cart.index')
+                ->with('error', 'Keranjang belanja kosong.');
+        }
+
+        $subtotal = 0;
+        foreach ($cart as $item) {
+            $subtotal += $item['price'] * $item['quantity'];
+        }
+
+        $shippingCost = $this->getShippingCostByProvince(
+            $request->province,
+            $request->shipping_service
+        );
+
+        $insurance = 15000;
+        $discount = session('discount', 0);
+        $total = $subtotal + $shippingCost + $insurance - $discount;
+
         $orderNumber = 'ORD-' . strtoupper(Str::random(8)) . '-' . date('YmdHis');
-        
+
         DB::beginTransaction();
-        
+
         try {
-            // Create order
+
             $order = Order::create([
-                'order_number' => $orderNumber,
-                'user_id' => Auth::id(),
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'phone' => $request->phone,
-                'address' => $request->address,
-                'city' => $request->city,
-                'postal_code' => $request->postal_code,
-                'province' => $request->province,
-                'shipping_service' => $request->shipping_service,
+                'order_number'   => $orderNumber,
+                'user_id'        => Auth::id(),
+                'total_price'    => $total,
+                'status'         => 'pending',
+                'phone'          => $request->phone,
+                'address'        => $request->address,
                 'payment_method' => $request->payment_method,
-                'notes' => $request->notes,
-                'subtotal' => $subtotal,
-                'shipping_cost' => $shippingCost,
-                'insurance' => $insurance,
-                'discount' => $discount,
-                'total' => $total,
-                'status' => 'pending',
-                'coupon_code' => $request->coupon_code
+                'cart_data'      => json_encode($cart),
+                'notes'          => $request->notes,
             ]);
-            
-            // Create order items
-            foreach ($cartItems as $item) {
+
+            foreach ($cart as $item) {
+
                 OrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item->product_id,
-                    'quantity' => $item->quantity,
-                    'price' => $item->price,
-                    'subtotal' => $item->price * $item->quantity
+                    'order_id'      => $order->id,
+                    'product_id'    => is_numeric($item['id']) ? $item['id'] : null,
+                    'product_name'  => $item['name'],
+                    'product_image' => $item['image'] ?? null,
+                    'quantity'      => $item['quantity'],
+                    'price'         => $item['price'],
+                    'subtotal'      => $item['price'] * $item['quantity'],
                 ]);
             }
-            
-            // Clear cart
-            Cart::where('user_id', Auth::id())->delete();
-            
-            // Clear discount session
+
+            session()->forget('cart');
             session()->forget('discount');
             session()->forget('coupon_code');
-            
+            session()->forget('shipping_cost');
+
             DB::commit();
-            
-            // Redirect to payment page or success page
-            if ($request->payment_method === 'qris' || $request->payment_method === 'transfer_bank' || $request->payment_method === 'ewallet') {
-                return redirect()->route('payment.index', ['order' => $order->id]);
-            }
-            
-            return redirect()->route('checkout.success', $order->order_number);
-            
+
+            return redirect()->route('payment.index', $order->id);
+
         } catch (\Exception $e) {
+
             DB::rollBack();
-            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
+
+            return back()
+                ->with('error', 'Error: ' . $e->getMessage())
+                ->withInput();
         }
     }
-    
-    // GET /checkout/success/{order_number}
+
+    private function getShippingCostByProvince($province, $service)
+    {
+        $baseCost = [
+            'jakarta' => 15000,
+            'jabar' => 15000,
+            'jateng' => 15000,
+            'jogja' => 15000,
+            'jatim' => 15000,
+            'banten' => 15000,
+            'lampung' => 15000,
+            'bali' => 15000,
+
+            'aceh' => 35000,
+            'sumut' => 35000,
+            'sumbar' => 35000,
+            'riau' => 35000,
+            'kepri' => 35000,
+            'jambi' => 35000,
+            'bengkulu' => 35000,
+            'sumsel' => 35000,
+
+            'kalbar' => 35000,
+            'kalteng' => 35000,
+            'kalsel' => 35000,
+            'kaltim' => 35000,
+
+            'sulut' => 35000,
+            'sulteng' => 35000,
+            'sulsel' => 35000,
+            'sultra' => 35000,
+
+            'ntb' => 35000,
+            'ntt' => 35000,
+
+            'maluku' => 45000,
+            'malut' => 45000,
+
+            'papua' => 55000,
+            'papuabarat' => 55000,
+        ];
+
+        $cost = $baseCost[$province] ?? 15000;
+
+        if ($service === 'jne_yes') {
+            $cost += 20000;
+        } elseif ($service === 'sicepat') {
+            $cost += 5000;
+        }
+
+        return $cost;
+    }
+
     public function success($orderNumber)
     {
         $order = Order::where('order_number', $orderNumber)
             ->where('user_id', Auth::id())
             ->firstOrFail();
-            
-        return view('success', compact('order'));
+
+        return view('checkout.success', compact('order'));
     }
-    
-    // POST /checkout/coupon (tambahkan route baru)
+
     public function applyCoupon(Request $request)
     {
-        $request->validate([
-            'coupon_code' => 'required|string'
-        ]);
-        
-        $coupon = Coupon::where('code', $request->coupon_code)
-            ->where('expires_at', '>', now())
-            ->where('is_active', true)
-            ->first();
-            
-        if (!$coupon) {
+        $coupons = [
+            'DISKON10' => 10000,
+            'DISKON20' => 20000,
+            'SPECIAL50' => 50000
+        ];
+
+        $code = strtoupper($request->coupon_code);
+
+        if (isset($coupons[$code])) {
+
+            session([
+                'discount' => $coupons[$code],
+                'coupon_code' => $code
+            ]);
+
             return response()->json([
-                'success' => false,
-                'message' => 'Kode kupon tidak valid atau sudah kadaluarsa.'
+                'success' => true,
+                'discount_amount' => $coupons[$code],
+                'message' => 'Kupon berhasil!'
             ]);
         }
-        
-        // Simpan ke session
-        session(['discount' => $coupon->amount, 'coupon_code' => $coupon->code]);
-        
+
         return response()->json([
-            'success' => true,
-            'discount_amount' => $coupon->amount,
-            'message' => 'Kupon berhasil diterapkan!'
+            'success' => false,
+            'message' => 'Kupon tidak valid'
         ]);
     }
-    
-    // POST /checkout/shipping-cost (tambahkan route baru)
+
     public function getShippingCost(Request $request)
     {
-        $request->validate([
-            'shipping_service' => 'required|string',
-            'province' => 'required|string',
-            'subtotal' => 'required|numeric'
-        ]);
-        
-        $cost = $this->calculateShippingCost($request->shipping_service, $request->province);
-        
-        // Jika subtotal > 500000, gratis ongkir (optional)
-        if ($request->subtotal > 500000 && $request->shipping_service === 'jne_reg') {
-            $cost = 0;
-        }
-        
+        $cost = $this->getShippingCostByProvince(
+            $request->province,
+            $request->shipping_service
+        );
+
         return response()->json([
             'success' => true,
             'cost' => $cost
         ]);
-    }
-    
-    private function calculateShippingCost($service, $province)
-    {
-        // Base costs
-        $costs = [
-            'jne_reg' => 15000,
-            'jne_yes' => 35000,
-            'jnt' => 12000,
-            'sicepat' => 13000
-        ];
-        
-        // Adjust by province (lebih mahal untuk luar Jawa)
-        $jawaProvinces = ['jakarta', 'jabar', 'jateng', 'jatim', 'bali', 'lampung'];
-        
-        $cost = $costs[$service] ?? 15000;
-        
-        if (!in_array($province, $jawaProvinces)) {
-            $cost += 20000; // tambahan untuk luar Jawa
-        }
-        
-        return $cost;
     }
 }

@@ -94,10 +94,10 @@ class DashboardController extends Controller
             ->toArray();
 
         // ── RECENT ORDERS ─────────────────────────────────────────────────
-        $recentOrders = Order::with(['user', 'items.product'])
-            ->latest()
-            ->limit(5)
-            ->get();
+        $recentOrders = Order::with('user')
+        ->latest()
+        ->limit(5)
+        ->get();
 
         // ── TOP TRENDING PRODUCTS (by qty sold) ───────────────────────────
         $trendingProducts = DB::table('order_items')

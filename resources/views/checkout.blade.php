@@ -1,4 +1,3 @@
-{{-- resources/views/checkout.blade.php --}}
 @extends('layouts.app')
 
 @push('styles')
@@ -95,7 +94,7 @@
     .step.active .step-label { color: var(--white); }
     .step.done .step-label { color: var(--gold); }
 
-    /* ===== LAYOUT GRID ===== */
+    /* ===== LAYOUT GRID - RINGKASAN DI SAMPING KANAN ===== */
     .checkout-grid {
         display: grid;
         grid-template-columns: 1fr 420px;
@@ -151,24 +150,40 @@
         text-transform: uppercase;
     }
 
-    .form-input {
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.1);
+    .form-input, .form-select {
+        background: #1a1a1a;
+        border: 1px solid var(--border);
         border-radius: 10px;
         padding: 12px 14px;
-        color: var(--white);
+        color: #ffffff;
         font-family: 'DM Sans', sans-serif;
         font-size: 0.88rem;
-        transition: border-color 0.2s, background 0.2s;
+        transition: all 0.2s;
         outline: none;
+        width: 100%;
     }
-    .form-input:focus {
-        border-color: rgba(212,168,67,0.5);
-        background: rgba(212,168,67,0.04);
+    .form-input:focus, .form-select:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 2px rgba(212,168,67,0.1);
     }
-    .form-input::placeholder { color: rgba(255,255,255,0.2); }
-
-    select.form-input option { background: #1a1a1a; }
+    .form-input::placeholder { color: rgba(255,255,255,0.3); }
+    
+    .form-select optgroup {
+        background-color: #0d0d0d !important;
+        color: #d4a843 !important;
+        font-weight: 700;
+        font-style: normal;
+        padding: 10px;
+    }
+    .form-select option {
+        background-color: #1a1a1a !important;
+        color: #ffffff !important;
+        padding: 8px;
+    }
+    .form-select option:hover {
+        background-color: #d4a843 !important;
+        color: #000000 !important;
+    }
 
     /* ===== PAYMENT METHODS ===== */
     .payment-methods {
@@ -282,6 +297,8 @@
         flex-direction: column;
         gap: 16px;
         border-bottom: 1px solid var(--border);
+        max-height: 400px;
+        overflow-y: auto;
     }
 
     .summary-item {
@@ -325,10 +342,7 @@
         white-space: nowrap;
     }
 
-    /* Qty badge */
-    .qty-badge {
-        position: relative;
-    }
+    .qty-badge { position: relative; }
     .qty-badge::after {
         content: attr(data-qty);
         position: absolute;
@@ -346,7 +360,6 @@
         padding: 0 3px;
     }
 
-    /* ===== SUMMARY ROWS ===== */
     .summary-rows {
         padding: 20px 28px;
         display: flex;
@@ -389,7 +402,6 @@
         letter-spacing: -0.04em;
     }
 
-    /* ===== CTA BUTTON ===== */
     .btn-checkout {
         display: flex;
         align-items: center;
@@ -423,7 +435,6 @@
     .summary-note i { font-size: 0.75rem; color: var(--muted); }
     .summary-note span { font-size: 0.72rem; color: var(--muted); line-height: 1.5; }
 
-    /* ===== COUPON STRIP ===== */
     .coupon-strip {
         display: flex;
         gap: 10px;
@@ -439,10 +450,8 @@
         font-family: 'DM Sans', sans-serif;
         font-size: 0.82rem;
         outline: none;
-        transition: border-color 0.2s;
     }
     .coupon-input:focus { border-color: rgba(212,168,67,0.4); }
-    .coupon-input::placeholder { color: rgba(255,255,255,0.2); }
     .btn-coupon {
         padding: 11px 18px;
         background: rgba(212,168,67,0.12);
@@ -461,35 +470,27 @@
         border-color: rgba(212,168,67,0.5);
     }
 
-    /* Alert message */
     .alert-message {
         padding: 12px 16px;
         border-radius: 10px;
         margin-bottom: 20px;
         font-size: 0.8rem;
     }
-    .alert-error {
-        background: rgba(220, 38, 38, 0.1);
-        border: 1px solid rgba(220, 38, 38, 0.3);
-        color: #f87171;
-    }
-    .alert-success {
-        background: rgba(16, 185, 129, 0.1);
-        border: 1px solid rgba(16, 185, 129, 0.3);
-        color: #10b981;
-    }
+    .alert-error { background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.3); color: #f87171; }
+    .alert-success { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: #10b981; }
 
-    /* Loading state */
-    .btn-loading {
-        opacity: 0.7;
-        pointer-events: none;
-    }
-
-    /* ===== RESPONSIVE ===== */
+    /* RESPONSIVE: saat layar kecil, summary pindah ke bawah */
     @media (max-width: 960px) {
-        .checkout-grid { grid-template-columns: 1fr; }
-        .summary-card { position: static; }
-        .page-wrap { padding: 40px 24px 80px; }
+        .checkout-grid { 
+            grid-template-columns: 1fr; 
+        }
+        .summary-card { 
+            position: static; 
+            margin-top: 20px;
+        }
+        .page-wrap { 
+            padding: 40px 24px 80px; 
+        }
     }
     @media (max-width: 600px) {
         .form-row { grid-template-columns: 1fr; }
@@ -504,7 +505,7 @@
 <div class="checkout-page">
 <div class="page-wrap">
 
-    <!-- BREADCRUMB -->
+    <!-- BREADCRUMB & PROGRESS STEPS (sama seperti sebelumnya) -->
     <div class="breadcrumb">
         <a href="{{ url('/') }}">Home</a>
         <i class="bi bi-chevron-right"></i>
@@ -513,260 +514,192 @@
         <span>Checkout</span>
     </div>
 
-    <!-- PROGRESS STEPS -->
     <div class="checkout-steps">
-        <div class="step done">
-            <div class="step-num"><i class="bi bi-check-lg"></i></div>
-            <div class="step-label">Keranjang</div>
-        </div>
+        <div class="step done"><div class="step-num"><i class="bi bi-check-lg"></i></div><div class="step-label">Keranjang</div></div>
         <div class="step-line active"></div>
-        <div class="step active">
-            <div class="step-num">2</div>
-            <div class="step-label">Checkout</div>
-        </div>
+        <div class="step active"><div class="step-num">2</div><div class="step-label">Checkout</div></div>
         <div class="step-line"></div>
-        <div class="step">
-            <div class="step-num">3</div>
-            <div class="step-label">Pembayaran</div>
-        </div>
+        <div class="step"><div class="step-num">3</div><div class="step-label">Pembayaran</div></div>
         <div class="step-line"></div>
-        <div class="step">
-            <div class="step-num">4</div>
-            <div class="step-label">Selesai</div>
-        </div>
+        <div class="step"><div class="step-num">4</div><div class="step-label">Selesai</div></div>
     </div>
 
-    <!-- Alert Messages -->
     <div id="alertContainer"></div>
 
-    <!-- MAIN GRID -->
-    <form id="checkoutForm" action="{{ route('checkout.process') }}" method="POST">
-        @csrf
+<form id="checkoutForm" action="/checkout-process" method="POST">
+            @csrf
+        
+        {{-- GRID: FORM KIRI | SUMMARY KANAN --}}
         <div class="checkout-grid">
 
-            <!-- LEFT: FORMS -->
+            {{-- KOLOM KIRI (FORM) --}}
             <div>
-
-                <!-- ALAMAT PENGIRIMAN -->
+                <!-- CARD ALAMAT -->
                 <div class="card">
-                    <div class="card-title">
-                        <i class="bi bi-geo-alt"></i> Alamat Pengiriman
-                    </div>
-
+                    <div class="card-title"><i class="bi bi-geo-alt"></i> Alamat Pengiriman</div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">Nama Depan</label>
-                            <input type="text" name="first_name" class="form-input" placeholder="John" value="{{ old('first_name', $user->nama_depan ?? '') }}" required>
+                            <label class="form-label">Nama Lengkap</label>
+                            <input type="text" name="fullname" class="form-input" placeholder="John Doe" value="{{ old('fullname', Auth::user()->name ?? '') }}" required>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Nama Belakang</label>
-                            <input type="text" name="last_name" class="form-input" placeholder="Doe" value="{{ old('last_name', $user->nama_belakang ?? '') }}">
-                        </div>
-                    </div>
-
-                    <div class="form-row full">
                         <div class="form-group">
                             <label class="form-label">Nomor Telepon</label>
-                            <input type="tel" name="phone" class="form-input" placeholder="+62 812 3456 7890" value="{{ old('phone', $user->phone ?? '') }}" required>
+                            <input type="tel" name="phone" class="form-input" placeholder="081234567890" value="{{ old('phone') }}" required>
                         </div>
                     </div>
-
-                    <div class="form-row full" style="margin-bottom:14px;">
-                        <div class="form-group">
-                            <label class="form-label">Alamat Lengkap</label>
-                            <input type="text" name="address" class="form-input" placeholder="Jl. Merdeka No. 17, RT 02/RW 05" value="{{ old('address') }}" required>
-                        </div>
+                    <div class="form-group">
+                        <label class="form-label">Alamat Lengkap</label>
+                        <input type="text" name="address" class="form-input" placeholder="Jl. Merdeka No. 17, RT 02/RW 05" value="{{ old('address') }}" required>
                     </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Kota</label>
-                            <input type="text" name="city" class="form-input" placeholder="Bandar Lampung" value="{{ old('city') }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Kode Pos</label>
-                            <input type="text" name="postal_code" class="form-input" placeholder="35145" value="{{ old('postal_code') }}" required>
-                        </div>
-                    </div>
-
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">Provinsi</label>
-                            <select name="province" class="form-input" id="provinceSelect" required>
+                            <select name="province" class="form-select" id="provinceSelect" required onchange="updateShippingCost()">
                                 <option value="">Pilih Provinsi</option>
-                                <option value="lampung" {{ old('province') == 'lampung' ? 'selected' : '' }}>Lampung</option>
-                                <option value="jakarta" {{ old('province') == 'jakarta' ? 'selected' : '' }}>DKI Jakarta</option>
-                                <option value="jabar" {{ old('province') == 'jabar' ? 'selected' : '' }}>Jawa Barat</option>
-                                <option value="jateng" {{ old('province') == 'jateng' ? 'selected' : '' }}>Jawa Tengah</option>
-                                <option value="jatim" {{ old('province') == 'jatim' ? 'selected' : '' }}>Jawa Timur</option>
-                                <option value="bali" {{ old('province') == 'bali' ? 'selected' : '' }}>Bali</option>
+                                <optgroup label="PULAU JAWA">
+                                    <option value="banten">Banten</option>
+                                    <option value="jakarta">DKI Jakarta</option>
+                                    <option value="jabar">Jawa Barat</option>
+                                    <option value="jateng">Jawa Tengah</option>
+                                    <option value="jogja">DI Yogyakarta</option>
+                                    <option value="jatim">Jawa Timur</option>
+                                </optgroup>
+                                <optgroup label="PULAU SUMATRA">
+                                    <option value="aceh">Aceh</option>
+                                    <option value="sumut">Sumatera Utara</option>
+                                    <option value="sumbar">Sumatera Barat</option>
+                                    <option value="riau">Riau</option>
+                                    <option value="kepri">Kepulauan Riau</option>
+                                    <option value="jambi">Jambi</option>
+                                    <option value="bengkulu">Bengkulu</option>
+                                    <option value="sumsel">Sumatera Selatan</option>
+                                    <option value="lampung">Lampung</option>
+                                </optgroup>
+                                <optgroup label="PULAU KALIMANTAN">
+                                    <option value="kalbar">Kalimantan Barat</option>
+                                    <option value="kalteng">Kalimantan Tengah</option>
+                                    <option value="kalsel">Kalimantan Selatan</option>
+                                    <option value="kaltim">Kalimantan Timur</option>
+                                    <option value="kalut">Kalimantan Utara</option>
+                                </optgroup>
+                                <optgroup label="PULAU SULAWESI">
+                                    <option value="sulut">Sulawesi Utara</option>
+                                    <option value="gorontalo">Gorontalo</option>
+                                    <option value="sulteng">Sulawesi Tengah</option>
+                                    <option value="sulbar">Sulawesi Barat</option>
+                                    <option value="sulsel">Sulawesi Selatan</option>
+                                    <option value="sultra">Sulawesi Tenggara</option>
+                                </optgroup>
+                                <optgroup label="PULAU BALI & NUSA TENGGARA">
+                                    <option value="bali">Bali</option>
+                                    <option value="ntb">Nusa Tenggara Barat</option>
+                                    <option value="ntt">Nusa Tenggara Timur</option>
+                                </optgroup>
+                                <optgroup label="PULAU MALUKU & PAPUA">
+                                    <option value="maluku">Maluku</option>
+                                    <option value="malut">Maluku Utara</option>
+                                    <option value="papua">Papua</option>
+                                    <option value="papuabarat">Papua Barat</option>
+                                    <option value="papuaselatan">Papua Selatan</option>
+                                    <option value="papuapegunungan">Papua Pegunungan</option>
+                                    <option value="papuategah">Papua Tengah</option>
+                                </optgroup>
                             </select>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Layanan Pengiriman</label>
-                            <select name="shipping_service" class="form-input" id="shippingSelect" required>
-                                <option value="jne_reg" {{ old('shipping_service') == 'jne_reg' ? 'selected' : '' }}>JNE REG (2-3 hari)</option>
-                                <option value="jne_yes" {{ old('shipping_service') == 'jne_yes' ? 'selected' : '' }}>JNE YES (1 hari)</option>
-                                <option value="jnt" {{ old('shipping_service') == 'jnt' ? 'selected' : '' }}>J&T Express (2-4 hari)</option>
-                                <option value="sicepat" {{ old('shipping_service') == 'sicepat' ? 'selected' : '' }}>SiCepat BEST</option>
+                            <select name="shipping_service" class="form-select" id="shippingSelect" required onchange="updateShippingCost()">
+                                <option value="jne_reg">JNE REG (2-3 hari)</option>
+                                <option value="jne_yes">JNE YES (1 hari)</option>
+                                <option value="jnt">J&T Express (2-4 hari)</option>
+                                <option value="sicepat">SiCepat BEST (2-3 hari)</option>
+                                <option value="pos">POS Indonesia (3-5 hari)</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
-                <!-- METODE PEMBAYARAN -->
+                <!-- CARD PEMBAYARAN (HANYA QRIS) -->
                 <div class="card">
-                    <div class="card-title">
-                        <i class="bi bi-credit-card"></i> Metode Pembayaran
-                    </div>
-
+                    <div class="card-title"><i class="bi bi-qr-code"></i> Metode Pembayaran</div>
                     <div class="payment-methods">
-                        <div class="payment-option selected" data-payment="qris" onclick="selectPayment(this)">
+                        <div class="payment-option selected" data-payment="qris">
                             <div class="payment-radio"><div class="payment-radio-dot"></div></div>
-                            <div class="payment-icon-wrap">
-                                <i class="bi bi-qr-code"></i>
-                            </div>
+                            <div class="payment-icon-wrap"><i class="bi bi-qr-code"></i></div>
                             <div class="payment-info">
                                 <div class="payment-name">QRIS</div>
-                                <div class="payment-desc">GoPay · OVO · DANA · ShopeePay · semua bank</div>
+                                <div class="payment-desc">GoPay · OVO · DANA · ShopeePay · Semua Bank via QR</div>
                             </div>
-                            <span class="payment-badge">Direkomendasikan</span>
-                        </div>
-
-                        <div class="payment-option" data-payment="transfer_bank" onclick="selectPayment(this)">
-                            <div class="payment-radio"><div class="payment-radio-dot"></div></div>
-                            <div class="payment-icon-wrap">
-                                <i class="bi bi-bank"></i>
-                            </div>
-                            <div class="payment-info">
-                                <div class="payment-name">Transfer Bank</div>
-                                <div class="payment-desc">BCA · Mandiri · BNI · BRI</div>
-                            </div>
-                        </div>
-
-                        <div class="payment-option" data-payment="ewallet" onclick="selectPayment(this)">
-                            <div class="payment-radio"><div class="payment-radio-dot"></div></div>
-                            <div class="payment-icon-wrap">
-                                <i class="bi bi-wallet2"></i>
-                            </div>
-                            <div class="payment-info">
-                                <div class="payment-name">E-Wallet</div>
-                                <div class="payment-desc">GoPay · OVO · DANA · ShopeePay</div>
-                            </div>
-                        </div>
-
-                        <div class="payment-option" data-payment="cod" onclick="selectPayment(this)">
-                            <div class="payment-radio"><div class="payment-radio-dot"></div></div>
-                            <div class="payment-icon-wrap">
-                                <i class="bi bi-cash-stack"></i>
-                            </div>
-                            <div class="payment-info">
-                                <div class="payment-name">COD (Bayar di Tempat)</div>
-                                <div class="payment-desc">Tersedia untuk area tertentu</div>
-                            </div>
+                            <span class="payment-badge">Metode Pembayaran Resmi</span>
                         </div>
                     </div>
-
                     <input type="hidden" name="payment_method" id="paymentMethod" value="qris">
-
-                    <!-- COUPON -->
                     <div style="margin-top:22px;padding-top:22px;border-top:1px solid var(--border);">
                         <div class="form-label" style="margin-bottom:8px;">Kode Kupon / Promo</div>
                         <div class="coupon-strip">
-                            <input type="text" class="coupon-input" placeholder="Masukkan kode kupon…" id="couponInput">
+                            <input type="text" class="coupon-input" id="couponInput" placeholder="DISKON10, DISKON20, SPECIAL50">
                             <button type="button" class="btn-coupon" onclick="applyCoupon()">Terapkan</button>
                         </div>
                         <div id="couponMessage" style="font-size: 0.7rem; margin-top: 8px;"></div>
                     </div>
                 </div>
 
-                <!-- CATATAN -->
+                <!-- CARD CATATAN -->
                 <div class="card">
-                    <div class="card-title">
-                        <i class="bi bi-chat-square-text"></i> Catatan Pesanan (Opsional)
-                    </div>
+                    <div class="card-title"><i class="bi bi-chat-square-text"></i> Catatan Pesanan (Opsional)</div>
                     <textarea name="notes" class="form-input" rows="3" placeholder="Instruksi khusus untuk pengiriman, dll…" style="resize:vertical;min-height:80px;">{{ old('notes') }}</textarea>
                 </div>
-
             </div>
 
-            <!-- RIGHT: ORDER SUMMARY -->
+            {{-- KOLOM KANAN (RINGKASAN PESANAN) --}}
             <div>
                 <div class="summary-card">
-                    <div class="summary-header">
-                        <div class="summary-title">Ringkasan Pesanan</div>
-                    </div>
+                    <div class="summary-header"><div class="summary-title">Ringkasan Pesanan</div></div>
 
-                    <!-- ITEMS - Dynamic from cart -->
-                    <div class="summary-items" id="cartItemsContainer">
-                        @php
-                            $subtotal = 0;
-                        @endphp
-                        @forelse($cartItems as $item)
-                            @php
-                                $itemTotal = $item->price * $item->quantity;
-                                $subtotal += $itemTotal;
-                            @endphp
-                            <div class="summary-item" data-item-id="{{ $item->id }}">
-                                <div class="item-img qty-badge" data-qty="{{ $item->quantity }}">
-                                    @if($item->product && $item->product->image)
-                                        <img src="{{ asset('storage/' . $item->product->image) }}" alt="{{ $item->product->name }}">
+                    <div class="summary-items">
+                        @php $subtotal = 0; @endphp
+                        @forelse($cart as $key => $item)
+                            @php $itemTotal = $item['price'] * $item['quantity']; $subtotal += $itemTotal; @endphp
+                            <div class="summary-item">
+                                <div class="item-img qty-badge" data-qty="{{ $item['quantity'] }}">
+                                    @if(isset($item['image']) && $item['image'])
+                                        <img src="{{ asset('storage/' . $item['image']) }}" alt="{{ $item['name'] }}">
                                     @else
-                                        <i class="bi bi-cart" style="color: var(--muted);"></i>
+                                        <i class="bi bi-cart" style="color: var(--muted); font-size: 1.5rem;"></i>
                                     @endif
                                 </div>
                                 <div class="item-info">
-                                    <div class="item-name">{{ $item->product->name ?? 'Product' }}</div>
-                                    <div class="item-meta">{{ $item->variant ?? 'Standard' }}</div>
+                                    <div class="item-name">{{ $item['name'] }}</div>
+                                    <div class="item-meta">Qty: {{ $item['quantity'] }}</div>
                                 </div>
-                                <div class="item-price">Rp {{ number_format($item->price, 0, ',', '.') }}</div>
+                                <div class="item-price">Rp {{ number_format($itemTotal, 0, ',', '.') }}</div>
                             </div>
                         @empty
-                            <div class="summary-item">
-                                <div class="item-info">
-                                    <div class="item-name">Keranjang belanja kosong</div>
-                                </div>
+                            <div class="text-center py-4" style="color: var(--muted); text-align: center;">
+                                <i class="bi bi-cart-x" style="font-size: 2rem;"></i>
+                                <p>Keranjang belanja kosong</p>
+                                <a href="{{ route('products.index') }}" class="btn-coupon">Belanja Sekarang</a>
                             </div>
                         @endforelse
                     </div>
 
-                    <!-- ROWS - Dynamic -->
                     <div class="summary-rows">
-                        <div class="summary-row">
-                            <span class="row-label">Subtotal</span>
-                            <span class="row-val" id="subtotalVal">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
-                        </div>
-                        <div class="summary-row">
-                            <span class="row-label">Ongkos Kirim</span>
-                            <span class="row-val" id="shippingCostVal">Rp {{ number_format($shippingCost ?? 0, 0, ',', '.') }}</span>
-                        </div>
-                        <div class="summary-row" id="discountRow" style="{{ ($discount ?? 0) > 0 ? '' : 'display:none;' }}">
-                            <span class="row-label">Diskon Promo</span>
-                            <span class="row-val discount" id="discountVal">− Rp {{ number_format($discount ?? 0, 0, ',', '.') }}</span>
-                        </div>
-                        <div class="summary-row">
-                            <span class="row-label">Asuransi Pengiriman</span>
-                            <span class="row-val" id="insuranceVal">Rp {{ number_format($insurance ?? 15000, 0, ',', '.') }}</span>
-                        </div>
+                        <div class="summary-row"><span class="row-label">Subtotal</span><span class="row-val" id="subtotalVal">Rp {{ number_format($subtotal, 0, ',', '.') }}</span></div>
+                        <div class="summary-row"><span class="row-label">Ongkos Kirim</span><span class="row-val" id="shippingCostVal">Rp {{ number_format($shippingCost ?? 0, 0, ',', '.') }}</span></div>
+                        <div class="summary-row" id="discountRow" style="{{ ($discount ?? 0) > 0 ? '' : 'display:none;' }}"><span class="row-label">Diskon Promo</span><span class="row-val discount" id="discountVal">− Rp {{ number_format($discount ?? 0, 0, ',', '.') }}</span></div>
+                        <div class="summary-row"><span class="row-label">Asuransi Pengiriman</span><span class="row-val" id="insuranceVal">Rp {{ number_format($insurance ?? 15000, 0, ',', '.') }}</span></div>
                     </div>
 
-                    <!-- TOTAL -->
                     <div class="summary-total">
                         <span class="total-label">Total Pembayaran</span>
                         <span class="total-val" id="totalVal">Rp {{ number_format(($subtotal + ($shippingCost ?? 0) + ($insurance ?? 15000) - ($discount ?? 0)), 0, ',', '.') }}</span>
                     </div>
 
-                    <!-- CTA -->
                     <div class="btn-checkout-wrap">
-                        <button type="submit" class="btn-checkout" id="submitBtn">
-                            Lanjut ke Pembayaran <i class="bi bi-arrow-right"></i>
-                        </button>
+                        <button type="submit" class="btn-checkout" id="submitBtn">Lanjut ke Pembayaran <i class="bi bi-arrow-right"></i></button>
                     </div>
 
-                    <div class="summary-note">
-                        <i class="bi bi-shield-lock"></i>
-                        <span>Transaksi aman & terenkripsi SSL 256-bit. Data Anda terlindungi.</span>
-                    </div>
+                    <div class="summary-note"><i class="bi bi-shield-lock"></i><span>Transaksi aman & terenkripsi SSL 256-bit. Data Anda terlindungi.</span></div>
                 </div>
             </div>
 
@@ -778,50 +711,53 @@
 
 @push('scripts')
 <script>
-    // Variabel global untuk menyimpan state
     let currentSubtotal = {{ $subtotal ?? 0 }};
     let currentShipping = {{ $shippingCost ?? 0 }};
     let currentInsurance = {{ $insurance ?? 15000 }};
     let currentDiscount = {{ $discount ?? 0 }};
     let appliedCouponCode = null;
 
-    // Select payment method
-    function selectPayment(el) {
-        document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
-        el.classList.add('selected');
-        const paymentMethod = el.getAttribute('data-payment');
-        document.getElementById('paymentMethod').value = paymentMethod;
-        
-        // Update shipping cost based on payment method? (optional)
-        if (paymentMethod === 'cod') {
-            // Maybe add COD fee
-            updateShippingCost(currentShipping + 5000);
-        } else {
-            updateShippingCost(currentShipping);
-        }
+    const shippingCostByProvince = {
+        'jakarta': 15000, 'banten': 15000, 'jabar': 15000, 'jateng': 15000, 'jogja': 15000, 'jatim': 15000, 'bali': 15000, 'lampung': 15000,
+        'aceh': 35000, 'sumut': 35000, 'sumbar': 35000, 'riau': 35000, 'kepri': 35000, 'jambi': 35000, 'bengkulu': 35000, 'sumsel': 35000,
+        'kalbar': 35000, 'kalteng': 35000, 'kalsel': 35000, 'kaltim': 35000, 'kalut': 35000,
+        'sulut': 35000, 'gorontalo': 35000, 'sulteng': 35000, 'sulbar': 35000, 'sulsel': 35000, 'sultra': 35000,
+        'ntb': 35000, 'ntt': 35000,
+        'maluku': 50000, 'malut': 50000,
+        'papua': 55000, 'papuabarat': 55000, 'papuaselatan': 55000, 'papuapegunungan': 55000, 'papuategah': 55000
+    };
+
+    function getOngkir(province, service) {
+        let cost = shippingCostByProvince[province] || 15000;
+        if (service === 'jne_yes') cost += 20000;
+        else if (service === 'sicepat') cost += 5000;
+        return cost;
     }
 
-    // Update shipping cost
-    function updateShippingCost(newCost) {
-        currentShipping = newCost;
-        document.getElementById('shippingCostVal').innerText = formatRupiah(currentShipping);
+    function updateShippingCost() {
+        const province = document.getElementById('provinceSelect').value;
+        const service = document.getElementById('shippingSelect').value;
+        if (!province) return;
+        
+        let newShipping = getOngkir(province, service);
+        currentShipping = newShipping;
+        document.getElementById('shippingCostVal').innerHTML = 'Rp ' + new Intl.NumberFormat('id-ID').format(newShipping);
         updateTotal();
     }
 
-    // Update total display
+    function selectPayment(el) {
+        document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('paymentMethod').value = el.getAttribute('data-payment');
+    }
+
     function updateTotal() {
         const total = currentSubtotal + currentShipping + currentInsurance - currentDiscount;
-        document.getElementById('totalVal').innerHTML = formatRupiah(total);
+        document.getElementById('totalVal').innerHTML = 'Rp ' + new Intl.NumberFormat('id-ID').format(total);
     }
 
-    // Format Rupiah
-    function formatRupiah(angka) {
-        return 'Rp ' + new Intl.NumberFormat('id-ID').format(angka);
-    }
-
-    // Apply coupon via AJAX
     async function applyCoupon() {
-        const couponCode = document.getElementById('couponInput').value.trim();
+        const couponCode = document.getElementById('couponInput').value.trim().toUpperCase();
         if (!couponCode) {
             showMessage('Masukkan kode kupon terlebih dahulu!', 'error');
             return;
@@ -835,20 +771,16 @@
         try {
             const response = await fetch('{{ route("checkout.applyCoupon") }}', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
                 body: JSON.stringify({ coupon_code: couponCode })
             });
-
             const data = await response.json();
 
             if (data.success) {
                 currentDiscount = data.discount_amount;
                 appliedCouponCode = couponCode;
                 document.getElementById('discountRow').style.display = 'flex';
-                document.getElementById('discountVal').innerHTML = '− ' + formatRupiah(currentDiscount);
+                document.getElementById('discountVal').innerHTML = '− Rp ' + new Intl.NumberFormat('id-ID').format(currentDiscount);
                 document.getElementById('couponMessage').innerHTML = '<span style="color: #10b981;">✓ ' + data.message + '</span>';
                 updateTotal();
                 showMessage(data.message, 'success');
@@ -857,7 +789,6 @@
                 showMessage(data.message, 'error');
             }
         } catch (error) {
-            console.error('Error:', error);
             showMessage('Terjadi kesalahan, silakan coba lagi.', 'error');
         } finally {
             btn.innerText = originalText;
@@ -865,44 +796,26 @@
         }
     }
 
-    // Show alert message
     function showMessage(message, type) {
         const container = document.getElementById('alertContainer');
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert-message alert-${type}`;
         alertDiv.innerHTML = message;
         container.appendChild(alertDiv);
-        
-        setTimeout(() => {
-            alertDiv.remove();
-        }, 5000);
+        setTimeout(() => alertDiv.remove(), 5000);
     }
 
-    // Form validation before submit
-    document.getElementById('checkoutForm')?.addEventListener('submit', function(e) {
-        const submitBtn = document.getElementById('submitBtn');
-        submitBtn.classList.add('btn-loading');
-        submitBtn.innerHTML = 'Memproses... <i class="bi bi-hourglass-split"></i>';
-        
-        // Basic validation
-        const requiredFields = ['first_name', 'phone', 'address', 'city', 'postal_code'];
-        let isValid = true;
-        
+    // PERBAIKI INI - HAPUS alert dan perbaiki syntax
+    document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+        const requiredFields = ['fullname', 'phone', 'address', 'province'];
         for (let field of requiredFields) {
             const input = document.querySelector(`[name="${field}"]`);
             if (input && !input.value.trim()) {
-                isValid = false;
-                showMessage(`Field ${field.replace('_', ' ')} harus diisi!`, 'error');
                 e.preventDefault();
-                submitBtn.classList.remove('btn-loading');
-                submitBtn.innerHTML = 'Lanjut ke Pembayaran <i class="bi bi-arrow-right"></i>';
-                break;
+                showMessage(`Field ${field.replace('_', ' ')} harus diisi!`, 'error');
+                return;
             }
         }
-        
-        if (!isValid) return;
-        
-        // Add coupon code to form if applied
         if (appliedCouponCode) {
             const hiddenInput = document.createElement('input');
             hiddenInput.type = 'hidden';
@@ -912,45 +825,7 @@
         }
     });
 
-    // Update shipping cost when shipping service changes
-    document.getElementById('shippingSelect')?.addEventListener('change', async function() {
-        const shippingService = this.value;
-        const province = document.getElementById('provinceSelect').value;
-        
-        if (!province) {
-            showMessage('Pilih provinsi terlebih dahulu!', 'error');
-            return;
-        }
-        
-        try {
-            const response = await fetch('{{ route("checkout.shippingCost") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    shipping_service: shippingService,
-                    province: province,
-                    subtotal: currentSubtotal
-                })
-            });
-            
-            const data = await response.json();
-            if (data.success) {
-                updateShippingCost(data.cost);
-            }
-        } catch (error) {
-            console.error('Error fetching shipping cost:', error);
-        }
-    });
-
-    // Initialize payment method on load
-    document.addEventListener('DOMContentLoaded', function() {
-        const selectedPayment = document.querySelector('.payment-option.selected');
-        if (selectedPayment) {
-            document.getElementById('paymentMethod').value = selectedPayment.getAttribute('data-payment');
-        }
-    });
+    document.getElementById('provinceSelect')?.addEventListener('change', updateShippingCost);
+    document.getElementById('shippingSelect')?.addEventListener('change', updateShippingCost);
 </script>
 @endpush

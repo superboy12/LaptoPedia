@@ -6,26 +6,33 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    protected $table = 'orders';
+    protected $primaryKey = 'id';
+    
     protected $fillable = [
-        'user_id',
         'order_number',
+        'user_id',
         'total_price',
         'status',
         'phone',
         'address',
-        'latitude',
-        'longitude',
         'payment_method',
-        'snap_token',
+        'cart_data',
+        'payment_proof',
+        'notes',
     ];
-
+    
+    protected $casts = [
+        'cart_data' => 'array'
+    ];
+    
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id_user');
     }
-
+    
     public function items()
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->hasMany(OrderItem::class, 'order_id');
     }
 }

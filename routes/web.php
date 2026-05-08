@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\AdminController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 
@@ -73,12 +75,77 @@ Route::middleware('auth')->group(function () {
         Route::post('/shipping-cost', [CheckoutController::class, 'getShippingCost'])->name('shippingCost');
     });
 
+    // ── Payment Routes ──────────────────────────────────────
+    Route::get('/payment/{order}', [PaymentController::class, 'index'])->name('payment.index');
+    Route::post('/payment/upload/{order}', [PaymentController::class, 'uploadProof'])->name('payment.upload');
+
+    // ── CHECKOUT PROCESS (FIX - TANPA DUPLICATE) ──
+    Route::post('/checkout-process', function(Request $request) {
+        $cart = session()->get('cart', []);
+        
+        if (empty($cart)) {
+            return redirect('/cart')->with('error', 'Cart kosong');
+        }
+        
+        $subtotal = 0;
+        foreach ($cart as $item) {
+            $subtotal += $item['price'] * $item['quantity'];
+        }
+        
+        $shippingCost = 15000;
+        $insurance = 15000;
+        $total = $subtotal + $shippingCost + $insurance;
+        
+        $order = \App\Models\Order::create([
+            'order_number' => 'ORD-' . time(),
+            'user_id' => auth()->id(),
+            'total_price' => $total,
+            'status' => 'pending',
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'payment_method' => 'qris',
+            'cart_data' => json_encode($cart),
+        ]);
+        
+        foreach ($cart as $item) {
+            \App\Models\OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $item['id'],
+                'product_name' => $item['name'],
+                'quantity' => $item['quantity'],
+                'price' => $item['price'],
+            ]);
+        }
+        
+        session()->forget('cart');
+        
+        return redirect('/payment/' . $order->id);
+    });
+
+    // ── Image Route ───────────────────────────────────────
+    Route::get('/image/{path}', function ($path) {
+        $fullPath = storage_path('app/public/' . $path);
+        if (!file_exists($fullPath)) {
+            abort(404);
+        }
+        return response()->file($fullPath);
+    })->where('path', '.*')->name('image.show');
+
+    // My Orders
+    Route::get('/my-orders', [App\Http\Controllers\OrderController::class, 'index'])->name('my-orders');
+    Route::get('/my-orders/{id}', [App\Http\Controllers\OrderController::class, 'show'])->name('my-orders.show');
+});
+
+// Confirm order delivery (customer confirms order received)
+Route::post('/order/confirm/{id}', [App\Http\Controllers\OrderController::class, 'confirmDelivery'])->name('order.confirm');
+
+
     // ── Chat (User Side) ───────────────────────────────────
     Route::prefix('chat')->name('chat.')->group(function () {
         Route::post('/send', [ChatController::class, 'send'])->name('send');
         Route::get('/poll',  [ChatController::class, 'poll'])->name('poll');
     });
-});
+
 
 // ─────────────────────────────────────────────
 //  ADMIN AUTH ROUTES (LENGKAP)
@@ -89,8 +156,11 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // ── Order Management ───────────────────────────────────
-    Route::get('/orders',            [OrderAdminController::class, 'index'])->name('orders');
-    Route::patch('/orders/{id}',     [OrderAdminController::class, 'updateStatus'])->name('orders.update_status');
+    Route::get('/orders',                         [OrderAdminController::class, 'index'])->name('orders');
+    Route::patch('/orders/{id}',                  [OrderAdminController::class, 'updateStatus'])->name('orders.update_status');
+    Route::post('/orders/{id}/confirm-payment',   [OrderAdminController::class, 'confirmPayment'])->name('orders.confirm_payment');
+    Route::post('/orders/{id}/reject-payment',    [OrderAdminController::class, 'rejectPayment'])->name('orders.reject_payment');
+    Route::get('/orders/{id}/proof',              [OrderAdminController::class, 'viewProof'])->name('orders.proof');
 
     // ── Product CRUD ───────────────────────────────────────
     Route::get('/products',          [ProductAdminController::class, 'index'])->name('products');

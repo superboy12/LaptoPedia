@@ -453,9 +453,9 @@
                     @endif
                 </a>
 
-                <a href="#" class="user-dd-link">
-                    <i class="bi bi-bag"></i> Pesanan Saya
-                </a>
+               <a href="{{ route('my-orders') }}" class="user-dd-link">
+    <i class="bi bi-bag"></i> Pesanan Saya
+</a>
 
                 <div style="height:1px;background:var(--border);margin:4px 0;"></div>
 
