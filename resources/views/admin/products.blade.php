@@ -29,6 +29,10 @@
     overflow-y: auto;
     animation: slideUp 0.3s cubic-bezier(0.2,0.8,0.2,1);
 }
+.modal-box-small {
+    max-width: 480px;
+}
+
 @keyframes slideUp {
     from { opacity:0; transform: translateY(20px) scale(0.97); }
     to   { opacity:1; transform: translateY(0) scale(1); }
@@ -188,8 +192,80 @@
 .empty-products i { font-size: 4rem; opacity: 0.15; display: block; margin-bottom: 16px; }
 
 /* Preview img in form */
-#imgPreview { max-height: 100px; max-width: 100%; object-fit: contain; border-radius: 8px; margin-top: 10px; display: none; }
-#editImgPreview { max-height: 100px; max-width: 100%; object-fit: contain; border-radius: 8px; margin-top: 10px; }
+#imgPreview, #editImgPreview { max-height: 100px; max-width: 100%; object-fit: contain; border-radius: 8px; margin-top: 10px; display: none; }
+
+/* Category badge & management */
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.categories-container {
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 28px;
+    border: 1px solid var(--border);
+}
+
+.categories-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.category-badge {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+}
+.category-badge:hover {
+    border-color: var(--gold);
+    background: rgba(212,168,67,0.1);
+}
+.category-badge .cat-name {
+    color: var(--white);
+    font-size: 0.8rem;
+}
+.category-badge .cat-edit {
+    color: var(--gold);
+    cursor: pointer;
+    font-size: 0.75rem;
+}
+.category-badge .cat-delete {
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.75rem;
+}
+.category-badge .cat-delete:hover { color: #f87171; }
+
+.btn-category {
+    background: rgba(212,168,67,0.15);
+    border: 1px solid rgba(212,168,67,0.3);
+    color: var(--gold);
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.btn-category:hover {
+    background: rgba(212,168,67,0.25);
+}
 </style>
 @endpush
 
@@ -201,6 +277,33 @@
     <i class="bi bi-check-circle"></i> {{ session('success') }}
 </div>
 @endif
+
+{{-- CATEGORY MANAGEMENT SECTION --}}
+<div class="categories-container">
+    <div class="category-header">
+        <h4 style="font-family:'Manrope',sans-serif;font-size:0.9rem;color:var(--gold);margin:0;">
+            <i class="bi bi-tags"></i> Kelola Kategori
+        </h4>
+        <button onclick="openModal('categoryModal')" class="btn-category">
+            <i class="bi bi-plus-circle"></i> Tambah Kategori
+        </button>
+    </div>
+    
+    <div class="categories-grid">
+        @forelse($categories as $cat)
+        <div class="category-badge">
+            <span class="cat-name">{{ $cat->name }}</span>
+            <i class="bi bi-pencil cat-edit" onclick="openEditCategory({{ $cat->id }}, '{{ $cat->name }}')"></i>
+            <form method="POST" action="{{ route('admin.categories.destroy', $cat->id) }}" style="display:inline;" onsubmit="return confirm('Hapus kategori {{ $cat->name }}? Produk dalam kategori ini akan kehilangan kategori.');">
+                @csrf @method('DELETE')
+                <i class="bi bi-x-lg cat-delete" onclick="this.closest('form').submit()"></i>
+            </form>
+        </div>
+        @empty
+        <div style="color:var(--muted);font-size:0.8rem;">Belum ada kategori. Klik "Tambah Kategori" untuk membuat.</div>
+        @endforelse
+    </div>
+</div>
 
 {{-- TOP BAR --}}
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:14px;flex-wrap:wrap;animation:fadeUp 0.4s var(--transition);">
@@ -305,6 +408,67 @@
 </div>
 @endif
 
+
+{{-- ═══════════ MODAL TAMBAH KATEGORI ═══════════ --}}
+<div class="modal-overlay" id="categoryModal" onclick="closeOnBg(event,'categoryModal')">
+    <div class="modal-box modal-box-small">
+        <div class="modal-title">
+            <span><i class="bi bi-tag" style="color:var(--gold);margin-right:8px;"></i>Tambah Kategori</span>
+            <button onclick="closeModal('categoryModal')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem;"><i class="bi bi-x-lg"></i></button>
+        </div>
+
+        <form method="POST" action="{{ route('admin.categories.store') }}">
+            @csrf
+            <div class="f-group">
+                <label class="f-label">Nama Kategori <span>*</span></label>
+                <input type="text" name="name" class="f-input" placeholder="cth: Laptop, Aksesoris, Gaming" required>
+            </div>
+
+            <div style="display:flex;gap:10px;padding-top:16px;border-top:1px solid var(--border);">
+                <button type="button" onclick="closeModal('categoryModal')"
+                    style="flex:1;background:none;border:1px solid var(--border);color:var(--muted);padding:12px;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;">
+                    Batal
+                </button>
+                <button type="submit"
+                    style="flex:2;background:var(--gold);color:#000;border:none;padding:12px;border-radius:10px;cursor:pointer;font-family:'Manrope',sans-serif;font-weight:800;font-size:0.9rem;transition:opacity 0.2s;"
+                    onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+                    <i class="bi bi-check-lg"></i> Simpan Kategori
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- ═══════════ MODAL EDIT KATEGORI ═══════════ --}}
+<div class="modal-overlay" id="editCategoryModal" onclick="closeOnBg(event,'editCategoryModal')">
+    <div class="modal-box modal-box-small">
+        <div class="modal-title">
+            <span><i class="bi bi-pencil" style="color:var(--gold);margin-right:8px;"></i>Edit Kategori</span>
+            <button onclick="closeModal('editCategoryModal')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem;"><i class="bi bi-x-lg"></i></button>
+        </div>
+
+        <form id="editCategoryForm" method="POST">
+            @csrf
+            @method('PUT')
+            <div class="f-group">
+                <label class="f-label">Nama Kategori <span>*</span></label>
+                <input type="text" name="name" id="editCategoryName" class="f-input" required>
+            </div>
+
+            <div style="display:flex;gap:10px;padding-top:16px;border-top:1px solid var(--border);">
+                <button type="button" onclick="closeModal('editCategoryModal')"
+                    style="flex:1;background:none;border:1px solid var(--border);color:var(--muted);padding:12px;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;">
+                    Batal
+                </button>
+                <button type="submit"
+                    style="flex:2;background:var(--gold);color:#000;border:none;padding:12px;border-radius:10px;cursor:pointer;font-family:'Manrope',sans-serif;font-weight:800;font-size:0.9rem;transition:opacity 0.2s;"
+                    onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+                    <i class="bi bi-check-lg"></i> Simpan Perubahan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
 {{-- ═══════════ MODAL TAMBAH PRODUK ═══════════ --}}
 <div class="modal-overlay" id="addModal" onclick="closeOnBg(event,'addModal')">
@@ -435,6 +599,7 @@
 
         <form id="editForm" method="POST" enctype="multipart/form-data">
             @csrf
+            @method('PUT')
             <div class="f-row">
                 <div class="f-group">
                     <label class="f-label">Nama Produk <span>*</span></label>
@@ -512,7 +677,7 @@
             <div class="f-group">
                 <label class="f-label">Ganti Gambar <span style="color:var(--muted);font-weight:400;">(opsional)</span></label>
                 <div style="margin-bottom:10px;">
-                    <img id="editImgPreview" src="" alt="Current" style="display:none;">
+                    <img id="editImgPreview" src="" alt="Current" style="display:none; max-height:80px; border-radius:8px;">
                 </div>
                 <div class="img-upload-zone" id="editUploadZone" onclick="document.getElementById('editImageInput').click()">
                     <i class="bi bi-cloud-upload" style="font-size:1.5rem;color:var(--muted);display:block;margin-bottom:6px;"></i>
@@ -547,9 +712,9 @@ function closeOnBg(e, id) { if (e.target === document.getElementById(id)) closeM
 
 // Preview gambar sebelum upload
 function previewImg(input, previewId, zoneId) {
-    const file    = input.files[0];
+    const file = input.files[0];
     const preview = document.getElementById(previewId);
-    const zone    = document.getElementById(zoneId);
+    const zone = document.getElementById(zoneId);
     if (!file) return;
     const reader = new FileReader();
     reader.onload = e => {
@@ -560,39 +725,50 @@ function previewImg(input, previewId, zoneId) {
     reader.readAsDataURL(file);
 }
 
-// Buka modal edit dengan data produk
-    function openEdit(id, category_id, name, description, price, stock, image, variations, spec_title, spec_description, highlights) {
-        const form = document.getElementById('editForm');
-        form.action = `/admin/products/${id}`;
+// Buka modal edit kategori
+function openEditCategory(id, name) {
+    const form = document.getElementById('editCategoryForm');
+    form.action = `/admin/categories/${id}`;
+    document.getElementById('editCategoryName').value = name;
+    openModal('editCategoryModal');
+}
 
-        document.getElementById('editName').value = name;
-        document.getElementById('editCategory').value = category_id;
-        document.getElementById('editPrice').value = price;
-        document.getElementById('editStock').value = stock;
-        document.getElementById('editDescription').value = description;
-        document.getElementById('editSpecTitle').value = spec_title || '';
-        document.getElementById('editSpecDescription').value = spec_description || '';
+// Buka modal edit produk
+let capIndex = 100;
+let colIndex = 100;
 
-        // Reset highlights
-        for(let i=0; i<4; i++) {
-            document.getElementById(`editHlLabel${i}`).value = '';
-            document.getElementById(`editHlTitle${i}`).value = '';
-            document.getElementById(`editHlDesc${i}`).value = '';
-        }
+function openEdit(id, category_id, name, description, price, stock, image, variations, spec_title, spec_description, highlights) {
+    const form = document.getElementById('editForm');
+    form.action = `/admin/products/${id}`;
 
-        // Fill highlights
-        if (highlights && highlights.length > 0) {
-            highlights.forEach((hl, i) => {
-                if (i < 4) {
-                    document.getElementById(`editHlLabel${i}`).value = hl.label;
-                    document.getElementById(`editHlTitle${i}`).value = hl.title;
-                    document.getElementById(`editHlDesc${i}`).value = hl.description || '';
-                }
-            });
-        }
+    document.getElementById('editName').value = name;
+    document.getElementById('editCategory').value = category_id;
+    document.getElementById('editPrice').value = price;
+    document.getElementById('editStock').value = stock;
+    document.getElementById('editDescription').value = description;
+    document.getElementById('editSpecTitle').value = spec_title || '';
+    document.getElementById('editSpecDescription').value = spec_description || '';
+
+    // Reset highlights
+    for(let i=0; i<4; i++) {
+        document.getElementById(`editHlLabel${i}`).value = '';
+        document.getElementById(`editHlTitle${i}`).value = '';
+        document.getElementById(`editHlDesc${i}`).value = '';
+    }
+
+    // Fill highlights
+    if (highlights && highlights.length > 0) {
+        highlights.forEach((hl, i) => {
+            if (i < 4) {
+                document.getElementById(`editHlLabel${i}`).value = hl.label || '';
+                document.getElementById(`editHlTitle${i}`).value = hl.title || '';
+                document.getElementById(`editHlDesc${i}`).value = hl.description || '';
+            }
+        });
+    }
 
     const prevImg = document.getElementById('editImgPreview');
-    if (image) {
+    if (image && image !== 'null') {
         prevImg.src = image;
         prevImg.style.display = 'block';
     } else {
@@ -611,6 +787,9 @@ function previewImg(input, previewId, zoneId) {
     const editColList = document.getElementById('editColorsList');
     editColList.innerHTML = '';
 
+    capIndex = 100;
+    colIndex = 100;
+
     if (variations && variations.length > 0) {
         variations.forEach(v => {
             if (v.type === 'capacity') {
@@ -619,7 +798,7 @@ function previewImg(input, previewId, zoneId) {
                 div.style.marginBottom = '8px';
                 div.style.position = 'relative';
                 div.innerHTML = `
-                    <input type="text" name="capacities[${capIndex}][value]" class="f-input" value="${v.value}">
+                    <input type="text" name="capacities[${capIndex}][value]" class="f-input" value="${v.value.replace(/"/g, '&quot;')}">
                     <input type="number" name="capacities[${capIndex}][price]" class="f-input" value="${v.price}">
                     <button type="button" onclick="this.parentElement.remove()" style="position:absolute;right:-30px;top:10px;background:none;border:none;color:#ef4444;cursor:pointer;"><i class="bi bi-trash"></i></button>
                 `;
@@ -630,8 +809,9 @@ function previewImg(input, previewId, zoneId) {
                 div.style.display = 'flex';
                 div.style.gap = '14px';
                 div.style.marginBottom = '8px';
+                div.style.position = 'relative';
                 div.innerHTML = `
-                    <input type="text" name="colors[${colIndex}][value]" class="f-input" value="${v.value}" style="flex:1;">
+                    <input type="text" name="colors[${colIndex}][value]" class="f-input" value="${v.value.replace(/"/g, '&quot;')}" style="flex:1;">
                     <button type="button" onclick="this.parentElement.remove()" style="background:none;border:none;color:#ef4444;cursor:pointer;"><i class="bi bi-trash"></i></button>
                 `;
                 editColList.appendChild(div);
@@ -643,7 +823,6 @@ function previewImg(input, previewId, zoneId) {
     openModal('editModal');
 }
 
-let capIndex = 100;
 function addCapacityRow(listId) {
     const list = document.getElementById(listId);
     const div = document.createElement('div');
@@ -659,13 +838,13 @@ function addCapacityRow(listId) {
     capIndex++;
 }
 
-let colIndex = 100;
 function addColorRow(listId) {
     const list = document.getElementById(listId);
     const div = document.createElement('div');
     div.style.display = 'flex';
     div.style.gap = '14px';
     div.style.marginBottom = '8px';
+    div.style.position = 'relative';
     div.innerHTML = `
         <input type="text" name="colors[${colIndex}][value]" class="f-input" placeholder="cth: Warna" style="flex:1;">
         <button type="button" onclick="this.parentElement.remove()" style="background:none;border:none;color:#ef4444;cursor:pointer;"><i class="bi bi-trash"></i></button>
@@ -679,6 +858,8 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
         closeModal('addModal');
         closeModal('editModal');
+        closeModal('categoryModal');
+        closeModal('editCategoryModal');
     }
 });
 </script>

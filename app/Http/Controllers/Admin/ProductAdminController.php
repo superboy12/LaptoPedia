@@ -24,7 +24,7 @@ class ProductAdminController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Product::with(['category', 'variations', 'highlights']);
+        $query = Product::with(['category']);
 
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
@@ -75,26 +75,31 @@ class ProductAdminController extends Controller
             'spec_description' => $request->spec_description,
         ]);
 
+        // Handle highlights as JSON
         if ($request->has('highlights')) {
+            $highlights = [];
             foreach ($request->highlights as $hl) {
-                if (!empty($hl['label']) && !empty($hl['title'])) {
-                    $product->highlights()->create([
-                        'label' => $hl['label'],
-                        'title' => $hl['title'],
-                        'description' => $hl['description']
-                    ]);
+                if (!empty($hl['label']) || !empty($hl['title'])) {
+                    $highlights[] = [
+                        'label' => $hl['label'] ?? '',
+                        'title' => $hl['title'] ?? '',
+                        'description' => $hl['description'] ?? ''
+                    ];
                 }
             }
+            $product->highlights = $highlights;
         }
 
+        // Handle variations as JSON
+        $variations = [];
         if ($request->has('capacities')) {
             foreach ($request->capacities as $cap) {
-                if (!empty($cap['value']) && !empty($cap['price'])) {
-                    $product->variations()->create([
+                if (!empty($cap['value']) && isset($cap['price'])) {
+                    $variations[] = [
                         'type' => 'capacity',
                         'value' => $cap['value'],
-                        'price' => $cap['price']
-                    ]);
+                        'price' => (int) $cap['price']
+                    ];
                 }
             }
         }
@@ -102,13 +107,17 @@ class ProductAdminController extends Controller
         if ($request->has('colors')) {
             foreach ($request->colors as $col) {
                 if (!empty($col['value'])) {
-                    $product->variations()->create([
+                    $variations[] = [
                         'type' => 'color',
-                        'value' => $col['value']
-                    ]);
+                        'value' => $col['value'],
+                        'price' => null
+                    ];
                 }
             }
         }
+
+        $product->variations = !empty($variations) ? $variations : null;
+        $product->save();
 
         return redirect()->route('admin.products')->with('success', 'Produk "' . $request->name . '" berhasil ditambahkan!');
     }
@@ -129,6 +138,17 @@ class ProductAdminController extends Controller
             'image'       => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
         ]);
 
+        // Update slug if name changed
+        $slug = $product->slug;
+        if ($product->name !== $request->name) {
+            $slug = Str::slug($request->name);
+            $originalSlug = $slug;
+            $i = 1;
+            while (Product::where('slug', $slug)->where('id', '!=', $id)->exists()) {
+                $slug = $originalSlug . '-' . $i++;
+            }
+        }
+
         $imagePath = $product->image;
         if ($request->hasFile('image')) {
             // Hapus gambar lama
@@ -141,6 +161,7 @@ class ProductAdminController extends Controller
         $product->update([
             'category_id' => $request->category_id,
             'name'        => $request->name,
+            'slug'        => $slug,
             'description' => $request->description,
             'price'       => $request->price,
             'stock'       => $request->stock,
@@ -149,32 +170,33 @@ class ProductAdminController extends Controller
             'spec_description' => $request->spec_description,
         ]);
 
-        // Hapus & Simpan Highlights
-        $product->highlights()->delete();
+        // Handle highlights as JSON
         if ($request->has('highlights')) {
+            $highlights = [];
             foreach ($request->highlights as $hl) {
-                if (!empty($hl['label']) && !empty($hl['title'])) {
-                    $product->highlights()->create([
-                        'label' => $hl['label'],
-                        'title' => $hl['title'],
-                        'description' => $hl['description']
-                    ]);
+                if (!empty($hl['label']) || !empty($hl['title'])) {
+                    $highlights[] = [
+                        'label' => $hl['label'] ?? '',
+                        'title' => $hl['title'] ?? '',
+                        'description' => $hl['description'] ?? ''
+                    ];
                 }
             }
+            $product->highlights = $highlights;
+        } else {
+            $product->highlights = null;
         }
 
-        // Hapus variasi lama
-        $product->variations()->delete();
-
-        // Simpan variasi baru
+        // Handle variations as JSON
+        $variations = [];
         if ($request->has('capacities')) {
             foreach ($request->capacities as $cap) {
-                if (!empty($cap['value']) && !empty($cap['price'])) {
-                    $product->variations()->create([
+                if (!empty($cap['value']) && isset($cap['price'])) {
+                    $variations[] = [
                         'type' => 'capacity',
                         'value' => $cap['value'],
-                        'price' => $cap['price']
-                    ]);
+                        'price' => (int) $cap['price']
+                    ];
                 }
             }
         }
@@ -182,13 +204,17 @@ class ProductAdminController extends Controller
         if ($request->has('colors')) {
             foreach ($request->colors as $col) {
                 if (!empty($col['value'])) {
-                    $product->variations()->create([
+                    $variations[] = [
                         'type' => 'color',
-                        'value' => $col['value']
-                    ]);
+                        'value' => $col['value'],
+                        'price' => null
+                    ];
                 }
             }
         }
+
+        $product->variations = !empty($variations) ? $variations : null;
+        $product->save();
 
         return redirect()->route('admin.products')->with('success', 'Produk berhasil diperbarui!');
     }
@@ -207,5 +233,68 @@ class ProductAdminController extends Controller
         $product->delete();
 
         return redirect()->route('admin.products')->with('success', 'Produk berhasil dihapus.');
+    }
+
+    // ─────────────────────────────────────────────
+    //  CATEGORY MANAGEMENT METHODS
+    // ─────────────────────────────────────────────
+
+    /**
+     * Get all categories (for AJAX)
+     */
+    public function categoriesIndex()
+    {
+        $categories = Category::orderBy('name')->get();
+        return response()->json($categories);
+    }
+
+    /**
+     * Store new category
+     */
+    public function storeCategory(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255|unique:categories,name'
+        ]);
+
+        $category = Category::create([
+            'name' => $request->name,
+            'slug' => Str::slug($request->name)
+        ]);
+
+        return redirect()->route('admin.products')->with('success', 'Kategori "' . $category->name . '" berhasil ditambahkan!');
+    }
+
+    /**
+     * Update category
+     */
+    public function updateCategory(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255|unique:categories,name,' . $id
+        ]);
+
+        $category = Category::findOrFail($id);
+        $category->update([
+            'name' => $request->name,
+            'slug' => Str::slug($request->name)
+        ]);
+
+        return redirect()->route('admin.products')->with('success', 'Kategori berhasil diupdate!');
+    }
+
+    /**
+     * Delete category
+     */
+    public function destroyCategory($id)
+    {
+        $category = Category::findOrFail($id);
+        
+        // Update products in this category to null
+        Product::where('category_id', $id)->update(['category_id' => null]);
+        
+        $category->delete();
+
+        return redirect()->route('admin.products')->with('success', 'Kategori berhasil dihapus!');
     }
 }
