@@ -809,16 +809,16 @@ function updateThemeIcon(theme) {
 <!-- Chat Window -->
 <div class="cs-window" id="csWindow">
     <div class="cs-header">
-        <div class="cs-avatar"><i class="bi bi-robot"></i></div>
+        <div class="cs-avatar"><i class="bi bi-headset"></i></div>
         <div class="cs-header-info">
-            <h4>LaptoPedia AI</h4>
-            <span><span class="cs-online-dot"></span> Asisten online</span>
+            <h4>Customer Service</h4>
+            <span><span class="cs-online-dot"></span> Tim LaptoPedia</span>
         </div>
         <button class="cs-close" onclick="toggleChat()"><i class="bi bi-x-lg"></i></button>
     </div>
     <div class="cs-messages" id="csMessages">
         <div class="cs-msg bot">
-            Halo! 👋 Saya asisten virtual <strong>LaptoPedia</strong>. Tanyakan soal laptop, spesifikasi, atau rekomendasi yang sesuai kebutuhan Anda!
+            Halo! 👋 Selamat datang di <strong>LaptoPedia</strong>. Ada yang bisa kami bantu? Tim CS kami siap membalas pesan Anda!
         </div>
     </div>
     <div class="cs-input-wrap">
@@ -868,7 +868,7 @@ function showAdminBadge(show) {
         dot = document.createElement('span');
         dot.id = 'csFabBadge';
         dot.style.cssText = 'position:absolute;top:-4px;right:-4px;width:10px;height:10px;background:#ef4444;border-radius:50%;display:none;';
-        document.getElementById('csFab').style.position = 'relative';
+        //document.getElementById('csFab').style.position = 'relative';
         document.getElementById('csFab').appendChild(dot);
     }
     dot.style.display = show ? 'block' : 'none';
@@ -923,7 +923,7 @@ function escapeHtml(str) {
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// ── Save message to DB and get AI Reply ─────────────────
+// ── Kirim pesan ke admin (tanpa AI) ─────────────────────
 async function saveMsgToDBAndGetReply(userMsg) {
     if (!IS_AUTH) return null;
     try {
@@ -934,16 +934,16 @@ async function saveMsgToDBAndGetReply(userMsg) {
                 'X-CSRF-TOKEN': CS_CSRF,
                 'Accept': 'application/json'
             },
-            body: JSON.stringify({ message: userMsg, history: csHistory })
+            body: JSON.stringify({ message: userMsg })
         });
         const data = await res.json();
-        return data.reply;
+        return data.status === 'ok' ? '__sent__' : null;
     } catch(e) {
         return null;
     }
 }
 
-// ── Main send function (AI + save to DB) ─────────────
+// ── Main send function — langsung ke admin ─────────────
 async function sendCsMessage() {
     const input = document.getElementById('csInput');
     const btn   = document.getElementById('csSend');
@@ -954,18 +954,12 @@ async function sendCsMessage() {
     input.value = '';
     btn.disabled = true;
 
-    const typing = addMsg('⋯ Mengetik...', 'typing');
+    const result = await saveMsgToDBAndGetReply(text);
 
-    const reply = await saveMsgToDBAndGetReply(text);
-    
-    typing.remove();
-
-    if (reply) {
-        addMsg(reply, 'bot');
-        csHistory.push({ role: 'user', parts: [{ text }] });
-        csHistory.push({ role: 'model', parts: [{ text: reply }] });
+    if (result === '__sent__') {
+        addMsg('Pesan terkirim ✓ Tim CS kami akan segera membalas.', 'bot');
     } else {
-        addMsg('Maaf, koneksi ke asisten AI terputus. 🙏', 'bot');
+        addMsg('Gagal mengirim pesan. Coba lagi. 🙏', 'bot');
     }
 
     btn.disabled = false;
