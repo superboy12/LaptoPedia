@@ -526,7 +526,7 @@
 
     <div id="alertContainer"></div>
 
-<form id="checkoutForm" action="/checkout-process" method="POST">
+<form id="checkoutForm" action="{{ route('checkout.process') }}" method="POST">
             @csrf
         
         {{-- GRID: FORM KIRI | SUMMARY KANAN --}}
@@ -540,7 +540,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">Nama Lengkap</label>
-                            <input type="text" name="fullname" class="form-input" placeholder="John Doe" value="{{ old('fullname', Auth::user()->name ?? '') }}" required>
+                            <input type="text" name="fullname" class="form-input" placeholder="John Doe" value="{{ old('fullname', Auth::user()->nama_lengkap ?? '') }}" required>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Nomor Telepon</label>
@@ -627,8 +627,8 @@
                             <div class="payment-radio"><div class="payment-radio-dot"></div></div>
                             <div class="payment-icon-wrap"><i class="bi bi-qr-code"></i></div>
                             <div class="payment-info">
-                                <div class="payment-name">QRIS</div>
-                                <div class="payment-desc">GoPay · OVO · DANA · ShopeePay · Semua Bank via QR</div>
+                                <div class="payment-name">Menerima Semua Metode Pembayaran</div>
+                                <div class="payment-desc">GoPay · OVO · DANA · ShopeePay · Semua Bank</div>
                             </div>
                             <span class="payment-badge">Metode Pembayaran Resmi</span>
                         </div>

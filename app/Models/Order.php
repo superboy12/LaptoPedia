@@ -8,7 +8,7 @@ class Order extends Model
 {
     protected $table = 'orders';
     protected $primaryKey = 'id';
-    
+
     protected $fillable = [
         'order_number',
         'user_id',
@@ -20,17 +20,19 @@ class Order extends Model
         'cart_data',
         'payment_proof',
         'notes',
+        'snap_token',
+        'midtrans_status',
     ];
-    
+
     protected $casts = [
-        'cart_data' => 'array'
+        'cart_data' => 'array',
     ];
-    
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id_user');
     }
-    
+
     public function items()
     {
         return $this->hasMany(OrderItem::class, 'order_id');

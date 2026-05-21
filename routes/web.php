@@ -76,51 +76,10 @@ Route::middleware('auth')->group(function () {
     });
 
     // ── Payment Routes ──────────────────────────────────────
-    Route::get('/payment/{order}', [PaymentController::class, 'index'])->name('payment.index');
+    Route::get('/payment/{order}',        [PaymentController::class, 'index'])->name('payment.index');
+    Route::get('/payment/{order}/finish', [PaymentController::class, 'finish'])->name('payment.finish');
+    // payment.upload dipertahankan untuk backward compat tapi sudah tidak dipakai aktif
     Route::post('/payment/upload/{order}', [PaymentController::class, 'uploadProof'])->name('payment.upload');
-
-    // ── CHECKOUT PROCESS (FIX - TANPA DUPLICATE) ──
-    Route::post('/checkout-process', function(Request $request) {
-        $cart = session()->get('cart', []);
-        
-        if (empty($cart)) {
-            return redirect('/cart')->with('error', 'Cart kosong');
-        }
-        
-        $subtotal = 0;
-        foreach ($cart as $item) {
-            $subtotal += $item['price'] * $item['quantity'];
-        }
-        
-        $shippingCost = 15000;
-        $insurance = 15000;
-        $total = $subtotal + $shippingCost + $insurance;
-        
-        $order = \App\Models\Order::create([
-            'order_number' => 'ORD-' . time(),
-            'user_id' => auth()->id(),
-            'total_price' => $total,
-            'status' => 'pending',
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'payment_method' => 'qris',
-            'cart_data' => json_encode($cart),
-        ]);
-        
-        foreach ($cart as $item) {
-            \App\Models\OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $item['id'],
-                'product_name' => $item['name'],
-                'quantity' => $item['quantity'],
-                'price' => $item['price'],
-            ]);
-        }
-        
-        session()->forget('cart');
-        
-        return redirect('/payment/' . $order->id);
-    });
 
     // ── Image Route ───────────────────────────────────────
     Route::get('/image/{path}', function ($path) {
@@ -132,20 +91,26 @@ Route::middleware('auth')->group(function () {
     })->where('path', '.*')->name('image.show');
 
     // My Orders
-    Route::get('/my-orders', [App\Http\Controllers\OrderController::class, 'index'])->name('my-orders');
+    Route::get('/my-orders',      [App\Http\Controllers\OrderController::class, 'index'])->name('my-orders');
     Route::get('/my-orders/{id}', [App\Http\Controllers\OrderController::class, 'show'])->name('my-orders.show');
 });
 
 // Confirm order delivery (customer confirms order received)
 Route::post('/order/confirm/{id}', [App\Http\Controllers\OrderController::class, 'confirmDelivery'])->name('order.confirm');
 
+// ── Chat (User Side) ───────────────────────────────────
+Route::prefix('chat')->name('chat.')->group(function () {
+    Route::post('/send', [ChatController::class, 'send'])->name('send');
+    Route::get('/poll',  [ChatController::class, 'poll'])->name('poll');
+});
 
-    // ── Chat (User Side) ───────────────────────────────────
-    Route::prefix('chat')->name('chat.')->group(function () {
-        Route::post('/send', [ChatController::class, 'send'])->name('send');
-        Route::get('/poll',  [ChatController::class, 'poll'])->name('poll');
-    });
-
+// ─────────────────────────────────────────────
+//  Midtrans Webhook — TANPA auth & TANPA CSRF
+//  (Harus di luar semua middleware group)
+// ─────────────────────────────────────────────
+Route::post('/payment/notification', [PaymentController::class, 'notification'])
+    ->name('payment.notification')
+    ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 
 // ─────────────────────────────────────────────
 //  ADMIN AUTH ROUTES (LENGKAP)
