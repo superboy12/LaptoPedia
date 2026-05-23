@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('page_title', 'Customer Chat')
+@section('page_title', 'Chat Pelanggan')
 @section('page_desc', 'Balas pesan langsung dari pelanggan Anda')
 
 @push('styles')
@@ -278,7 +278,7 @@
             <div>
                 <div class="chat-header-name" id="chatUserName">—</div>
                 <div class="chat-header-status">
-                    <span class="online-dot"></span> Customer
+                    <span class="online-dot"></span> Pelanggan
                 </div>
             </div>
         </div>

@@ -23,19 +23,23 @@ class ChatAdminController extends Controller
      */
     public function index()
     {
-        // Ambil user yang pernah chat, beserta pesan terakhir & jumlah belum dibaca
-        $conversations = User::whereHas('chatMessages')
+        // Ambil user yang punya pesan untuk admin, beserta pesan terakhir & jumlah belum dibaca
+        $conversations = User::whereHas('chatMessages', function($q) {
+                $q->where('is_for_admin', true)->orWhere('sender', 'admin');
+            })
             ->where('role', '!=', 'admin')
             ->withCount(['chatMessages as unread_count' => function ($q) {
-                $q->where('sender', 'user')->where('is_read', false);
+                $q->where('sender', 'user')->where('is_for_admin', true)->where('is_read', false);
             }])
             ->with(['chatMessages' => function ($q) {
-                $q->latest()->limit(1);
+                $q->where(function($sub) {
+                    $sub->where('is_for_admin', true)->orWhere('sender', 'admin');
+                })->latest()->limit(1);
             }])
             ->orderByDesc('unread_count')
             ->get();
 
-        $totalUnread = ChatMessage::where('sender', 'user')->where('is_read', false)->count();
+        $totalUnread = ChatMessage::where('sender', 'user')->where('is_for_admin', true)->where('is_read', false)->count();
 
         return view('admin.chat', compact('conversations', 'totalUnread'));
     }
@@ -48,6 +52,9 @@ class ChatAdminController extends Controller
         $lastId = (int) $request->get('last_id', 0);
 
         $messages = ChatMessage::where('user_id', $userId)
+            ->where(function($q) {
+                $q->where('is_for_admin', true)->orWhere('sender', 'admin');
+            })
             ->where('id', '>', $lastId)
             ->orderBy('id')
             ->get(['id', 'sender', 'message', 'created_at']);
@@ -55,6 +62,7 @@ class ChatAdminController extends Controller
         // Tandai pesan user sebagai sudah dibaca
         ChatMessage::where('user_id', $userId)
             ->where('sender', 'user')
+            ->where('is_for_admin', true)
             ->where('is_read', false)
             ->update(['is_read' => true]);
 
@@ -76,6 +84,7 @@ class ChatAdminController extends Controller
             'sender'  => 'admin',
             'message' => $request->message,
             'is_read' => false,
+            'is_for_admin' => true,
         ]);
 
         return response()->json([
@@ -89,7 +98,7 @@ class ChatAdminController extends Controller
      */
     public function unreadCount()
     {
-        $count = ChatMessage::where('sender', 'user')->where('is_read', false)->count();
+        $count = ChatMessage::where('sender', 'user')->where('is_for_admin', true)->where('is_read', false)->count();
         return response()->json(['count' => $count]);
     }
 }

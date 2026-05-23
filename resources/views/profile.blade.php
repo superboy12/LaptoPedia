@@ -466,13 +466,13 @@
                         <span class="sidebar-menu-icon"><i class="bi bi-cart3"></i></span>
                         Keranjang Saya
                     </a>
-                    <a href="#" class="sidebar-menu-item">
+                    <a href="{{ route('profile.orders') }}" class="sidebar-menu-item">
                         <span class="sidebar-menu-icon"><i class="bi bi-bag-check"></i></span>
                         Pesanan Saya
                     </a>
                     <a href="#" class="sidebar-menu-item">
                         <span class="sidebar-menu-icon"><i class="bi bi-heart"></i></span>
-                        Wishlist
+                        Favorit Saya
                     </a>
                 </div>
             </div>

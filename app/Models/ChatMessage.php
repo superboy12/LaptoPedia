@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChatMessage extends Model
 {
-    protected $fillable = ['user_id', 'sender', 'message', 'is_read'];
+    protected $fillable = ['user_id', 'sender', 'message', 'is_read', 'is_for_admin'];
 
     public function user()
     {

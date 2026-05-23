@@ -515,14 +515,14 @@
                         {{-- Fallback Default --}}
                         <div class="reveal-up delay-100">
                             <div class="spec-line"></div>
-                            <div class="spec-title">Processor</div>
+                            <div class="spec-title">Prosesor</div>
                             <div class="spec-value">Pro-Class</div>
                             <div class="spec-desc">Prosesor generasi terbaru terintegrasi.</div>
                         </div>
                         <div class="reveal-up delay-200">
                             <div class="spec-line"></div>
                             <div class="spec-title">RAM</div>
-                            <div class="spec-value">Up to 32GB</div>
+                            <div class="spec-value">Hingga 32GB</div>
                             <div class="spec-desc">Bandwidth memori sangat cepat tanpa lag.</div>
                         </div>
                         <div class="reveal-up delay-100">

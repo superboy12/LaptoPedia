@@ -77,6 +77,37 @@ class HomeController extends Controller
     }
 
     /**
+     * Halaman Deals & Promo
+     */
+    public function deals()
+    {
+        // Ambil produk untuk ditampilkan sebagai deals
+        $dealProducts = \App\Models\Product::with('category')->inRandomOrder()->take(6)->get();
+        $categories   = \App\Models\Category::withCount('products')->orderBy('name')->get();
+
+        return view('deals', compact('dealProducts', 'categories'));
+    }
+
+    /**
+     * Halaman Brands (Merek)
+     */
+    public function brands()
+    {
+        // Ambil semua brand (kategori) beserta jumlah produknya
+        $brands = \App\Models\Category::withCount('products')->orderBy('name')->get();
+
+        return view('brands', compact('brands'));
+    }
+
+    /**
+     * Halaman Support & Bantuan
+     */
+    public function support()
+    {
+        return view('support');
+    }
+
+    /**
      * Menampilkan Halaman Detail Produk.
      *
      * @param string $slug
@@ -121,5 +152,18 @@ class HomeController extends Controller
         ]);
 
         return back()->with('success', 'Profil berhasil diperbarui!');
+    }
+
+    /**
+     * Menampilkan riwayat pesanan pengguna.
+     */
+    public function myOrders()
+    {
+        $orders = \App\Models\Order::with('items.product')
+            ->where('user_id', auth()->id())
+            ->latest()
+            ->get();
+
+        return view('profile.orders', compact('orders'));
     }
 }

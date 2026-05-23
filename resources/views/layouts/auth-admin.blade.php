@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'LaptoPedia') — Premium Laptops</title>
+    <title>@yield('title', 'LaptoPedia') — Laptop Premium</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -383,7 +383,7 @@
     </a>
     <a href="#" class="help-link">
         <i class="bi bi-headset"></i>
-        Need help?
+        Butuh bantuan?
     </a>
 </div>
 

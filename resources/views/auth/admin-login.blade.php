@@ -4,14 +4,14 @@
 
 {{-- Tabs --}}
 <div class="auth-tabs">
-    <button class="auth-tab active">Sign In</button>
-    <a href="{{ route('admin.register') }}" class="auth-tab">Sign Up</a>
+    <button class="auth-tab active">Masuk</button>
+    <a href="{{ route('admin.register') }}" class="auth-tab">Daftar</a>
 </div>
 
 {{-- Heading --}}
 <div class="form-heading">
-    <h2>Admin Login</h2>
-    <p>Enter your credentials to access the admin dashboard</p>
+    <h2>Login Admin</h2>
+    <p>Masukkan kredensial Anda untuk mengakses dashboard admin</p>
 </div>
 
 {{-- Success Alert --}}
@@ -34,7 +34,7 @@
                 type="email"
                 name="email"
                 value="{{ old('email') }}"
-                placeholder="Enter your email"
+                placeholder="Masukkan email Anda"
                 autocomplete="email"
             >
         </div>
@@ -54,7 +54,7 @@
                 type="password"
                 name="password"
                 id="password"
-                placeholder="Enter your password"
+                placeholder="Masukkan kata sandi Anda"
                 autocomplete="current-password"
             >
             <button type="button" class="field-action" onclick="togglePassword('password')">
@@ -73,14 +73,14 @@
     <div class="meta-row d3">
         <label class="remember-row">
             <input type="checkbox" name="remember" id="remember">
-            <span>Remember me</span>
+            <span>Ingat saya</span>
         </label>
-        <a href="#" class="forgot-link">Forgot Password?</a>
+        <a href="#" class="forgot-link">Lupa Kata Sandi?</a>
     </div>
 
     {{-- Submit --}}
     <button type="submit" class="btn-primary d4">
-        <span id="btn-text">Sign In</span>
+        <span id="btn-text">Masuk</span>
         <i class="bi bi-arrow-right" id="btn-icon"></i>
         <svg id="btn-spinner" class="hidden" width="16" height="16" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" opacity="0.25"></circle>
@@ -92,7 +92,7 @@
 {{-- Divider --}}
 <div class="divider d5">
     <div class="divider-line"></div>
-    <span class="divider-text">Or continue with</span>
+    <span class="divider-text">Atau lanjutkan dengan</span>
     <div class="divider-line"></div>
 </div>
 
@@ -113,8 +113,8 @@
 
 {{-- Bottom Link --}}
 <div class="bottom-link d6">
-    Don't have an account?
-    <a href="{{ route('admin.register') }}">Create admin account</a>
+    Belum punya akun?
+    <a href="{{ route('admin.register') }}">Buat akun admin</a>
 </div>
 
 @endsection
@@ -134,7 +134,7 @@ function togglePassword(id) {
 }
 
 document.getElementById('loginForm').addEventListener('submit', function() {
-    document.getElementById('btn-text').textContent = 'Signing in...';
+    document.getElementById('btn-text').textContent = 'Memproses...';
     document.getElementById('btn-icon').classList.add('hidden');
     document.getElementById('btn-spinner').classList.remove('hidden');
 });

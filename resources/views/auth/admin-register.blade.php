@@ -4,14 +4,14 @@
 
 {{-- Tabs --}}
 <div class="auth-tabs">
-    <a href="{{ route('admin.login') }}" class="auth-tab">Sign In</a>
-    <button class="auth-tab active">Sign Up</button>
+    <a href="{{ route('admin.login') }}" class="auth-tab">Masuk</a>
+    <button class="auth-tab active">Daftar</button>
 </div>
 
 {{-- Heading --}}
 <div class="form-heading">
-    <h2>Create Admin Account</h2>
-    <p>Register to access the admin dashboard</p>
+    <h2>Buat Akun Admin</h2>
+    <p>Daftar untuk mengakses dashboard admin</p>
 </div>
 
 {{-- Form --}}
@@ -26,7 +26,7 @@
                 type="text"
                 name="nama_lengkap"
                 value="{{ old('nama_lengkap') }}"
-                placeholder="Your full name"
+                placeholder="Nama lengkap Anda"
                 autocomplete="name"
             >
         </div>
@@ -46,7 +46,7 @@
                 type="email"
                 name="email"
                 value="{{ old('email') }}"
-                placeholder="Work email"
+                placeholder="Email kerja"
                 autocomplete="email"
             >
         </div>
@@ -66,7 +66,7 @@
                 type="tel"
                 name="no_telepon"
                 value="{{ old('no_telepon') }}"
-                placeholder="Phone number"
+                placeholder="Nomor telepon"
                 autocomplete="tel"
             >
         </div>
@@ -80,7 +80,7 @@
                 type="password"
                 name="password"
                 id="password"
-                placeholder="Create a password"
+                placeholder="Buat kata sandi"
                 autocomplete="new-password"
                 oninput="checkStrength(this.value)"
             >
@@ -97,7 +97,7 @@
                 <div class="strength-bar" id="bar4"></div>
             </div>
             <div class="strength-meta">
-                <span class="strength-hint">Password strength</span>
+                <span class="strength-hint">Kekuatan kata sandi</span>
                 <span class="strength-label" id="strength-label"></span>
             </div>
         </div>
@@ -118,7 +118,7 @@
                 type="password"
                 name="password_confirmation"
                 id="password_confirmation"
-                placeholder="Confirm password"
+                placeholder="Konfirmasi kata sandi"
                 autocomplete="new-password"
                 oninput="checkMatch()"
             >
@@ -130,16 +130,16 @@
     <div class="check-row d4">
         <input type="checkbox" name="terms" id="terms" required>
         <label for="terms">
-            I agree to the
-            <a href="#">Terms of Service</a>
-            and
-            <a href="#">Privacy Policy</a>
+            Saya menyetujui
+            <a href="#">Ketentuan Layanan</a>
+            serta
+            <a href="#">Kebijakan Privasi</a>
         </label>
     </div>
 
     {{-- Submit --}}
     <button type="submit" class="btn-primary d5">
-        <span id="btn-text">Create Account</span>
+        <span id="btn-text">Buat Akun</span>
         <svg id="btn-spinner" class="hidden" width="16" height="16" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" opacity="0.25"></circle>
             <path d="M4 12a8 8 0 018-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.75"></path>
@@ -150,7 +150,7 @@
 {{-- Divider --}}
 <div class="divider d5">
     <div class="divider-line"></div>
-    <span class="divider-text">Or register with</span>
+    <span class="divider-text">Atau daftar dengan</span>
     <div class="divider-line"></div>
 </div>
 
@@ -171,8 +171,8 @@
 
 {{-- Bottom Link --}}
 <div class="bottom-link d6">
-    Already have an account?
-    <a href="{{ route('admin.login') }}">Sign in</a>
+    Sudah punya akun?
+    <a href="{{ route('admin.login') }}">Masuk</a>
 </div>
 
 @endsection
@@ -203,12 +203,13 @@ function checkStrength(val) {
         document.getElementById('bar' + i).style.backgroundColor = i <= score ? colors[score] : 'var(--surface-2)';
     }
 
-    const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+    const labels = ['', 'Lemah', 'Sedang', 'Bagus', 'Kuat'];
     const label = document.getElementById('strength-label');
     label.textContent = val.length > 0 ? labels[score] : '';
     label.style.color = colors[score] || 'var(--muted)';
 }
 
+// Fixed checkMatch to correctly target match-icon
 function checkMatch() {
     const pass = document.getElementById('password').value;
     const confirm = document.getElementById('password_confirmation').value;
@@ -222,7 +223,7 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
         document.getElementById('terms').style.boxShadow = '0 0 0 2px #f87171';
         return;
     }
-    document.getElementById('btn-text').textContent = 'Creating account...';
+    document.getElementById('btn-text').textContent = 'Membuat akun...';
     document.getElementById('btn-spinner').classList.remove('hidden');
 });
 

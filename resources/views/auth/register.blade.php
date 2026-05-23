@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'Sign Up')
+@section('title', 'Daftar')
 
 @push('styles')
 <style>
@@ -44,14 +44,14 @@
             <div class="animate-slide-up delay-200">
                 <p class="text-[#d4a843] text-xs font-bold uppercase tracking-[0.14em] mb-4 flex items-center gap-2">
                     <span class="w-1.5 h-1.5 bg-[#d4a843] rounded-full animate-pulse"></span>
-                    Join Us Today
+                    Gabung Sekarang
                 </p>
                 <h1 class="font-manrope text-white text-4xl xl:text-5xl font-black leading-tight tracking-tight">
-                    Join LaptoPedia<br>
-                    <span style="background: linear-gradient(135deg, #f0d080 0%, #d4a843 40%, #a0721a 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Today</span>
+                    Gabung LaptoPedia<br>
+                    <span style="background: linear-gradient(135deg, #f0d080 0%, #d4a843 40%, #a0721a 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Sekarang</span>
                 </h1>
                 <p class="text-white/50 text-base mt-5 leading-relaxed max-w-sm font-light">
-                    Find the best laptops at affordable prices. Join thousands of tech enthusiasts who are already saving.
+                    Temukan laptop terbaik dengan harga terjangkau. Bergabunglah dengan ribuan pencinta teknologi yang telah menghemat biaya.
                 </p>
             </div>
 
@@ -61,19 +61,19 @@
                     <div class="w-8 h-8 rounded-lg bg-[#d4a843]/10 flex items-center justify-center flex-shrink-0">
                         <i data-lucide="tag" class="w-4 h-4 text-[#d4a843]"></i>
                     </div>
-                    <span class="text-white/80 text-sm font-medium">Exclusive member-only offers</span>
+                    <span class="text-white/80 text-sm font-medium">Penawaran eksklusif khusus anggota</span>
                 </div>
                 <div class="rounded-xl px-4 py-3 flex items-center gap-4 bg-white/[0.02] border border-white/5 backdrop-blur-sm">
                     <div class="w-8 h-8 rounded-lg bg-[#d4a843]/10 flex items-center justify-center flex-shrink-0">
                         <i data-lucide="star" class="w-4 h-4 text-[#d4a843]"></i>
                     </div>
-                    <span class="text-white/80 text-sm font-medium">Expert reviews & comparisons</span>
+                    <span class="text-white/80 text-sm font-medium">Ulasan & perbandingan dari para ahli</span>
                 </div>
                 <div class="rounded-xl px-4 py-3 flex items-center gap-4 bg-white/[0.02] border border-white/5 backdrop-blur-sm">
                     <div class="w-8 h-8 rounded-lg bg-[#d4a843]/10 flex items-center justify-center flex-shrink-0">
                         <i data-lucide="shield-check" class="w-4 h-4 text-[#d4a843]"></i>
                     </div>
-                    <span class="text-white/80 text-sm font-medium">Safe & trusted shopping guarantee</span>
+                    <span class="text-white/80 text-sm font-medium">Jaminan belanja aman & terpercaya</span>
                 </div>
             </div>
 
@@ -81,24 +81,24 @@
             <div class="flex gap-8 pt-6 border-t border-white/10 animate-slide-up delay-400">
                 <div>
                     <p class="font-manrope text-white font-black text-2xl">50K+</p>
-                    <p class="text-white/40 text-xs mt-1">Happy Users</p>
+                    <p class="text-white/40 text-xs mt-1">Pengguna Puas</p>
                 </div>
                 <div class="w-px bg-white/10"></div>
                 <div>
                     <p class="font-manrope text-white font-black text-2xl">5.000+</p>
-                    <p class="text-white/40 text-xs mt-1">Laptops Listed</p>
+                    <p class="text-white/40 text-xs mt-1">Laptop Terdaftar</p>
                 </div>
                 <div class="w-px bg-white/10"></div>
                 <div>
                     <p class="font-manrope text-white font-black text-2xl">4.9★</p>
-                    <p class="text-white/40 text-xs mt-1">User Rating</p>
+                    <p class="text-white/40 text-xs mt-1">Penilaian</p>
                 </div>
             </div>
         </div>
 
         {{-- Footer --}}
         <div class="relative z-10 animate-slide-up delay-500">
-            <p class="text-white/30 text-xs">© {{ date('Y') }} LaptoPedia. All rights reserved.</p>
+            <p class="text-white/30 text-xs">© {{ date('Y') }} LaptoPedia. Hak cipta dilindungi undang-undang.</p>
         </div>
     </div>
 
@@ -116,7 +116,7 @@
             <div class="hidden lg:block"></div>
             <a href="#" class="text-sm text-white/50 hover:text-[#d4a843] transition-colors font-medium flex items-center gap-1.5">
                 <i data-lucide="headphones" class="w-4 h-4"></i>
-                Need help?
+                Butuh bantuan?
             </a>
         </div>
 
@@ -128,25 +128,25 @@
                 <div class="flex bg-[#111111] border border-white/5 rounded-full p-1 mb-8 animate-slide-up delay-100">
                     <a href="{{ route('login') }}"
                        class="flex-1 text-center py-2.5 rounded-full text-sm font-medium text-white/50 hover:text-white transition-all">
-                        Sign In
+                        Masuk
                     </a>
                     <a href="{{ route('register') }}"
                        class="flex-1 text-center py-2.5 rounded-full text-sm font-semibold bg-[#222] text-white shadow-sm transition-all">
-                        Sign Up
+                        Daftar
                     </a>
                 </div>
 
                 {{-- Heading --}}
                 <div class="mb-7 animate-slide-up delay-100">
-                    <h2 class="font-manrope text-3xl font-bold text-white tracking-tight">Create your account</h2>
-                    <p class="text-white/50 text-sm mt-2 font-light">Enter your details to get started.</p>
+                    <h2 class="font-manrope text-3xl font-bold text-white tracking-tight">Buat akun Anda</h2>
+                    <p class="text-white/50 text-sm mt-2 font-light">Masukkan detail Anda untuk memulai.</p>
                 </div>
 
                 {{-- Flash error global --}}
                 @if($errors->any() && !$errors->has('nama_lengkap') && !$errors->has('email') && !$errors->has('no_telepon') && !$errors->has('password'))
                     <div class="mb-5 flex items-center gap-2.5 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl px-4 py-3 text-sm animate-fade-in">
                         <i data-lucide="alert-circle" class="w-4 h-4 flex-shrink-0"></i>
-                        An error occurred, please check the form.
+                        Terjadi kesalahan, silakan periksa formulir.
                     </div>
                 @endif
 
@@ -164,7 +164,7 @@
                                 name="nama_lengkap"
                                 id="nama_lengkap"
                                 value="{{ old('nama_lengkap') }}"
-                                placeholder="Your full name"
+                                placeholder="Nama lengkap Anda"
                                 autocomplete="name"
                                 class="flex-1 text-sm text-white placeholder-white/30 bg-transparent outline-none"
                             >
@@ -190,7 +190,7 @@
                                 name="email"
                                 id="email"
                                 value="{{ old('email') }}"
-                                placeholder="Your email address"
+                                placeholder="Alamat email Anda"
                                 autocomplete="email"
                                 class="flex-1 text-sm text-white placeholder-white/30 bg-transparent outline-none"
                             >
@@ -236,7 +236,7 @@
                                 type="password"
                                 name="password"
                                 id="password"
-                                placeholder="Create a password"
+                                placeholder="Buat kata sandi"
                                 autocomplete="new-password"
                                 oninput="checkStrength(this.value)"
                                 class="flex-1 text-sm text-white placeholder-white/30 bg-transparent outline-none"
@@ -256,7 +256,7 @@
                                 <div class="h-1 flex-1 rounded-full bg-zinc-800 transition-colors duration-300" id="bar4"></div>
                             </div>
                             <div class="flex justify-between items-center">
-                                <p class="text-xs text-white/40">Password strength</p>
+                                <p class="text-xs text-white/40">Kekuatan kata sandi</p>
                                 <p class="text-xs font-semibold" id="strength-label"></p>
                             </div>
                         </div>
@@ -277,7 +277,7 @@
                                 type="password"
                                 name="password_confirmation"
                                 id="password_confirmation"
-                                placeholder="Confirm password"
+                                placeholder="Konfirmasi kata sandi"
                                 autocomplete="new-password"
                                 oninput="checkMatch()"
                                 class="flex-1 text-sm text-white placeholder-white/30 bg-transparent outline-none"
@@ -295,10 +295,10 @@
                         <input type="checkbox" name="terms" id="terms" required
                             class="w-4 h-4 mt-0.5 rounded border-zinc-700 bg-zinc-900 text-[#d4a843] focus:ring-[#d4a843] focus:ring-offset-black cursor-pointer flex-shrink-0">
                         <label for="terms" class="text-sm text-white/60 cursor-pointer leading-snug">
-                            I agree to the
-                            <a href="#" class="font-semibold text-[#d4a843] hover:underline">Terms & Conditions</a>
-                            and
-                            <a href="#" class="font-semibold text-[#d4a843] hover:underline">Privacy Policy</a>
+                            Saya menyetujui
+                            <a href="#" class="font-semibold text-[#d4a843] hover:underline">Syarat & Ketentuan</a>
+                            serta
+                            <a href="#" class="font-semibold text-[#d4a843] hover:underline">Kebijakan Privasi</a>
                         </label>
                     </div>
 
@@ -307,7 +307,7 @@
                         <button type="submit" id="submitBtn"
                             class="w-full py-3.5 rounded-full bg-white text-black font-manrope font-bold text-sm flex items-center justify-center gap-2 hover:bg-gray-200 transition-all hover:scale-[1.02]">
                             <i data-lucide="user-plus" class="w-4 h-4" id="btn-icon"></i>
-                            <span id="btn-text">Create Account</span>
+                            <span id="btn-text">Buat Akun</span>
                             <svg id="btn-spinner" class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
@@ -319,7 +319,7 @@
                 {{-- Divider --}}
                 <div class="my-5 flex items-center gap-3 animate-slide-up delay-600">
                     <div class="flex-1 h-px bg-white/10"></div>
-                    <span class="text-xs text-white/30 font-medium uppercase tracking-wider">Or sign up with</span>
+                    <span class="text-xs text-white/30 font-medium uppercase tracking-wider">Atau daftar dengan</span>
                     <div class="flex-1 h-px bg-white/10"></div>
                 </div>
 
@@ -344,8 +344,8 @@
 
                 {{-- Login link --}}
                 <p class="text-center text-sm text-white/50 mt-8 animate-slide-up delay-600">
-                    Already have an account?
-                    <a href="{{ route('login') }}" class="font-semibold text-[#d4a843] hover:text-[#f0d080] transition-colors">Sign in</a>
+                    Sudah punya akun?
+                    <a href="{{ route('login') }}" class="font-semibold text-[#d4a843] hover:text-[#f0d080] transition-colors">Masuk</a>
                 </p>
             </div>
         </div>
@@ -376,7 +376,7 @@
         if (/[^A-Za-z0-9]/.test(val)) score++;
 
         const colors = ['', '#ef4444', '#f97316', '#eab308', '#22c55e'];
-        const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+        const labels = ['', 'Lemah', 'Sedang', 'Bagus', 'Kuat'];
         const textColors = ['', 'text-red-400', 'text-orange-400', 'text-yellow-400', 'text-green-400'];
 
         for (let i = 1; i <= 4; i++) {
@@ -408,7 +408,7 @@
             terms.classList.add('ring-2', 'ring-red-500/50');
             return;
         }
-        document.getElementById('btn-text').textContent = 'Creating account...';
+        document.getElementById('btn-text').textContent = 'Membuat akun...';
         document.getElementById('btn-icon').classList.add('hidden');
         document.getElementById('btn-spinner').classList.remove('hidden');
     });

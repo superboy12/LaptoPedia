@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
-@section('page_title', 'Dashboard Overview')
-@section('page_desc', 'Track your store performance and key metrics')
+@section('page_title', 'Ikhtisar Dashboard')
+@section('page_desc', 'Pantau performa toko Anda dan metrik utama')
 
 @push('styles')
 <style>
@@ -68,7 +68,7 @@
             <i class="bi bi-currency-dollar" style="font-size: 1.8rem; color: var(--gold);"></i>
             <span class="badge-trend">+12.5%</span>
         </div>
-        <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; font-family: 'DM Sans', sans-serif;">Total Revenue</p>
+        <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; font-family: 'DM Sans', sans-serif;">Total Pendapatan</p>
         <h3 style="font-family: 'Manrope', sans-serif; font-size: 2rem; font-weight: 800; color: var(--gold); letter-spacing: -0.02em;">$128,430</h3>
     </div>
 
@@ -78,7 +78,7 @@
             <i class="bi bi-bag" style="font-size: 1.8rem; color: var(--gold);"></i>
             <span class="badge-trend">+5.1%</span>
         </div>
-        <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; font-family: 'DM Sans', sans-serif;">Total Orders</p>
+        <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; font-family: 'DM Sans', sans-serif;">Total Pesanan</p>
         <h3 style="font-family: 'Manrope', sans-serif; font-size: 2rem; font-weight: 800; letter-spacing: -0.02em;">1,240</h3>
     </div>
 
@@ -88,7 +88,7 @@
             <i class="bi bi-box" style="font-size: 1.8rem; color: var(--gold);"></i>
             <span class="badge-trend">+2.3%</span>
         </div>
-        <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; font-family: 'DM Sans', sans-serif;">Total Products</p>
+        <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; font-family: 'DM Sans', sans-serif;">Total Produk</p>
         <h3 style="font-family: 'Manrope', sans-serif; font-size: 2rem; font-weight: 800; letter-spacing: -0.02em;">450</h3>
     </div>
 
@@ -98,7 +98,7 @@
             <i class="bi bi-people" style="font-size: 1.8rem; color: var(--gold);"></i>
             <span class="badge-trend">+14.7%</span>
         </div>
-        <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; font-family: 'DM Sans', sans-serif;">Total Customers</p>
+        <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; font-family: 'DM Sans', sans-serif;">Total Pelanggan</p>
         <h3 style="font-family: 'Manrope', sans-serif; font-size: 2rem; font-weight: 800; letter-spacing: -0.02em;">8,200</h3>
     </div>
 </div>
@@ -108,9 +108,9 @@
     {{-- Revenue Chart --}}
     <div class="admin-card">
         <div class="card-header">
-            <h3 class="card-title">Revenue Over Time</h3>
+            <h3 class="card-title">Pendapatan Seiring Waktu</h3>
             <div style="display:flex; gap:8px;">
-                <button style="background:var(--gold-dim); border:1px solid rgba(212,168,67,0.3); color:var(--gold); padding:6px 12px; border-radius:6px; font-size:0.75rem; cursor:pointer;">Monthly</button>
+                <button style="background:var(--gold-dim); border:1px solid rgba(212,168,67,0.3); color:var(--gold); padding:6px 12px; border-radius:6px; font-size:0.75rem; cursor:pointer;">Bulanan</button>
             </div>
         </div>
         <div style="position: relative; height: 250px; width: 100%;">
@@ -121,7 +121,7 @@
     {{-- Orders Chart --}}
     <div class="admin-card">
         <div class="card-header">
-            <h3 class="card-title">Orders per Day</h3>
+            <h3 class="card-title">Pesanan per Hari</h3>
         </div>
         <div style="position: relative; height: 250px; width: 100%;">
             <canvas id="ordersChart"></canvas>
@@ -135,17 +135,17 @@
     {{-- Recent Orders Table --}}
     <div class="admin-card">
         <div class="card-header">
-            <h3 class="card-title">Recent Orders</h3>
-            <a href="{{ route('admin.orders') }}" style="font-size: 0.85rem; color: var(--gold); font-weight: 600;">View All →</a>
+            <h3 class="card-title">Pesanan Terbaru</h3>
+            <a href="{{ route('admin.orders') }}" style="font-size: 0.85rem; color: var(--gold); font-weight: 600;">Lihat Semua →</a>
         </div>
         <div style="overflow-x: auto;">
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th>Order ID</th>
-                        <th>Customer</th>
-                        <th>Product</th>
-                        <th>Amount</th>
+                        <th>ID Pesanan</th>
+                        <th>Pelanggan</th>
+                        <th>Produk</th>
+                        <th>Total</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -155,21 +155,21 @@
                         <td>Jess Cohen</td>
                         <td style="color: var(--muted);">MacBook Pro M2</td>
                         <td style="font-weight: 600;">$3,499.00</td>
-                        <td><span class="status-badge status-paid">Paid</span></td>
+                        <td><span class="status-badge status-paid">Dibayar</span></td>
                     </tr>
                     <tr>
                         <td style="color: var(--gold); font-weight: 600;">#ORD-73828</td>
                         <td>Alex Morgan</td>
                         <td style="color: var(--muted);">Dell XPS 15</td>
                         <td style="font-weight: 600;">$2,150.00</td>
-                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td><span class="status-badge status-pending">Menunggu</span></td>
                     </tr>
                     <tr>
                         <td style="color: var(--gold); font-weight: 600;">#ORD-73827</td>
                         <td>David Chen</td>
                         <td style="color: var(--muted);">ASUS ROG Zephyrus</td>
                         <td style="font-weight: 600;">$1,650.00</td>
-                        <td><span class="status-badge status-cancelled">Cancelled</span></td>
+                        <td><span class="status-badge status-cancelled">Dibatalkan</span></td>
                     </tr>
                 </tbody>
             </table>
@@ -179,14 +179,14 @@
     {{-- Top Trending Laptops --}}
     <div class="admin-card">
         <div class="card-header">
-            <h3 class="card-title">Top Trending Laptops</h3>
+            <h3 class="card-title">Laptop Terpopuler</h3>
         </div>
         <div class="trending-list">
             <div class="trending-item">
                 <div class="trending-img"><i class="bi bi-laptop" style="color: var(--muted); font-size: 1.5rem;"></i></div>
                 <div style="flex: 1;">
                     <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--white); margin-bottom: 2px;">MacBook Pro M2</h4>
-                    <p style="font-size: 0.75rem; color: var(--muted);">Apple • 124 sold</p>
+                    <p style="font-size: 0.75rem; color: var(--muted);">Apple • 124 terjual</p>
                 </div>
                 <div style="font-weight: 700; color: var(--gold); font-size: 0.85rem;">#1</div>
             </div>
@@ -194,7 +194,7 @@
                 <div class="trending-img"><i class="bi bi-laptop" style="color: var(--muted); font-size: 1.5rem;"></i></div>
                 <div style="flex: 1;">
                     <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--white); margin-bottom: 2px;">Dell XPS 15 OLED</h4>
-                    <p style="font-size: 0.75rem; color: var(--muted);">Dell • 98 sold</p>
+                    <p style="font-size: 0.75rem; color: var(--muted);">Dell • 98 terjual</p>
                 </div>
                 <div style="font-weight: 700; color: var(--muted); font-size: 0.85rem;">#2</div>
             </div>
@@ -202,7 +202,7 @@
                 <div class="trending-img"><i class="bi bi-laptop" style="color: var(--muted); font-size: 1.5rem;"></i></div>
                 <div style="flex: 1;">
                     <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--white); margin-bottom: 2px;">Lenovo ThinkPad X1</h4>
-                    <p style="font-size: 0.75rem; color: var(--muted);">Lenovo • 76 sold</p>
+                    <p style="font-size: 0.75rem; color: var(--muted);">Lenovo • 76 terjual</p>
                 </div>
                 <div style="font-weight: 700; color: var(--muted); font-size: 0.85rem;">#3</div>
             </div>

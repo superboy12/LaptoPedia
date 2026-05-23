@@ -370,16 +370,16 @@
     <a href="{{ url('/') }}" class="nav-brand">Lapto<em>Pedia</em></a>
 
     <ul class="nav-links">
-        <li><a href="{{ url('/products') }}" {{ request()->is('products*') ? 'style=color:var(--text)' : '' }}>Laptops</a></li>
-        <li><a href="#">Brands</a></li>
-        <li><a href="#">Deals</a></li>
-        <li><a href="#">Support</a></li>
+        <li><a href="{{ url('/products') }}" {{ request()->is('products*') ? 'style=color:var(--text)' : '' }}>Laptop</a></li>
+        <li><a href="{{ route('brands') }}" {{ request()->is('brands*') ? 'style=color:var(--text)' : '' }}>Merek</a></li>
+        <li><a href="{{ route('deals') }}" {{ request()->is('deals*') ? 'style=color:var(--text)' : '' }}>Promo</a></li>
+        <li><a href="{{ route('support') }}" {{ request()->is('support*') ? 'style=color:var(--text)' : '' }}>Dukungan</a></li>
     </ul>
 
     <div class="nav-actions">
     <div class="nav-search-box">
         <i class="bi bi-search"></i>
-        <input type="text" placeholder="Find laptops...">
+        <input type="text" placeholder="Cari laptop...">
     </div>
 
     {{-- Keranjang — link ke halaman cart --}}
@@ -453,7 +453,7 @@
                     @endif
                 </a>
 
-                <a href="#" class="user-dd-link">
+                <a href="{{ route('profile.orders') }}" class="user-dd-link">
                     <i class="bi bi-bag"></i> Pesanan Saya
                 </a>
 
@@ -511,7 +511,7 @@
     <div class="footer-inner">
         <div>
             <div class="footer-logo">Lapto<em>Pedia</em></div>
-            <p class="footer-tagline">Your trusted destination for premium laptops and honest expert advice.</p>
+            <p class="footer-tagline">Destinasi terpercaya Anda untuk laptop premium dan saran ahli yang jujur.</p>
             <div class="footer-socials">
                 <a href="#"><i class="bi bi-twitter-x"></i></a>
                 <a href="#"><i class="bi bi-facebook"></i></a>
@@ -520,38 +520,38 @@
             </div>
         </div>
         <div class="footer-col">
-            <div class="footer-col-head">Shop</div>
+            <div class="footer-col-head">Belanja</div>
             <ul>
-                <li><a href="#">All Laptops</a></li>
+                <li><a href="#">Semua Laptop</a></li>
                 <li><a href="#">Gaming</a></li>
-                <li><a href="#">Business</a></li>
-                <li><a href="#">Student</a></li>
+                <li><a href="#">Bisnis</a></li>
+                <li><a href="#">Pelajar</a></li>
             </ul>
         </div>
         <div class="footer-col">
-            <div class="footer-col-head">Support</div>
+            <div class="footer-col-head">Dukungan</div>
             <ul>
-                <li><a href="#">Contact Us</a></li>
-                <li><a href="#">FAQs</a></li>
-                <li><a href="#">Warranty</a></li>
-                <li><a href="#">Returns</a></li>
+                <li><a href="#">Hubungi Kami</a></li>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">Garansi</a></li>
+                <li><a href="#">Pengembalian</a></li>
             </ul>
         </div>
         <div class="footer-col">
-            <div class="footer-col-head">Company</div>
+            <div class="footer-col-head">Perusahaan</div>
             <ul>
-                <li><a href="#">About Us</a></li>
-                <li><a href="#">Careers</a></li>
+                <li><a href="#">Tentang Kami</a></li>
+                <li><a href="#">Karir</a></li>
                 <li><a href="#">Blog</a></li>
-                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Kebijakan Privasi</a></li>
             </ul>
         </div>
     </div>
     <div class="footer-bottom">
-        <span class="footer-copy">&copy; {{ date('Y') }} LaptoPedia. All rights reserved.</span>
+        <span class="footer-copy">&copy; {{ date('Y') }} LaptoPedia. Hak cipta dilindungi undang-undang.</span>
         <div class="footer-legal">
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
+            <a href="#">Privasi</a>
+            <a href="#">Ketentuan</a>
             <a href="#">Cookies</a>
         </div>
     </div>
@@ -795,6 +795,40 @@ function updateThemeIcon(theme) {
 .cs-send:hover { transform: scale(1.08); }
 .cs-send:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
+#btnHandoff {
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 5px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-left: auto;
+    transition: all 0.2s ease;
+    border: none;
+    outline: none;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-family: 'Manrope', sans-serif;
+}
+#btnHandoff.ai-mode {
+    background: rgba(0, 0, 0, 0.75);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+#btnHandoff.ai-mode:hover {
+    background: rgba(0, 0, 0, 0.9);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+#btnHandoff.handoff-mode {
+    background: #ffffff;
+    color: #000000;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+#btnHandoff.handoff-mode:hover {
+    background: #f3f4f6;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
 @media (max-width: 480px) {
     .cs-window { width: calc(100vw - 20px); right: 10px; bottom: 88px; max-height: 68vh; }
     .cs-fab { bottom: 16px; right: 16px; }
@@ -809,12 +843,13 @@ function updateThemeIcon(theme) {
 <!-- Chat Window -->
 <div class="cs-window" id="csWindow">
     <div class="cs-header">
-        <div class="cs-avatar"><i class="bi bi-robot"></i></div>
+        <div class="cs-avatar"><i class="bi bi-robot" id="csHeaderIcon"></i></div>
         <div class="cs-header-info">
-            <h4>LaptoPedia AI</h4>
-            <span><span class="cs-online-dot"></span> Asisten online</span>
+            <h4 id="csHeaderTitle">LaptoPedia AI</h4>
+            <span><span class="cs-online-dot"></span> <span id="csHeaderStatus">Asisten online</span></span>
         </div>
-        <button class="cs-close" onclick="toggleChat()"><i class="bi bi-x-lg"></i></button>
+        <button id="btnHandoff" onclick="handoverToAdmin()" class="ai-mode">Chat Admin</button>
+        <button class="cs-close" onclick="toggleChat()" style="margin-left: 5px;"><i class="bi bi-x-lg"></i></button>
     </div>
     <div class="cs-messages" id="csMessages">
         <div class="cs-msg bot">
@@ -923,6 +958,67 @@ function escapeHtml(str) {
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
+// ── Handoff State ───────────────────────────────────────
+let isHandoffMode = {{ (auth()->check() && auth()->user()->needs_admin) ? 'true' : 'false' }};
+
+function handleHandoffState() {
+    isHandoffMode = true;
+    document.getElementById('csHeaderTitle').textContent = 'Live Chat Admin';
+    document.getElementById('csHeaderStatus').textContent = 'Bersama Admin';
+    document.getElementById('csHeaderIcon').className = 'bi bi-headset';
+    
+    const btn = document.getElementById('btnHandoff');
+    if (btn) {
+        btn.textContent = 'Kembali ke AI';
+        btn.onclick = backToAiMode;
+        btn.className = 'handoff-mode';
+    }
+}
+
+function handleAiState() {
+    isHandoffMode = false;
+    document.getElementById('csHeaderTitle').textContent = 'LaptoPedia AI';
+    document.getElementById('csHeaderStatus').textContent = 'Asisten online';
+    document.getElementById('csHeaderIcon').className = 'bi bi-robot';
+    
+    const btn = document.getElementById('btnHandoff');
+    if (btn) {
+        btn.textContent = 'Chat Admin';
+        btn.onclick = handoverToAdmin;
+        btn.className = 'ai-mode';
+    }
+}
+
+async function handoverToAdmin() {
+    if (!IS_AUTH) return;
+    try {
+        const res = await fetch('/chat/handover', {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': CS_CSRF, 'Accept': 'application/json' }
+        });
+        const data = await res.json();
+        if (data.status === 'ok') {
+            handleHandoffState();
+            addMsg('Mengalihkan obrolan... Admin kami akan segera membalas pesan Anda di sini.', 'bot');
+        }
+    } catch(e) {}
+}
+
+async function backToAiMode() {
+    if (!IS_AUTH) return;
+    try {
+        const res = await fetch('/chat/back-to-ai', {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': CS_CSRF, 'Accept': 'application/json' }
+        });
+        const data = await res.json();
+        if (data.status === 'ok') {
+            handleAiState();
+            addMsg('Anda telah kembali menggunakan asisten AI. Ada yang bisa saya bantu terkait laptop?', 'bot');
+        }
+    } catch(e) {}
+}
+
 // ── Save message to DB and get AI Reply ─────────────────
 async function saveMsgToDBAndGetReply(userMsg) {
     if (!IS_AUTH) return null;
@@ -937,7 +1033,12 @@ async function saveMsgToDBAndGetReply(userMsg) {
             body: JSON.stringify({ message: userMsg, history: csHistory })
         });
         const data = await res.json();
-        return data.reply;
+        
+        if (data.is_handoff) {
+            handleHandoffState();
+        }
+        
+        return data;
     } catch(e) {
         return null;
     }
@@ -956,16 +1057,20 @@ async function sendCsMessage() {
 
     const typing = addMsg('⋯ Mengetik...', 'typing');
 
-    const reply = await saveMsgToDBAndGetReply(text);
+    const responseData = await saveMsgToDBAndGetReply(text);
     
     typing.remove();
 
-    if (reply) {
-        addMsg(reply, 'bot');
-        csHistory.push({ role: 'user', parts: [{ text }] });
-        csHistory.push({ role: 'model', parts: [{ text: reply }] });
+    if (responseData) {
+        if (responseData.is_handoff) {
+            // Admin akan membalas melalui sistem poll, tidak perlu nambah pesan bot
+        } else if (responseData.reply) {
+            addMsg(responseData.reply, 'bot');
+            csHistory.push({ role: 'user', parts: [{ text }] });
+            csHistory.push({ role: 'model', parts: [{ text: responseData.reply }] });
+        }
     } else {
-        addMsg('Maaf, koneksi ke asisten AI terputus. 🙏', 'bot');
+        addMsg('Maaf, koneksi ke server terputus. 🙏', 'bot');
     }
 
     btn.disabled = false;
@@ -986,6 +1091,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (inp) inp.addEventListener('keydown', e => {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendCsMessage(); }
     });
+    // Restore UI state
+    if (isHandoffMode) {
+        handleHandoffState();
+    } else {
+        handleAiState();
+    }
     // Start polling jika sudah login
     if (IS_AUTH) startAdminPoll();
 });

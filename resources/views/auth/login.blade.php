@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'Sign In')
+@section('title', 'Masuk')
 
 @push('styles')
 <style>
@@ -47,14 +47,14 @@
             <div class="animate-slide-up delay-200">
                 <p class="text-[#d4a843] text-xs font-bold uppercase tracking-[0.14em] mb-4 flex items-center gap-2">
                     <span class="w-1.5 h-1.5 bg-[#d4a843] rounded-full animate-pulse"></span>
-                    Trusted Laptop Platform
+                    Platform Laptop Terpercaya
                 </p>
                 <h1 class="font-manrope text-white text-4xl xl:text-5xl font-black leading-tight tracking-tight">
-                    Welcome Back to<br>
+                    Selamat Datang Kembali di<br>
                     <span style="background: linear-gradient(135deg, #f0d080 0%, #d4a843 40%, #a0721a 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">LaptoPedia</span>
                 </h1>
                 <p class="text-white/50 text-base mt-5 leading-relaxed max-w-sm font-light">
-                    Premium destination for the latest laptops, in-depth reviews, and exclusive member offers.
+                    Destinasi premium untuk laptop terbaru, ulasan mendalam, dan penawaran anggota eksklusif.
                 </p>
             </div>
 
@@ -64,19 +64,19 @@
                     <div class="w-8 h-8 rounded-lg bg-[#d4a843]/10 flex items-center justify-center flex-shrink-0">
                         <i data-lucide="tag" class="w-4 h-4 text-[#d4a843]"></i>
                     </div>
-                    <span class="text-white/80 text-sm font-medium">Exclusive member-only offers</span>
+                    <span class="text-white/80 text-sm font-medium">Penawaran eksklusif khusus anggota</span>
                 </div>
                 <div class="rounded-xl px-4 py-3 flex items-center gap-4 bg-white/[0.02] border border-white/5 backdrop-blur-sm" style="transition-delay:0.05s">
                     <div class="w-8 h-8 rounded-lg bg-[#d4a843]/10 flex items-center justify-center flex-shrink-0">
                         <i data-lucide="star" class="w-4 h-4 text-[#d4a843]"></i>
                     </div>
-                    <span class="text-white/80 text-sm font-medium">Expert reviews & comparisons</span>
+                    <span class="text-white/80 text-sm font-medium">Ulasan & perbandingan dari para ahli</span>
                 </div>
                 <div class="rounded-xl px-4 py-3 flex items-center gap-4 bg-white/[0.02] border border-white/5 backdrop-blur-sm" style="transition-delay:0.1s">
                     <div class="w-8 h-8 rounded-lg bg-[#d4a843]/10 flex items-center justify-center flex-shrink-0">
                         <i data-lucide="shield-check" class="w-4 h-4 text-[#d4a843]"></i>
                     </div>
-                    <span class="text-white/80 text-sm font-medium">Safe & trusted shopping guarantee</span>
+                    <span class="text-white/80 text-sm font-medium">Jaminan belanja aman & terpercaya</span>
                 </div>
             </div>
 
@@ -84,24 +84,24 @@
             <div class="flex gap-8 pt-6 border-t border-white/10 animate-slide-up delay-400">
                 <div>
                     <p class="font-manrope text-white font-black text-2xl">50K+</p>
-                    <p class="text-white/40 text-xs mt-1">Happy Users</p>
+                    <p class="text-white/40 text-xs mt-1">Pengguna Puas</p>
                 </div>
                 <div class="w-px bg-white/10"></div>
                 <div>
                     <p class="font-manrope text-white font-black text-2xl">5.000+</p>
-                    <p class="text-white/40 text-xs mt-1">Laptops Listed</p>
+                    <p class="text-white/40 text-xs mt-1">Laptop Terdaftar</p>
                 </div>
                 <div class="w-px bg-white/10"></div>
                 <div>
                     <p class="font-manrope text-white font-black text-2xl">4.9★</p>
-                    <p class="text-white/40 text-xs mt-1">User Rating</p>
+                    <p class="text-white/40 text-xs mt-1">Penilaian</p>
                 </div>
             </div>
         </div>
 
         {{-- Footer --}}
         <div class="relative z-10 animate-slide-up delay-500">
-            <p class="text-white/30 text-xs">© {{ date('Y') }} LaptoPedia. All rights reserved.</p>
+            <p class="text-white/30 text-xs">© {{ date('Y') }} LaptoPedia. Hak cipta dilindungi undang-undang.</p>
         </div>
     </div>
 
@@ -120,7 +120,7 @@
             <div class="hidden lg:block"></div>
             <a href="#" class="text-sm text-white/50 hover:text-[#d4a843] transition-colors font-medium flex items-center gap-1.5">
                 <i data-lucide="headphones" class="w-4 h-4"></i>
-                Need help?
+                Butuh bantuan?
             </a>
         </div>
 
@@ -132,18 +132,18 @@
                 <div class="flex bg-[#111111] border border-white/5 rounded-full p-1 mb-10 animate-slide-up delay-100">
                     <a href="{{ route('login') }}"
                        class="flex-1 text-center py-2.5 rounded-full text-sm font-semibold bg-[#222] text-white shadow-sm transition-all">
-                        Sign In
+                        Masuk
                     </a>
                     <a href="{{ route('register') }}"
                        class="flex-1 text-center py-2.5 rounded-full text-sm font-medium text-white/50 hover:text-white transition-all">
-                        Sign Up
+                        Daftar
                     </a>
                 </div>
 
                 {{-- Heading --}}
                 <div class="mb-8 animate-slide-up delay-200">
-                    <h2 class="font-manrope text-3xl font-bold text-white tracking-tight">Login to your account</h2>
-                    <p class="text-white/50 text-sm mt-2 font-light">Welcome back, please enter your details.</p>
+                    <h2 class="font-manrope text-3xl font-bold text-white tracking-tight">Masuk ke akun Anda</h2>
+                    <p class="text-white/50 text-sm mt-2 font-light">Selamat datang kembali, silakan masukkan detail Anda.</p>
                 </div>
 
                 {{-- Flash success --}}
@@ -168,7 +168,7 @@
                                 name="email"
                                 id="email"
                                 value="{{ old('email') }}"
-                                placeholder="Enter your email"
+                                placeholder="Masukkan email Anda"
                                 autocomplete="email"
                                 class="flex-1 text-sm text-white placeholder-white/30 bg-transparent outline-none"
                             >
@@ -195,7 +195,7 @@
                                 type="password"
                                 name="password"
                                 id="password"
-                                placeholder="Enter your password"
+                                placeholder="Masukkan kata sandi Anda"
                                 autocomplete="current-password"
                                 class="flex-1 text-sm text-white placeholder-white/30 bg-transparent outline-none"
                             >
@@ -217,10 +217,10 @@
                         <label class="flex items-center gap-2 cursor-pointer group">
                             <input type="checkbox" name="remember" id="remember"
                                 class="w-4 h-4 rounded border-zinc-700 bg-zinc-900 text-[#d4a843] focus:ring-[#d4a843] focus:ring-offset-black cursor-pointer">
-                            <span class="text-sm text-white/60 group-hover:text-white transition-colors">Remember me</span>
+                            <span class="text-sm text-white/60 group-hover:text-white transition-colors">Ingat saya</span>
                         </label>
                         <a href="#" class="text-sm font-semibold text-[#d4a843] hover:text-[#f0d080] transition-colors">
-                            Forgot Password?
+                            Lupa Kata Sandi?
                         </a>
                     </div>
 
@@ -228,7 +228,7 @@
                     <div class="animate-slide-up delay-600 pt-2">
                         <button type="submit"
                             class="w-full py-3.5 rounded-full bg-white text-black font-manrope font-bold text-sm flex items-center justify-center gap-2 hover:bg-gray-200 transition-all hover:scale-[1.02]">
-                            <span id="btn-text">Sign In</span>
+                            <span id="btn-text">Masuk</span>
                             <i data-lucide="arrow-right" class="w-4 h-4" id="btn-icon"></i>
                             <svg id="btn-spinner" class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -241,7 +241,7 @@
                 {{-- Divider --}}
                 <div class="my-6 flex items-center gap-3 animate-slide-up delay-600">
                     <div class="flex-1 h-px bg-white/10"></div>
-                    <span class="text-xs text-white/30 font-medium uppercase tracking-wider">Or continue with</span>
+                    <span class="text-xs text-white/30 font-medium uppercase tracking-wider">Atau lanjutkan dengan</span>
                     <div class="flex-1 h-px bg-white/10"></div>
                 </div>
 
@@ -266,8 +266,8 @@
 
                 {{-- Sign up link --}}
                 <p class="text-center text-sm text-white/50 mt-8 animate-slide-up delay-600">
-                    Don't have an account?
-                    <a href="{{ route('register') }}" class="font-semibold text-[#d4a843] hover:text-[#f0d080] transition-colors">Sign up</a>
+                    Belum punya akun?
+                    <a href="{{ route('register') }}" class="font-semibold text-[#d4a843] hover:text-[#f0d080] transition-colors">Daftar</a>
                 </p>
             </div>
         </div>
@@ -291,7 +291,7 @@
     }
 
     document.getElementById('loginForm').addEventListener('submit', function () {
-        document.getElementById('btn-text').textContent = 'Processing...';
+        document.getElementById('btn-text').textContent = 'Memproses...';
         document.getElementById('btn-icon').classList.add('hidden');
         document.getElementById('btn-spinner').classList.remove('hidden');
     });

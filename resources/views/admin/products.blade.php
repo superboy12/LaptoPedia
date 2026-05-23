@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('page_title', 'Product Management')
+@section('page_title', 'Manajemen Produk')
 @section('page_desc', 'Tambah, edit, dan kelola semua produk di katalog Anda')
 
 @push('styles')
@@ -276,9 +276,9 @@
 @if($products->hasPages())
 <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:16px;">
     @if($products->onFirstPage())
-        <span style="padding:6px 14px;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:0.82rem;opacity:0.4;">← Prev</span>
+        <span style="padding:6px 14px;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:0.82rem;opacity:0.4;">← Sebelumnya</span>
     @else
-        <a href="{{ $products->previousPageUrl() }}" style="padding:6px 14px;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:0.82rem;text-decoration:none;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">← Prev</a>
+        <a href="{{ $products->previousPageUrl() }}" style="padding:6px 14px;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:0.82rem;text-decoration:none;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">← Sebelumnya</a>
     @endif
 
     @foreach($products->getUrlRange(1, $products->lastPage()) as $page => $url)
@@ -290,9 +290,9 @@
     @endforeach
 
     @if($products->hasMorePages())
-        <a href="{{ $products->nextPageUrl() }}" style="padding:6px 14px;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:0.82rem;text-decoration:none;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">Next →</a>
+        <a href="{{ $products->nextPageUrl() }}" style="padding:6px 14px;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:0.82rem;text-decoration:none;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">Berikutnya →</a>
     @else
-        <span style="padding:6px 14px;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:0.82rem;opacity:0.4;">Next →</span>
+        <span style="padding:6px 14px;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:0.82rem;opacity:0.4;">Berikutnya →</span>
     @endif
 </div>
 @endif
@@ -351,16 +351,16 @@
             <!-- Spec Highlights Section -->
             <div style="margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid var(--border);">
                 <h4 style="margin-bottom: 15px; font-family: 'Manrope', sans-serif; font-size: 0.95rem; color: var(--gold); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
-                    <i class="bi bi-star-fill"></i> Spec Highlights (Max 4)
+                    <i class="bi bi-star-fill"></i> Sorotan Spesifikasi (Maks 4)
                 </h4>
                 <div class="f-row" style="margin-bottom: 12px;">
                     <div class="f-group">
-                        <label class="f-label">Judul Highlight Section</label>
+                        <label class="f-label">Judul Bagian Sorotan</label>
                         <input type="text" name="spec_title" class="f-input" placeholder="cth: Mendobrak Batas.">
                     </div>
                 </div>
                 <div class="f-group" style="margin-bottom: 15px;">
-                    <label class="f-label">Deskripsi Highlight Section</label>
+                    <label class="f-label">Deskripsi Bagian Sorotan</label>
                     <textarea name="spec_description" class="f-textarea" style="height: 60px;" placeholder="Arsitektur kustom yang mengoptimalkan..."></textarea>
                 </div>
 
@@ -469,16 +469,16 @@
             <!-- Spec Highlights Section -->
             <div style="margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid var(--border);">
                 <h4 style="margin-bottom: 15px; font-family: 'Manrope', sans-serif; font-size: 0.95rem; color: var(--gold); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
-                    <i class="bi bi-star-fill"></i> Spec Highlights (Max 4)
+                    <i class="bi bi-star-fill"></i> Sorotan Spesifikasi (Maks 4)
                 </h4>
                 <div class="f-row" style="margin-bottom: 12px;">
                     <div class="f-group">
-                        <label class="f-label">Judul Highlight Section</label>
+                        <label class="f-label">Judul Bagian Sorotan</label>
                         <input type="text" name="spec_title" id="editSpecTitle" class="f-input" placeholder="cth: Mendobrak Batas.">
                     </div>
                 </div>
                 <div class="f-group" style="margin-bottom: 15px;">
-                    <label class="f-label">Deskripsi Highlight Section</label>
+                    <label class="f-label">Deskripsi Bagian Sorotan</label>
                     <textarea name="spec_description" id="editSpecDescription" class="f-textarea" style="height: 60px;" placeholder="Arsitektur kustom yang mengoptimalkan..."></textarea>
                 </div>
 

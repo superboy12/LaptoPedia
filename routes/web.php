@@ -13,6 +13,12 @@ use App\Http\Controllers\CheckoutController;
 use Illuminate\Support\Facades\Route;
 
 // ─────────────────────────────────────────────
+//  Midtrans Webhook Callback (Public)
+// ─────────────────────────────────────────────
+Route::post('/midtrans/callback', [CheckoutController::class, 'callback'])->name('midtrans.callback');
+
+
+// ─────────────────────────────────────────────
 //  Guest Routes (hanya bisa diakses jika belum login)
 // ─────────────────────────────────────────────
 Route::middleware('guest')->group(function () {
@@ -49,9 +55,19 @@ Route::middleware('auth')->group(function () {
     // ── Profil Pengguna ──────────────────────────────────
     Route::get('/profile', [HomeController::class, 'profile'])->name('profile');
     Route::put('/profile', [HomeController::class, 'updateProfile'])->name('profile.update');
+    Route::get('/profile/orders', [HomeController::class, 'myOrders'])->name('profile.orders');
 
     Route::get('/products', [HomeController::class, 'products'])->name('products.index');
     Route::get('/product/{slug}', [HomeController::class, 'detail'])->name('product.detail');
+
+    // ── Deals Page ──────────────────────────────────────
+    Route::get('/deals', [HomeController::class, 'deals'])->name('deals');
+
+    // ── Brands Page ─────────────────────────────────────
+    Route::get('/brands', [HomeController::class, 'brands'])->name('brands');
+
+    // ── Support Page ────────────────────────────────────
+    Route::get('/support', [HomeController::class, 'support'])->name('support');
 
     // ── Shopping Cart ──────────────────────────────────────
     Route::prefix('cart')->name('cart.')->group(function () {
@@ -115,6 +131,8 @@ Route::middleware('auth')->group(function () {
     // ── Chat (User Side) ───────────────────────────────────
     Route::prefix('chat')->name('chat.')->group(function () {
         Route::post('/send', [ChatController::class, 'send'])->name('send');
+        Route::post('/handover', [ChatController::class, 'handover'])->name('handover');
+        Route::post('/back-to-ai', [ChatController::class, 'backToAi'])->name('back_to_ai');
         Route::get('/poll',  [ChatController::class, 'poll'])->name('poll');
     });
 });

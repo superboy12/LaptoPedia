@@ -288,13 +288,13 @@
             <li class="sidebar-menu-item">
                 <a href="{{ route('admin.products') }}" class="sidebar-menu-link {{ request()->routeIs('admin.products') ? 'active' : '' }}">
                     <i class="bi bi-box"></i>
-                    Products
+                    Produk
                 </a>
             </li>
             <li class="sidebar-menu-item">
                 <a href="{{ route('admin.orders') }}" class="sidebar-menu-link {{ request()->routeIs('admin.orders') ? 'active' : '' }}">
                     <i class="bi bi-clipboard-check"></i>
-                    Orders
+                    Pesanan
                 </a>
             </li>
             <li class="sidebar-menu-item">
@@ -306,24 +306,24 @@
             </li>
         </ul>
 
-        <div class="sidebar-label">Other</div>
+        <div class="sidebar-label">Lainnya</div>
         <ul class="sidebar-menu">
             <li class="sidebar-menu-item">
                 <a href="#" class="sidebar-menu-link">
                     <i class="bi bi-gear"></i>
-                    Settings
+                    Pengaturan
                 </a>
             </li>
         </ul>
 
-        <div class="sidebar-label">Account</div>
+        <div class="sidebar-label">Akun</div>
         <ul class="sidebar-menu">
             <li class="sidebar-menu-item">
                 <form method="POST" action="{{ route('admin.logout') }}" style="width:100%;">
                     @csrf
                     <button type="submit" class="sidebar-menu-link" style="width:100%;text-align:left;background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;">
                         <i class="bi bi-box-arrow-right"></i>
-                        Logout
+                        Keluar
                     </button>
                 </form>
             </li>
@@ -340,7 +340,7 @@
         <div class="topbar-actions">
             <div class="topbar-search">
                 <i class="bi bi-search"></i>
-                <input type="text" placeholder="Search anything...">
+                <input type="text" placeholder="Cari apa saja...">
             </div>
 
             <button class="topbar-icon">
@@ -367,7 +367,7 @@
     <main class="admin-main">
         <div class="page-header">
             <h1 class="page-title">@yield('page_title', 'Dashboard')</h1>
-            <p class="page-desc">@yield('page_desc', 'Manage your store and track performance')</p>
+            <p class="page-desc">@yield('page_desc', 'Kelola toko Anda dan pantau performa')</p>
         </div>
 
         @if(session('success'))

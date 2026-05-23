@@ -23,15 +23,21 @@ class ChatController extends Controller
             'history' => 'nullable|array'
         ]);
 
-        $userId = auth()->id();
+        $user = auth()->user();
+        $isForAdmin = $user->needs_admin;
 
         // Simpan pesan user
         ChatMessage::create([
-            'user_id' => $userId,
+            'user_id' => $user->id_user,
             'sender'  => 'user',
             'message' => $request->message,
             'is_read' => false,
+            'is_for_admin' => $isForAdmin,
         ]);
+
+        if ($isForAdmin) {
+            return response()->json(['reply' => '', 'status' => 'ok', 'is_handoff' => true]);
+        }
 
         $apiKey = env('GEMINI_API_KEY');
         if (!$apiKey) {
@@ -72,16 +78,63 @@ class ChatController extends Controller
 
             // Simpan balasan AI
             ChatMessage::create([
-                'user_id' => $userId,
+                'user_id' => $user->id_user,
                 'sender'  => 'ai',
                 'message' => $replyText,
                 'is_read' => true,
+                'is_for_admin' => false,
             ]);
 
             return response()->json(['reply' => $replyText, 'status' => 'ok']);
         } catch (\Exception $e) {
-            return response()->json(['reply' => 'Koneksi ke AI bermasalah, coba lagi.', 'status' => 'error']);
+            \Log::error('AI Chat Error: ' . $e->getMessage());
+            return response()->json(['reply' => 'Koneksi ke AI bermasalah, coba lagi. ' . $e->getMessage(), 'status' => 'error']);
         }
+    }
+
+    /**
+     * Handover ke admin. AI dimatikan.
+     */
+    public function handover()
+    {
+        $user = auth()->user();
+        
+        if (!$user->needs_admin) {
+            $user->update(['needs_admin' => true]);
+
+            // Kirim pesan otomatis atas nama user ke admin
+            ChatMessage::create([
+                'user_id' => $user->id_user,
+                'sender'  => 'user',
+                'message' => 'Halo Admin, saya butuh bantuan langsung.',
+                'is_read' => false,
+                'is_for_admin' => true,
+            ]);
+        }
+
+        return response()->json(['status' => 'ok']);
+    }
+
+    /**
+     * Kembali ke mode AI.
+     */
+    public function backToAi()
+    {
+        $user = auth()->user();
+        if ($user->needs_admin) {
+            $user->update(['needs_admin' => false]);
+
+            // Opsional: beritahu admin bahwa user telah meninggalkan sesi live chat
+            ChatMessage::create([
+                'user_id' => $user->id_user,
+                'sender'  => 'user',
+                'message' => 'Sistem: Pengguna telah kembali ke obrolan AI.',
+                'is_read' => false,
+                'is_for_admin' => true,
+            ]);
+        }
+
+        return response()->json(['status' => 'ok']);
     }
 
     /**
