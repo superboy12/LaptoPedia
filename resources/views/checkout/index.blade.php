@@ -602,57 +602,199 @@
 @push('scripts')
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    // Default location (Jakarta Pusat)
+/* ── MAP INIT + REVERSE GEOCODING ── */
+window.addEventListener('load', function () {
+    // Default: Jakarta Pusat
     let defaultLat = -6.175110;
     let defaultLng = 106.827152;
-    let zoomLevel  = 13;
 
-    const map = L.map('map').setView([defaultLat, defaultLng], zoomLevel);
+    const map = L.map('map', { zoomControl: true }).setView([defaultLat, defaultLng], 13);
 
-    // Dark theme maps layer (CartoDB Dark Matter)
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        attribution: '© OpenStreetMap © CARTO',
         subdomains: 'abcd',
         maxZoom: 20
     }).addTo(map);
 
-    // Check if browser supports geolocation to get user's current location
-    if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            defaultLat = position.coords.latitude;
-            defaultLng = position.coords.longitude;
-            map.setView([defaultLat, defaultLng], 15);
-            updateMarker(defaultLat, defaultLng);
+    // Force Leaflet to recalculate size after layout is ready
+    setTimeout(() => map.invalidateSize(), 400);
+
+    // Custom gold marker icon
+    const goldIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+            width:34px;height:34px;
+            background:linear-gradient(135deg,#f0d080,#d4a843);
+            border:3px solid #fff;
+            border-radius:50% 50% 50% 0;
+            transform:rotate(-45deg);
+            box-shadow:0 4px 14px rgba(212,168,67,0.5);
+            display:flex;align-items:center;justify-content:center;
+        "><span style="transform:rotate(45deg);font-size:1rem;line-height:1;">📍</span></div>`,
+        iconSize: [34, 34],
+        iconAnchor: [17, 34],
+        popupAnchor: [0, -36]
+    });
+
+    let marker = L.marker([defaultLat, defaultLng], { draggable: true, icon: goldIcon }).addTo(map);
+    updateLatLng(defaultLat, defaultLng);
+
+    // ── Geocode & fill dropdowns when pin moves ──
+    let geocodeTimer = null;
+    function onPinMoved(lat, lng) {
+        updateLatLng(lat, lng);
+        clearTimeout(geocodeTimer);
+        geocodeTimer = setTimeout(() => reverseGeocode(lat, lng), 600);
+    }
+
+    marker.on('dragend', () => {
+        const p = marker.getLatLng();
+        onPinMoved(p.lat, p.lng);
+    });
+    map.on('click', (e) => {
+        marker.setLatLng(e.latlng);
+        onPinMoved(e.latlng.lat, e.latlng.lng);
+    });
+
+    // Geolocation: move to user's real position
+    if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(pos => {
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            map.setView([lat, lng], 15);
+            marker.setLatLng([lat, lng]);
+            updateLatLng(lat, lng);
+            reverseGeocode(lat, lng);
+        }, () => {});
+    }
+
+    function updateLatLng(lat, lng) {
+        document.getElementById('latInput').value = lat;
+        document.getElementById('lngInput').value = lng;
+    }
+
+    // ── REVERSE GEOCODING via Nominatim ──────────────────
+    async function reverseGeocode(lat, lng) {
+        showMapToast('📍 Mendeteksi wilayah...', 'loading');
+        try {
+            const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&addressdetails=1&accept-language=id`;
+            const res  = await fetch(url, { headers: { 'Accept': 'application/json' } });
+            const data = await res.json();
+            const addr = data.address || {};
+
+            // Extract names (Nominatim uses different keys)
+            const stateName  = addr.state || addr.province || '';
+            const cityName   = addr.city || addr.regency || addr.county || addr.town || addr.municipality || '';
+            const distName   = addr.suburb || addr.district || addr.village || addr.quarter || '';
+            const postalCode = addr.postcode || '';
+
+            if (!stateName) { showMapToast('⚠️ Wilayah tidak dikenali', 'warn'); return; }
+
+            // ── Auto-fill postal code ──
+            if (postalCode) {
+                const pcEl = document.getElementById('postal_code_input');
+                if (pcEl && !pcEl.value) pcEl.value = postalCode;
+            }
+
+            // ── Match & select Province ──────────────────
+            await waitForProvinces();
+            const matchedProv = fuzzyMatch(csddData.province, stateName);
+            if (!matchedProv) { showMapToast('⚠️ Provinsi tidak cocok: ' + stateName, 'warn'); return; }
+
+            csddSelect('province', matchedProv.id, matchedProv.name);
+
+            // ── After city data loads, match City ────────
+            await csddLoadCityAsync(matchedProv.id);
+            if (cityName) {
+                const matchedCity = fuzzyMatch(csddData.city, cityName);
+                if (matchedCity) {
+                    csddSelect('city', matchedCity.id, matchedCity.name);
+
+                    // ── After district data loads, match District ──
+                    await csddLoadDistrictAsync(matchedCity.id);
+                    if (distName) {
+                        const matchedDist = fuzzyMatch(csddData.district, distName);
+                        if (matchedDist) csddSelect('district', matchedDist.id, matchedDist.name);
+                    }
+                }
+            }
+
+            showMapToast('✅ Lokasi terdeteksi: ' + matchedProv.name, 'success');
+        } catch (err) {
+            showMapToast('❌ Gagal deteksi lokasi', 'error');
+            console.error('Reverse geocode error:', err);
+        }
+    }
+
+    // Wait until province data is loaded
+    function waitForProvinces(tries = 0) {
+        return new Promise((resolve, reject) => {
+            if (csddData.province.length > 0) return resolve();
+            if (tries > 30) return reject('Provinces not loaded');
+            setTimeout(() => waitForProvinces(tries + 1).then(resolve).catch(reject), 200);
         });
     }
 
-    // Initialize marker
-    let marker = L.marker([defaultLat, defaultLng], {draggable: true}).addTo(map);
-    updateInputs(defaultLat, defaultLng);
+    // Fuzzy text match — strips common prefixes (KOTA/KAB/KABUPATEN) and scores by substring
+    function fuzzyMatch(list, query) {
+        if (!query || !list || list.length === 0) return null;
+        const normalize = s => s.toLowerCase()
+            .replace(/^(provinsi|prov\.|kota|kabupaten|kab\.|kec\.|kecamatan)\s+/i, '')
+            .replace(/[^a-z0-9\s]/g, '').trim();
 
-    // Event when marker is dragged
-    marker.on('dragend', function(e) {
-        let position = marker.getLatLng();
-        updateInputs(position.lat, position.lng);
-    });
+        const q = normalize(query);
+        let best = null, bestScore = -1;
 
-    // Event when map is clicked
-    map.on('click', function(e) {
-        let position = e.latlng;
-        marker.setLatLng(position);
-        updateInputs(position.lat, position.lng);
-    });
-
-    function updateMarker(lat, lng) {
-        marker.setLatLng([lat, lng]);
-        updateInputs(lat, lng);
+        for (const item of list) {
+            const n = normalize(item.name);
+            // Exact match
+            if (n === q) return item;
+            // Contains match
+            if (n.includes(q) || q.includes(n)) {
+                const score = Math.min(n.length, q.length) / Math.max(n.length, q.length);
+                if (score > bestScore) { bestScore = score; best = item; }
+            }
+        }
+        // If no contains match, try word-level overlap
+        if (!best) {
+            const qWords = q.split(/\s+/);
+            for (const item of list) {
+                const nWords = normalize(item.name).split(/\s+/);
+                const common = qWords.filter(w => nWords.some(nw => nw.includes(w) || w.includes(nw)));
+                const score  = common.length / Math.max(qWords.length, nWords.length);
+                if (score > bestScore) { bestScore = score; best = item; }
+            }
+        }
+        return bestScore > 0.2 ? best : null;
     }
 
-    function updateInputs(lat, lng) {
-        document.getElementById('latInput').value = lat;
-        document.getElementById('lngInput').value = lng;
+    // Toast notification inside map
+    function showMapToast(msg, type = 'info') {
+        let toast = document.getElementById('mapToast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'mapToast';
+            toast.style.cssText = `
+                position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
+                background:rgba(20,20,20,0.92);color:#fff;
+                padding:8px 18px;border-radius:100px;font-size:0.8rem;
+                font-family:'DM Sans',sans-serif;font-weight:600;
+                z-index:9999;border:1px solid rgba(255,255,255,0.1);
+                white-space:nowrap;pointer-events:none;
+                box-shadow:0 4px 16px rgba(0,0,0,0.4);
+                transition:opacity 0.3s ease;
+            `;
+            document.getElementById('map').style.position = 'relative';
+            document.getElementById('map').appendChild(toast);
+        }
+        const colors = { success:'#4ade80', warn:'#fb923c', error:'#f87171', loading:'#d4a843', info:'#fff' };
+        toast.style.color = colors[type] || '#fff';
+        toast.textContent = msg;
+        toast.style.opacity = '1';
+        if (type !== 'loading') {
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+        }
     }
 
     // Form submission animation
@@ -662,6 +804,7 @@ document.addEventListener("DOMContentLoaded", function() {
         btn.style.opacity = '0.7';
         btn.disabled = true;
     });
+});
 </script>
 
 <script>
@@ -773,7 +916,7 @@ function csddSelect(key, id, name) {
     }
 }
 
-// ── API Loaders ───────────────────────────────────────────
+// ── API Loaders (return Promise for async chaining) ───────
 async function csddLoadProvinces() {
     const list = document.getElementById('csdd-province-list');
     list.innerHTML = '<div class="csdd-loading"><i class="bi bi-arrow-repeat"></i> Memuat provinsi...</div>';
@@ -787,6 +930,9 @@ async function csddLoadProvinces() {
 }
 
 async function csddLoadCity(provinceId) {
+    return csddLoadCityAsync(provinceId);
+}
+async function csddLoadCityAsync(provinceId) {
     const trigger = document.getElementById('csdd-city-trigger');
     const list    = document.getElementById('csdd-city-list');
     trigger.classList.add('disabled');
@@ -807,6 +953,9 @@ async function csddLoadCity(provinceId) {
 }
 
 async function csddLoadDistrict(regencyId) {
+    return csddLoadDistrictAsync(regencyId);
+}
+async function csddLoadDistrictAsync(regencyId) {
     const trigger = document.getElementById('csdd-district-trigger');
     const list    = document.getElementById('csdd-district-list');
     trigger.classList.add('disabled');
