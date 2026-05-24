@@ -130,6 +130,134 @@
 }
 .form-section-title i { color: var(--gold); }
 
+/* ── CUSTOM SEARCHABLE DROPDOWN ── */
+.csdd-wrap {
+    position: relative;
+}
+.csdd-trigger {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    padding: 14px 48px 14px 48px;
+    border-radius: 12px;
+    outline: none;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px;
+    user-select: none;
+}
+.csdd-trigger.open,
+.csdd-trigger:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 4px rgba(212, 168, 67, 0.1);
+    background: var(--surface-2);
+}
+.csdd-trigger.disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+.csdd-trigger .csdd-icon-left {
+    position: absolute;
+    left: 18px;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    transition: color 0.3s;
+    pointer-events: none;
+}
+.csdd-trigger.open .csdd-icon-left { color: var(--gold); }
+.csdd-trigger .csdd-chevron {
+    position: absolute;
+    right: 16px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    transition: transform 0.25s ease;
+    pointer-events: none;
+}
+.csdd-trigger.open .csdd-chevron { transform: rotate(180deg); color: var(--gold); }
+.csdd-placeholder { color: var(--text-muted); }
+.csdd-selected { color: var(--text); font-weight: 600; }
+
+.csdd-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0; right: 0;
+    background: var(--surface);
+    border: 1px solid rgba(212,168,67,0.3);
+    border-radius: 14px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.28);
+    z-index: 9000;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.csdd-panel.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+}
+.csdd-search-wrap {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg);
+}
+.csdd-search-wrap i { color: var(--text-muted); font-size: 0.9rem; flex-shrink: 0; }
+.csdd-search {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.87rem;
+}
+.csdd-search::placeholder { color: var(--text-muted); }
+.csdd-list {
+    max-height: 220px;
+    overflow-y: auto;
+    padding: 6px 0;
+}
+.csdd-list::-webkit-scrollbar { width: 4px; }
+.csdd-list::-webkit-scrollbar-thumb { background: var(--surface-2); border-radius: 2px; }
+.csdd-option {
+    padding: 10px 16px;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    display: flex; align-items: center; gap: 8px;
+}
+.csdd-option:hover { background: var(--search-bg); color: var(--text); }
+.csdd-option.selected {
+    background: var(--gold-dim);
+    color: var(--gold);
+    font-weight: 700;
+}
+.csdd-option .csdd-opt-check {
+    margin-left: auto;
+    opacity: 0;
+    color: var(--gold);
+    font-size: 0.8rem;
+}
+.csdd-option.selected .csdd-opt-check { opacity: 1; }
+.csdd-loading, .csdd-empty {
+    padding: 16px;
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+.csdd-loading i { animation: spin 1s linear infinite; display: inline-block; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
 /* Map */
 #map {
     width: 100%;
@@ -301,28 +429,71 @@
 
                     <div class="form-section-title"><i class="bi bi-pin-map-fill"></i> Detail Alamat</div>
                     <div class="form-row">
+                        {{-- PROVINSI DROPDOWN --}}
                         <div class="form-group">
                             <label class="form-label">Provinsi</label>
-                            <div class="input-with-icon">
-                                <input type="text" name="province" class="form-input" placeholder="Contoh: DKI Jakarta" value="{{ old('province') }}" required>
-                                <i class="bi bi-map"></i>
+                            <input type="hidden" name="province" id="provinceVal" value="{{ old('province') }}" required>
+                            <div class="csdd-wrap" id="csdd-province">
+                                <button type="button" class="csdd-trigger" id="csdd-province-trigger" onclick="csddToggle('province')">
+                                    <i class="bi bi-map csdd-icon-left"></i>
+                                    <span class="csdd-placeholder" id="csdd-province-label">Pilih Provinsi</span>
+                                    <i class="bi bi-chevron-down csdd-chevron"></i>
+                                </button>
+                                <div class="csdd-panel" id="csdd-province-panel">
+                                    <div class="csdd-search-wrap">
+                                        <i class="bi bi-search"></i>
+                                        <input type="text" class="csdd-search" placeholder="Cari provinsi..." id="csdd-province-search" oninput="csddFilter('province', this.value)">
+                                    </div>
+                                    <div class="csdd-list" id="csdd-province-list">
+                                        <div class="csdd-loading"><i class="bi bi-arrow-repeat"></i> Memuat data...</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
+                        {{-- KOTA/KABUPATEN DROPDOWN --}}
                         <div class="form-group">
                             <label class="form-label">Kota / Kabupaten</label>
-                            <div class="input-with-icon">
-                                <input type="text" name="city" class="form-input" placeholder="Contoh: Jakarta Selatan" value="{{ old('city') }}" required>
-                                <i class="bi bi-buildings"></i>
+                            <input type="hidden" name="city" id="cityVal" value="{{ old('city') }}" required>
+                            <div class="csdd-wrap" id="csdd-city">
+                                <button type="button" class="csdd-trigger disabled" id="csdd-city-trigger" onclick="csddToggle('city')">
+                                    <i class="bi bi-buildings csdd-icon-left"></i>
+                                    <span class="csdd-placeholder" id="csdd-city-label">Pilih Provinsi dulu</span>
+                                    <i class="bi bi-chevron-down csdd-chevron"></i>
+                                </button>
+                                <div class="csdd-panel" id="csdd-city-panel">
+                                    <div class="csdd-search-wrap">
+                                        <i class="bi bi-search"></i>
+                                        <input type="text" class="csdd-search" placeholder="Cari kota/kabupaten..." id="csdd-city-search" oninput="csddFilter('city', this.value)">
+                                    </div>
+                                    <div class="csdd-list" id="csdd-city-list">
+                                        <div class="csdd-empty">Pilih provinsi terlebih dahulu</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-row">
+                        {{-- KECAMATAN DROPDOWN --}}
                         <div class="form-group">
                             <label class="form-label">Kecamatan</label>
-                            <div class="input-with-icon">
-                                <input type="text" name="district" class="form-input" placeholder="Contoh: Kebayoran Baru" value="{{ old('district') }}" required>
-                                <i class="bi bi-signpost-split"></i>
+                            <input type="hidden" name="district" id="districtVal" value="{{ old('district') }}" required>
+                            <div class="csdd-wrap" id="csdd-district">
+                                <button type="button" class="csdd-trigger disabled" id="csdd-district-trigger" onclick="csddToggle('district')">
+                                    <i class="bi bi-signpost-split csdd-icon-left"></i>
+                                    <span class="csdd-placeholder" id="csdd-district-label">Pilih Kota dulu</span>
+                                    <i class="bi bi-chevron-down csdd-chevron"></i>
+                                </button>
+                                <div class="csdd-panel" id="csdd-district-panel">
+                                    <div class="csdd-search-wrap">
+                                        <i class="bi bi-search"></i>
+                                        <input type="text" class="csdd-search" placeholder="Cari kecamatan..." id="csdd-district-search" oninput="csddFilter('district', this.value)">
+                                    </div>
+                                    <div class="csdd-list" id="csdd-district-list">
+                                        <div class="csdd-empty">Pilih kota/kabupaten terlebih dahulu</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -491,6 +662,166 @@ document.addEventListener("DOMContentLoaded", function() {
         btn.style.opacity = '0.7';
         btn.disabled = true;
     });
+</script>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   CUSTOM SEARCHABLE DROPDOWN — Indonesian Regions Cascader
+   API: https://www.emsifa.com/api-wilayah-indonesia/api/
+══════════════════════════════════════════════════════════ */
+const WILAYAH_BASE = 'https://www.emsifa.com/api-wilayah-indonesia/api';
+
+const csddData = {
+    province: [],
+    city: [],
+    district: [],
+};
+const csddSelected = { province: null, city: null, district: null };
+
+// ── Open / Close ─────────────────────────────────────────
+function csddToggle(key) {
+    const trigger = document.getElementById(`csdd-${key}-trigger`);
+    const panel   = document.getElementById(`csdd-${key}-panel`);
+    if (trigger.classList.contains('disabled')) return;
+
+    const isOpen = panel.classList.contains('open');
+    csddCloseAll();
+    if (!isOpen) {
+        trigger.classList.add('open');
+        panel.classList.add('open');
+        // Focus search
+        setTimeout(() => {
+            const s = document.getElementById(`csdd-${key}-search`);
+            if (s) s.focus();
+        }, 120);
+    }
+}
+
+function csddCloseAll() {
+    ['province','city','district'].forEach(k => {
+        document.getElementById(`csdd-${k}-trigger`)?.classList.remove('open');
+        document.getElementById(`csdd-${k}-panel`)?.classList.remove('open');
+    });
+}
+
+// Close when clicking outside
+document.addEventListener('click', function(e) {
+    const wraps = document.querySelectorAll('.csdd-wrap');
+    let inside = false;
+    wraps.forEach(w => { if (w.contains(e.target)) inside = true; });
+    if (!inside) csddCloseAll();
 });
+
+// ── Render list ───────────────────────────────────────────
+function csddRender(key, items, query = '') {
+    const list = document.getElementById(`csdd-${key}-list`);
+    const filtered = query
+        ? items.filter(i => i.name.toLowerCase().includes(query.toLowerCase()))
+        : items;
+
+    if (filtered.length === 0) {
+        list.innerHTML = `<div class="csdd-empty"><i class="bi bi-search" style="display:block;margin-bottom:6px;opacity:0.3;font-size:1.5rem;"></i>Tidak ditemukan untuk "<strong>${query}</strong>"</div>`;
+        return;
+    }
+
+    list.innerHTML = filtered.map(item => `
+        <div class="csdd-option ${csddSelected[key]?.id === item.id ? 'selected' : ''}"
+             onclick="csddSelect('${key}', '${item.id}', \`${item.name.replace(/`/g,'&#96;')}\`)">
+            <i class="bi bi-${key === 'province' ? 'map' : key === 'city' ? 'buildings' : 'signpost-split'}" style="font-size:0.8rem;opacity:0.5;"></i>
+            <span>${item.name}</span>
+            <i class="bi bi-check2 csdd-opt-check"></i>
+        </div>`).join('');
+}
+
+// ── Filter (search) ───────────────────────────────────────
+function csddFilter(key, q) {
+    csddRender(key, csddData[key], q);
+}
+
+// ── Select an option ──────────────────────────────────────
+function csddSelect(key, id, name) {
+    csddSelected[key] = { id, name };
+
+    // Update hidden input
+    document.getElementById(`${key}Val`).value = name;
+
+    // Update trigger label
+    const label = document.getElementById(`csdd-${key}-label`);
+    label.className = 'csdd-selected';
+    label.textContent = name;
+
+    csddCloseAll();
+
+    // Clear & reset downstream
+    if (key === 'province') {
+        // Reset city
+        csddSelected.city = null;
+        csddSelected.district = null;
+        document.getElementById('cityVal').value = '';
+        document.getElementById('districtVal').value = '';
+        document.getElementById('csdd-city-label').className = 'csdd-placeholder';
+        document.getElementById('csdd-city-label').textContent = 'Pilih Kota / Kabupaten';
+        document.getElementById('csdd-district-label').className = 'csdd-placeholder';
+        document.getElementById('csdd-district-label').textContent = 'Pilih Kota dulu';
+        csddLoadCity(id);
+    } else if (key === 'city') {
+        csddSelected.district = null;
+        document.getElementById('districtVal').value = '';
+        document.getElementById('csdd-district-label').className = 'csdd-placeholder';
+        document.getElementById('csdd-district-label').textContent = 'Pilih Kecamatan';
+        csddLoadDistrict(id);
+    }
+}
+
+// ── API Loaders ───────────────────────────────────────────
+async function csddLoadProvinces() {
+    const list = document.getElementById('csdd-province-list');
+    list.innerHTML = '<div class="csdd-loading"><i class="bi bi-arrow-repeat"></i> Memuat provinsi...</div>';
+    try {
+        const r = await fetch(`${WILAYAH_BASE}/provinces.json`);
+        csddData.province = await r.json();
+        csddRender('province', csddData.province);
+    } catch {
+        list.innerHTML = '<div class="csdd-empty">Gagal memuat data. Cek koneksi internet.</div>';
+    }
+}
+
+async function csddLoadCity(provinceId) {
+    const trigger = document.getElementById('csdd-city-trigger');
+    const list    = document.getElementById('csdd-city-list');
+    trigger.classList.add('disabled');
+    list.innerHTML = '<div class="csdd-loading"><i class="bi bi-arrow-repeat"></i> Memuat kota/kabupaten...</div>';
+    try {
+        const r = await fetch(`${WILAYAH_BASE}/regencies/${provinceId}.json`);
+        csddData.city = await r.json();
+        trigger.classList.remove('disabled');
+        csddRender('city', csddData.city);
+        // Reset district
+        const dTrigger = document.getElementById('csdd-district-trigger');
+        dTrigger.classList.add('disabled');
+        document.getElementById('csdd-district-list').innerHTML = '<div class="csdd-empty">Pilih kota/kabupaten terlebih dahulu</div>';
+        csddData.district = [];
+    } catch {
+        list.innerHTML = '<div class="csdd-empty">Gagal memuat data.</div>';
+    }
+}
+
+async function csddLoadDistrict(regencyId) {
+    const trigger = document.getElementById('csdd-district-trigger');
+    const list    = document.getElementById('csdd-district-list');
+    trigger.classList.add('disabled');
+    list.innerHTML = '<div class="csdd-loading"><i class="bi bi-arrow-repeat"></i> Memuat kecamatan...</div>';
+    try {
+        const r = await fetch(`${WILAYAH_BASE}/districts/${regencyId}.json`);
+        csddData.district = await r.json();
+        trigger.classList.remove('disabled');
+        csddRender('district', csddData.district);
+    } catch {
+        list.innerHTML = '<div class="csdd-empty">Gagal memuat data.</div>';
+    }
+}
+
+// ── Init: Load provinces immediately ─────────────────────
+csddLoadProvinces();
 </script>
 @endpush
