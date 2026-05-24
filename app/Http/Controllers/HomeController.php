@@ -166,4 +166,29 @@ class HomeController extends Controller
 
         return view('profile.orders', compact('orders'));
     }
+
+    /**
+     * Endpoint AJAX untuk live search autocomplete di navbar.
+     */
+    public function searchSuggest(Request $request)
+    {
+        $q = $request->get('q', '');
+        if (strlen(trim($q)) < 2) {
+            return response()->json(['products' => []]);
+        }
+
+        $products = \App\Models\Product::where('name', 'like', "%{$q}%")
+            ->orWhere('description', 'like', "%{$q}%")
+            ->take(5)
+            ->get(['id', 'name', 'slug', 'price', 'image']);
+
+        $result = $products->map(fn($p) => [
+            'name'  => $p->name,
+            'price' => number_format($p->price, 0, ',', '.'),
+            'image' => $p->image,
+            'url'   => route('product.detail', $p->slug),
+        ]);
+
+        return response()->json(['products' => $result]);
+    }
 }

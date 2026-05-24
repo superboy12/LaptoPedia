@@ -45,12 +45,23 @@ class CheckoutController extends Controller
 
         // Validasi input form
         $request->validate([
+            'recipient_name' => 'required|string|max:255',
             'phone'          => 'required|string|max:20',
-            'address'        => 'required|string',
+            'province'       => 'required|string|max:100',
+            'city'           => 'required|string|max:100',
+            'district'       => 'required|string|max:100',
+            'postal_code'    => 'required|string|max:20',
+            'street_address' => 'required|string',
+            'notes'          => 'nullable|string',
             'latitude'       => 'required|numeric',
             'longitude'      => 'required|numeric',
             'payment_method' => 'required|in:qris,transfer',
         ]);
+
+        $fullAddress = "{$request->street_address}, Kec. {$request->district}, {$request->city}, Prov. {$request->province}, {$request->postal_code}";
+        if (!empty($request->notes)) {
+            $fullAddress .= " (Catatan: {$request->notes})";
+        }
 
         $totalPrice = collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']);
         $orderNumber = 'ORD-' . strtoupper(Str::random(10));
@@ -66,7 +77,7 @@ class CheckoutController extends Controller
                 'total_price'    => $totalPrice,
                 'status'         => 'pending',
                 'phone'          => $request->phone,
-                'address'        => $request->address,
+                'address'        => $fullAddress,
                 'latitude'       => $request->latitude,
                 'longitude'      => $request->longitude,
                 'payment_method' => $request->payment_method,
@@ -105,20 +116,26 @@ class CheckoutController extends Controller
                 ],
                 'item_details' => $itemDetails,
                 'customer_details' => [
-                    'first_name' => auth()->user()->nama_lengkap,
+                    'first_name' => $request->recipient_name,
                     'email' => auth()->user()->email,
                     'phone' => $request->phone,
                     'billing_address' => [
-                        'first_name' => auth()->user()->nama_lengkap,
+                        'first_name' => $request->recipient_name,
                         'email' => auth()->user()->email,
                         'phone' => $request->phone,
-                        'address' => $request->address,
+                        'address' => $request->street_address,
+                        'city' => $request->city,
+                        'postal_code' => $request->postal_code,
+                        'country_code' => 'IDN'
                     ],
                     'shipping_address' => [
-                        'first_name' => auth()->user()->nama_lengkap,
+                        'first_name' => $request->recipient_name,
                         'email' => auth()->user()->email,
                         'phone' => $request->phone,
-                        'address' => $request->address,
+                        'address' => $request->street_address,
+                        'city' => $request->city,
+                        'postal_code' => $request->postal_code,
+                        'country_code' => 'IDN'
                     ]
                 ],
             ];

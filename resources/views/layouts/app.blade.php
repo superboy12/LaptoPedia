@@ -145,8 +145,91 @@
             font-family: 'DM Sans', sans-serif;
             font-size: 0.82rem;
             width: 150px;
+            transition: width 0.3s ease;
         }
+        .nav-search-box:focus-within { border-color: rgba(212,168,67,0.4); background: var(--surface); }
+        .nav-search-box:focus-within input { width: 200px; }
         .nav-search-box input::placeholder { color: var(--text-muted); }
+
+        /* Search Dropdown */
+        .nav-search-wrap { position: relative; }
+        .nav-search-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            min-width: 320px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            z-index: 9998;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(-8px);
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        .nav-search-dropdown.visible {
+            opacity: 1; transform: translateY(0); pointer-events: all;
+        }
+        .nsd-header {
+            padding: 10px 14px 6px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+        }
+        .nsd-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            cursor: pointer;
+            transition: background 0.15s;
+            text-decoration: none;
+        }
+        .nsd-item:hover { background: var(--search-bg); }
+        .nsd-img {
+            width: 40px; height: 40px;
+            border-radius: 8px;
+            background: var(--surface-2);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; overflow: hidden;
+        }
+        .nsd-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .nsd-name {
+            font-size: 0.83rem;
+            font-weight: 700;
+            color: var(--text);
+            font-family: 'Manrope', sans-serif;
+            letter-spacing: -0.02em;
+        }
+        .nsd-price {
+            font-size: 0.72rem;
+            color: var(--gold);
+            font-weight: 700;
+            margin-top: 2px;
+        }
+        .nsd-footer {
+            padding: 10px 14px;
+            border-top: 1px solid var(--border);
+        }
+        .nsd-footer a {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 0.8rem; font-weight: 700;
+            color: var(--gold); font-family: 'Manrope', sans-serif;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .nsd-footer a:hover { opacity: 0.75; }
+        .nsd-empty {
+            padding: 20px 14px;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
 
         .nav-icon {
             background: none;
@@ -377,9 +460,26 @@
     </ul>
 
     <div class="nav-actions">
-    <div class="nav-search-box">
-        <i class="bi bi-search"></i>
-        <input type="text" placeholder="Cari laptop...">
+    <div class="nav-search-wrap" id="navSearchWrap">
+        <form action="{{ url('/products') }}" method="GET" id="navSearchForm">
+            <div class="nav-search-box">
+                <i class="bi bi-search"></i>
+                <input
+                    type="text"
+                    name="search"
+                    id="navSearchInput"
+                    placeholder="Cari laptop..."
+                    autocomplete="off"
+                >
+            </div>
+        </form>
+        <div class="nav-search-dropdown" id="navSearchDropdown">
+            <div class="nsd-header" id="nsdHeader">Hasil Pencarian</div>
+            <div id="nsdResults"></div>
+            <div class="nsd-footer" id="nsdFooter" style="display:none;">
+                <a href="#" id="nsdSeeAll"><i class="bi bi-search"></i> <span>Lihat semua hasil untuk "<span id="nsdQuery"></span>"</span></a>
+            </div>
+        </div>
     </div>
 
     {{-- Keranjang — link ke halaman cart --}}
@@ -570,7 +670,83 @@ document.addEventListener('click', function(e) {
         const d = document.getElementById('userDropdown');
         if (d) d.style.display = 'none';
     }
+    // Close search dropdown when clicking outside
+    const searchWrap = document.getElementById('navSearchWrap');
+    if (searchWrap && !searchWrap.contains(e.target)) {
+        closeSearchDropdown();
+    }
 });
+
+// ── NAV SEARCH LIVE DROPDOWN ──────────────────────────────
+(function() {
+    const input    = document.getElementById('navSearchInput');
+    const dropdown = document.getElementById('navSearchDropdown');
+    const results  = document.getElementById('nsdResults');
+    const footer   = document.getElementById('nsdFooter');
+    const seeAll   = document.getElementById('nsdSeeAll');
+    const qSpan    = document.getElementById('nsdQuery');
+    const form     = document.getElementById('navSearchForm');
+    if (!input) return;
+
+    let timer;
+
+    input.addEventListener('input', function() {
+        clearTimeout(timer);
+        const q = this.value.trim();
+        if (q.length < 2) { closeSearchDropdown(); return; }
+        timer = setTimeout(() => fetchResults(q), 300);
+    });
+
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); form.submit(); }
+        if (e.key === 'Escape') { closeSearchDropdown(); input.blur(); }
+    });
+
+    input.addEventListener('focus', function() {
+        if (this.value.trim().length >= 2) {
+            fetchResults(this.value.trim());
+        }
+    });
+
+    function fetchResults(q) {
+        fetch(`/products/search-suggest?q=${encodeURIComponent(q)}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+        })
+        .then(r => r.json())
+        .then(data => {
+            results.innerHTML = '';
+            if (data.products && data.products.length > 0) {
+                data.products.forEach(p => {
+                    const img = p.image
+                        ? `<img src="/storage/${p.image}" alt="${p.name}">`
+                        : `<i class="bi bi-laptop" style="font-size:1.3rem;color:var(--text-muted);opacity:0.4;"></i>`;
+                    const item = document.createElement('a');
+                    item.className = 'nsd-item';
+                    item.href = p.url;
+                    item.innerHTML = `
+                        <div class="nsd-img">${img}</div>
+                        <div>
+                            <div class="nsd-name">${p.name}</div>
+                            <div class="nsd-price">Rp ${p.price}</div>
+                        </div>`;
+                    results.appendChild(item);
+                });
+                qSpan.textContent = q;
+                seeAll.href = `/products?search=${encodeURIComponent(q)}`;
+                footer.style.display = '';
+            } else {
+                results.innerHTML = `<div class="nsd-empty"><i class="bi bi-emoji-frown" style="font-size:1.5rem;display:block;margin-bottom:6px;opacity:0.3;"></i>Tidak ditemukan untuk "<strong>${q}</strong>"</div>`;
+                footer.style.display = 'none';
+            }
+            dropdown.classList.add('visible');
+        })
+        .catch(() => {});
+    }
+
+    window.closeSearchDropdown = function() {
+        dropdown.classList.remove('visible');
+    };
+})();
 </script>
 
 <!-- ===== CART DEMO FUNCTIONS ===== -->

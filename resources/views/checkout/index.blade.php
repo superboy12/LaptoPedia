@@ -86,12 +86,49 @@
     padding: 14px 20px;
     border-radius: 12px;
     outline: none;
-    transition: border-color 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .form-input:focus, .form-textarea:focus {
     border-color: var(--gold);
+    box-shadow: 0 0 0 4px rgba(212, 168, 67, 0.1);
+    background: var(--surface-2);
 }
-.form-textarea { resize: vertical; min-height: 120px; }
+.form-textarea { resize: vertical; min-height: 100px; }
+
+/* Grid & Icons for detailed form */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+@media (max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; gap: 0; }
+}
+.input-with-icon { position: relative; }
+.input-with-icon .form-input { padding-left: 48px; }
+.input-with-icon i {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    transition: color 0.3s;
+    pointer-events: none;
+}
+.input-with-icon .form-input:focus ~ i { color: var(--gold); }
+
+.form-section-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text);
+    margin: 30px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--border);
+    display: flex; align-items: center; gap: 8px;
+}
+.form-section-title i { color: var(--gold); }
 
 /* Map */
 #map {
@@ -244,14 +281,70 @@
                         <input type="hidden" name="longitude" id="lngInput" required>
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Detail Alamat Lengkap</label>
-                        <textarea name="address" class="form-textarea" placeholder="Contoh: Jl. Sudirman No. 123, Gedung Indah Lt. 4, Jakarta Pusat..." required>{{ old('address', auth()->user()->alamat) }}</textarea>
+                    <div class="form-section-title"><i class="bi bi-person-lines-fill"></i> Informasi Kontak</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Nama Penerima</label>
+                            <div class="input-with-icon">
+                                <input type="text" name="recipient_name" class="form-input" placeholder="Nama lengkap penerima" value="{{ old('recipient_name', auth()->user()->nama_lengkap) }}" required>
+                                <i class="bi bi-person"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Nomor WhatsApp / Telepon</label>
+                            <div class="input-with-icon">
+                                <input type="tel" name="phone" class="form-input" placeholder="081234567890" value="{{ old('phone', auth()->user()->no_telepon) }}" required>
+                                <i class="bi bi-telephone"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section-title"><i class="bi bi-pin-map-fill"></i> Detail Alamat</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Provinsi</label>
+                            <div class="input-with-icon">
+                                <input type="text" name="province" class="form-input" placeholder="Contoh: DKI Jakarta" value="{{ old('province') }}" required>
+                                <i class="bi bi-map"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Kota / Kabupaten</label>
+                            <div class="input-with-icon">
+                                <input type="text" name="city" class="form-input" placeholder="Contoh: Jakarta Selatan" value="{{ old('city') }}" required>
+                                <i class="bi bi-buildings"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Kecamatan</label>
+                            <div class="input-with-icon">
+                                <input type="text" name="district" class="form-input" placeholder="Contoh: Kebayoran Baru" value="{{ old('district') }}" required>
+                                <i class="bi bi-signpost-split"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Kode Pos</label>
+                            <div class="input-with-icon">
+                                <input type="text" name="postal_code" class="form-input" placeholder="Contoh: 12110" value="{{ old('postal_code') }}" required>
+                                <i class="bi bi-mailbox"></i>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Nomor WhatsApp / Telepon</label>
-                        <input type="tel" name="phone" class="form-input" placeholder="081234567890" value="{{ old('phone', auth()->user()->no_telepon) }}" required>
+                        <label class="form-label">Nama Jalan, Gedung, No. Rumah</label>
+                        <textarea name="street_address" class="form-textarea" placeholder="Detail alamat lengkap (Gedung, lantai, nomor rumah, blok, dsb.)" required>{{ old('street_address') }}</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Catatan untuk Kurir (Opsional)</label>
+                        <div class="input-with-icon">
+                            <input type="text" name="notes" class="form-input" placeholder="Contoh: Titip di pos satpam / Rumah pagar hitam" value="{{ old('notes') }}">
+                            <i class="bi bi-chat-left-text"></i>
+                        </div>
                     </div>
                 </div>
 

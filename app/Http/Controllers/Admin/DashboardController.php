@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -24,16 +27,20 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        // Data statis untuk sekarang (nanti diganti dinamis)
+        $totalRevenue = Order::where('status', '!=', 'cancelled')->sum('total_price');
+        $totalOrders = Order::count();
+        $totalStock = Product::sum('stock');
+        $totalCustomers = User::where('role', 'customer')->count();
+
         $stats = [
-            'total_revenue' => '$128,430',
-            'total_revenue_change' => '+12.5%',
-            'total_orders' => 1240,
-            'total_orders_change' => '+4.3%',
-            'total_products' => 450,
-            'total_products_change' => '+2.1%',
-            'total_customers' => 8200,
-            'total_customers_change' => '+14%',
+            'total_revenue' => 'Rp ' . number_format($totalRevenue, 0, ',', '.'),
+            'total_revenue_change' => '+12.5%', // Dummy change
+            'total_orders' => number_format($totalOrders, 0, ',', '.'),
+            'total_orders_change' => '+4.3%', // Dummy change
+            'total_stock' => number_format($totalStock, 0, ',', '.'),
+            'total_stock_change' => '+2.1%', // Dummy change
+            'total_customers' => number_format($totalCustomers, 0, ',', '.'),
+            'total_customers_change' => '+14%', // Dummy change
         ];
 
         // Sample data untuk grafik (statis)
@@ -106,6 +113,24 @@ class DashboardController extends Controller
         ];
 
         return view('admin.dashboard', compact('stats', 'revenueData', 'ordersData', 'recentOrders'));
+    }
+
+    /**
+     * Endpoint untuk AJAX Polling statistik real-time
+     */
+    public function stats()
+    {
+        $totalRevenue = Order::where('status', '!=', 'cancelled')->sum('total_price');
+        $totalOrders = Order::count();
+        $totalStock = Product::sum('stock');
+        $totalCustomers = User::where('role', 'customer')->count();
+
+        return response()->json([
+            'total_revenue' => 'Rp ' . number_format($totalRevenue, 0, ',', '.'),
+            'total_orders' => number_format($totalOrders, 0, ',', '.'),
+            'total_stock' => number_format($totalStock, 0, ',', '.'),
+            'total_customers' => number_format($totalCustomers, 0, ',', '.')
+        ]);
     }
 
     /**

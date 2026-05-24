@@ -58,6 +58,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/orders', [HomeController::class, 'myOrders'])->name('profile.orders');
 
     Route::get('/products', [HomeController::class, 'products'])->name('products.index');
+    Route::get('/products/search-suggest', [HomeController::class, 'searchSuggest'])->name('products.search-suggest');
     Route::get('/product/{slug}', [HomeController::class, 'detail'])->name('product.detail');
 
     // ── Deals Page ──────────────────────────────────────
@@ -144,6 +145,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/stats', [DashboardController::class, 'stats'])->name('dashboard.stats');
 
     // ── Order Management ───────────────────────────────────
     Route::get('/orders',            [OrderAdminController::class, 'index'])->name('orders');

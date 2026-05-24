@@ -359,25 +359,26 @@
     }
     
     .btn-selengkapnya {
-        background: #0071e3;
-        color: #fff;
+        background: var(--gold);
+        color: #000;
         padding: 8px 18px;
         border-radius: 100px;
         font-size: 0.85rem;
-        font-weight: 600;
+        font-weight: 700;
         text-decoration: none;
-        transition: background 0.2s, transform 0.2s;
+        transition: all 0.3s;
     }
     .btn-selengkapnya:hover {
-        background: #0077ED;
-        color: #fff;
+        background: var(--gold-light, #f0d080);
+        color: #000;
         transform: scale(1.02);
+        box-shadow: 0 4px 12px rgba(212, 168, 67, 0.3);
     }
 
     .btn-beli {
-        color: #0071e3;
+        color: var(--gold);
         font-size: 0.85rem;
-        font-weight: 600;
+        font-weight: 700;
         text-decoration: none;
         display: flex;
         align-items: center;
@@ -386,8 +387,10 @@
         border: none;
         cursor: pointer;
         padding: 0;
+        transition: color 0.3s;
     }
     .btn-beli:hover {
+        color: var(--gold-light, #f0d080);
         text-decoration: underline;
     }
 

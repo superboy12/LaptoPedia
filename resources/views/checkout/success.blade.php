@@ -244,11 +244,11 @@
                 <i class="bi bi-wallet2"></i> Bayar Sekarang
             </button>
         </div>
-        @elseif($order->status === 'cancelled')
-        <div class="payment-box" style="border-color: #ef4444; background: rgba(239, 68, 68, 0.05);">
-            <h3 class="pb-title" style="color: #ef4444;">Pesanan Dibatalkan</h3>
+        @elseif($order->status === 'paid')
+        <div class="payment-box paid">
+            <h3 class="pb-title paid">Laptop Anda Siap Diproses</h3>
             <div class="pb-instruction" style="color: var(--text-muted);">
-                Pesanan Anda telah dibatalkan dan tidak akan diproses lebih lanjut.
+                Tim LaptoPedia sedang mempersiapkan pengiriman laptop pesanan Anda. Kami akan segera menghubungi nomor telepon <strong>{{ $order->phone }}</strong> jika ada informasi tambahan terkait pengantaran.
             </div>
         </div>
         @elseif($order->status === 'shipped')
@@ -265,11 +265,11 @@
                 Kami senang Anda telah menerima pesanan Anda dengan baik. Terima kasih atas kepercayaan Anda berbelanja di LaptoPedia!
             </div>
         </div>
-        @else
-        <div class="payment-box paid">
-            <h3 class="pb-title paid">Laptop Anda Siap Diproses</h3>
+        @elseif($order->status === 'cancelled')
+        <div class="payment-box" style="border-color: #ef4444; background: rgba(239, 68, 68, 0.05);">
+            <h3 class="pb-title" style="color: #ef4444;">Pesanan Dibatalkan</h3>
             <div class="pb-instruction" style="color: var(--text-muted);">
-                Tim LaptoPedia sedang mempersiapkan pengiriman laptop pesanan Anda. Kami akan segera menghubungi nomor telepon <strong>{{ $order->phone }}</strong> jika ada informasi tambahan terkait pengantaran.
+                Pesanan Anda telah dibatalkan dan tidak akan diproses lebih lanjut.
             </div>
         </div>
         @endif
