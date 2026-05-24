@@ -170,12 +170,18 @@
 @section('content')
 <div class="success-page">
     <div class="success-card">
-        @if($order->status === 'paid')
+        @if(in_array($order->status, ['paid', 'shipped', 'completed']))
             <div class="sc-icon success">
                 <i class="bi bi-check-lg"></i>
             </div>
             <h1 class="sc-title">Pembayaran Berhasil!</h1>
             <p class="sc-desc">Terima kasih, pembayaran Anda telah berhasil diverifikasi secara otomatis.</p>
+        @elseif($order->status === 'cancelled')
+            <div class="sc-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; box-shadow: 0 0 0 8px rgba(239, 68, 68, 0.05);">
+                <i class="bi bi-x-lg"></i>
+            </div>
+            <h1 class="sc-title">Pesanan Dibatalkan</h1>
+            <p class="sc-desc">Pesanan Anda telah dibatalkan.</p>
         @else
             <div class="sc-icon pending">
                 <i class="bi bi-hourglass-split"></i>
@@ -198,6 +204,12 @@
                 <span class="info-val">
                     @if($order->status === 'paid')
                         <span class="status-badge paid">Sudah Dibayar</span>
+                    @elseif($order->status === 'shipped')
+                        <span class="status-badge" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2);">Dikirim</span>
+                    @elseif($order->status === 'completed')
+                        <span class="status-badge paid">Selesai</span>
+                    @elseif($order->status === 'cancelled')
+                        <span class="status-badge" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2);">Dibatalkan</span>
                     @else
                         <span class="status-badge pending">Menunggu Pembayaran</span>
                     @endif
@@ -219,6 +231,13 @@
             <button id="pay-button" class="btn-confirm" style="width: 100%; border: none; margin-top: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
                 <i class="bi bi-wallet2"></i> Bayar Sekarang
             </button>
+        </div>
+        @elseif($order->status === 'cancelled')
+        <div class="payment-box" style="border-color: #ef4444; background: rgba(239, 68, 68, 0.05);">
+            <h3 class="pb-title" style="color: #ef4444;">Pesanan Dibatalkan</h3>
+            <div class="pb-instruction" style="color: var(--text-muted);">
+                Pesanan Anda telah dibatalkan dan tidak akan diproses lebih lanjut.
+            </div>
         </div>
         @else
         <div class="payment-box paid">

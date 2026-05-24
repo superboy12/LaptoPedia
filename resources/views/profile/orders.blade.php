@@ -124,6 +124,7 @@
 .status-paid { background: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.2); }
 .status-shipped { background: rgba(59, 130, 246, 0.1); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); }
 .status-completed { background: rgba(168, 85, 247, 0.1); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.2); }
+.status-cancelled { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
 
 .order-body {
     padding: 30px;
@@ -231,6 +232,8 @@
                                 <span class="status-badge status-shipped"><i class="bi bi-truck"></i> Dikirim</span>
                             @elseif($order->status === 'completed')
                                 <span class="status-badge status-completed"><i class="bi bi-box-seam"></i> Selesai</span>
+                            @elseif($order->status === 'cancelled')
+                                <span class="status-badge status-cancelled"><i class="bi bi-x-circle-fill"></i> Dibatalkan</span>
                             @else
                                 <span class="status-badge status-pending">{{ ucfirst($order->status) }}</span>
                             @endif
