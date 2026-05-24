@@ -170,12 +170,24 @@
 @section('content')
 <div class="success-page">
     <div class="success-card">
-        @if(in_array($order->status, ['paid', 'shipped', 'completed']))
+        @if($order->status === 'paid')
             <div class="sc-icon success">
                 <i class="bi bi-check-lg"></i>
             </div>
             <h1 class="sc-title">Pembayaran Berhasil!</h1>
             <p class="sc-desc">Terima kasih, pembayaran Anda telah berhasil diverifikasi secara otomatis.</p>
+        @elseif($order->status === 'shipped')
+            <div class="sc-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.05);">
+                <i class="bi bi-truck"></i>
+            </div>
+            <h1 class="sc-title">Pesanan Sedang Dikirim!</h1>
+            <p class="sc-desc">Laptop impian Anda sedang dalam perjalanan menuju alamat tujuan.</p>
+        @elseif($order->status === 'completed')
+            <div class="sc-icon" style="background: rgba(168, 85, 247, 0.1); color: #c084fc; box-shadow: 0 0 0 8px rgba(168, 85, 247, 0.05);">
+                <i class="bi bi-box-seam"></i>
+            </div>
+            <h1 class="sc-title">Pesanan Selesai!</h1>
+            <p class="sc-desc">Terima kasih telah berbelanja di LaptoPedia. Semoga laptop baru Anda bermanfaat!</p>
         @elseif($order->status === 'cancelled')
             <div class="sc-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; box-shadow: 0 0 0 8px rgba(239, 68, 68, 0.05);">
                 <i class="bi bi-x-lg"></i>
@@ -237,6 +249,20 @@
             <h3 class="pb-title" style="color: #ef4444;">Pesanan Dibatalkan</h3>
             <div class="pb-instruction" style="color: var(--text-muted);">
                 Pesanan Anda telah dibatalkan dan tidak akan diproses lebih lanjut.
+            </div>
+        </div>
+        @elseif($order->status === 'shipped')
+        <div class="payment-box" style="border-color: #3b82f6; background: rgba(59, 130, 246, 0.05);">
+            <h3 class="pb-title" style="color: #3b82f6;">Pesanan Dalam Perjalanan</h3>
+            <div class="pb-instruction" style="color: var(--text-muted);">
+                Tim kurir sedang mengantarkan pesanan Anda. Jika ada kendala, jangan ragu untuk menghubungi tim support kami atau kurir pengantar.
+            </div>
+        </div>
+        @elseif($order->status === 'completed')
+        <div class="payment-box" style="border-color: #c084fc; background: rgba(168, 85, 247, 0.05);">
+            <h3 class="pb-title" style="color: #c084fc;">Pesanan Telah Selesai</h3>
+            <div class="pb-instruction" style="color: var(--text-muted);">
+                Kami senang Anda telah menerima pesanan Anda dengan baik. Terima kasih atas kepercayaan Anda berbelanja di LaptoPedia!
             </div>
         </div>
         @else
