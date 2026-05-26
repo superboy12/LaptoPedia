@@ -10,6 +10,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CouponController;
 use Illuminate\Support\Facades\Route;
 
 // ─────────────────────────────────────────────
@@ -86,6 +87,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/process', [CheckoutController::class, 'process'])->name('process');
         Route::get('/success/{order_number}', [CheckoutController::class, 'success'])->name('success');
     });
+
+    // ── Kupon ──────────────────────────────────────────────
+    Route::post('/coupon/apply', [CouponController::class, 'apply'])->name('coupon.apply');
 
     // tambahan dari upstream
     Route::get('/cart-demo', function () {

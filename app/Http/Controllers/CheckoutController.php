@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Coupon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -29,7 +30,10 @@ class CheckoutController extends Controller
 
         $total = collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']);
 
-        return view('checkout.index', compact('cart', 'total'));
+        // Ambil kupon yang sudah di-apply dari session (jika ada)
+        $appliedCoupon = session()->get('applied_coupon', null);
+
+        return view('checkout.index', compact('cart', 'total', 'appliedCoupon'));
     }
 
     /**
@@ -56,6 +60,7 @@ class CheckoutController extends Controller
             'latitude'       => 'required|numeric',
             'longitude'      => 'required|numeric',
             'payment_method' => 'required|in:qris,transfer',
+            'coupon_code'    => 'nullable|string|max:50',
         ]);
 
         $fullAddress = "{$request->street_address}, Kec. {$request->district}, {$request->city}, Prov. {$request->province}, {$request->postal_code}";
@@ -63,7 +68,25 @@ class CheckoutController extends Controller
             $fullAddress .= " (Catatan: {$request->notes})";
         }
 
-        $totalPrice = collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']);
+        $subtotal     = collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']);
+        $discountAmount = 0;
+        $couponCode   = null;
+        $coupon       = null;
+
+        // ── Validasi & Hitung Diskon Kupon ────────────────────
+        if (!empty($request->coupon_code)) {
+            $coupon = Coupon::where('code', strtoupper(trim($request->coupon_code)))->first();
+
+            if ($coupon) {
+                $result = $coupon->validate((int) $subtotal);
+                if ($result['valid']) {
+                    $discountAmount = $result['discount'];
+                    $couponCode     = $coupon->code;
+                }
+            }
+        }
+
+        $totalPrice  = max(0, $subtotal - $discountAmount);
         $orderNumber = 'ORD-' . strtoupper(Str::random(10));
 
         // Gunakan transaksi database untuk memastikan Order & OrderItem tersimpan semua
@@ -72,15 +95,17 @@ class CheckoutController extends Controller
         try {
             // 1. Buat Order
             $order = Order::create([
-                'user_id'        => auth()->id(),
-                'order_number'   => $orderNumber,
-                'total_price'    => $totalPrice,
-                'status'         => 'pending',
-                'phone'          => $request->phone,
-                'address'        => $fullAddress,
-                'latitude'       => $request->latitude,
-                'longitude'      => $request->longitude,
-                'payment_method' => $request->payment_method,
+                'user_id'         => auth()->id(),
+                'order_number'    => $orderNumber,
+                'total_price'     => $totalPrice,
+                'status'          => 'pending',
+                'phone'           => $request->phone,
+                'address'         => $fullAddress,
+                'latitude'        => $request->latitude,
+                'longitude'       => $request->longitude,
+                'payment_method'  => $request->payment_method,
+                'coupon_code'     => $couponCode,
+                'discount_amount' => $discountAmount,
             ]);
 
             // 2. Buat OrderItems
@@ -94,46 +119,56 @@ class CheckoutController extends Controller
             }
 
             // 3. Konfigurasi Midtrans & Dapatkan Snap Token
-            \Midtrans\Config::$serverKey = config('midtrans.server_key');
+            \Midtrans\Config::$serverKey    = config('midtrans.server_key');
             \Midtrans\Config::$isProduction = config('midtrans.is_production');
-            \Midtrans\Config::$isSanitized = config('midtrans.is_sanitized');
-            \Midtrans\Config::$is3ds = config('midtrans.is_3ds');
+            \Midtrans\Config::$isSanitized  = config('midtrans.is_sanitized');
+            \Midtrans\Config::$is3ds        = config('midtrans.is_3ds');
 
             $itemDetails = [];
             foreach ($cart as $item) {
                 $itemDetails[] = [
-                    'id' => (string)$item['id'],
-                    'price' => (int)$item['price'],
+                    'id'       => (string)$item['id'],
+                    'price'    => (int)$item['price'],
                     'quantity' => (int)$item['quantity'],
-                    'name' => strlen($item['name']) > 50 ? substr($item['name'], 0, 47) . '...' : $item['name'],
+                    'name'     => strlen($item['name']) > 50 ? substr($item['name'], 0, 47) . '...' : $item['name'],
+                ];
+            }
+
+            // Tambahkan baris diskon kupon ke item_details Midtrans (nilai negatif)
+            if ($discountAmount > 0 && $couponCode) {
+                $itemDetails[] = [
+                    'id'       => 'COUPON-' . $couponCode,
+                    'price'    => -(int)$discountAmount,
+                    'quantity' => 1,
+                    'name'     => 'Diskon Kupon: ' . $couponCode,
                 ];
             }
 
             $params = [
                 'transaction_details' => [
-                    'order_id' => $orderNumber,
+                    'order_id'     => $orderNumber,
                     'gross_amount' => (int)$totalPrice,
                 ],
-                'item_details' => $itemDetails,
+                'item_details'    => $itemDetails,
                 'customer_details' => [
                     'first_name' => $request->recipient_name,
-                    'email' => auth()->user()->email,
-                    'phone' => $request->phone,
+                    'email'      => auth()->user()->email,
+                    'phone'      => $request->phone,
                     'billing_address' => [
-                        'first_name' => $request->recipient_name,
-                        'email' => auth()->user()->email,
-                        'phone' => $request->phone,
-                        'address' => $request->street_address,
-                        'city' => $request->city,
+                        'first_name'  => $request->recipient_name,
+                        'email'       => auth()->user()->email,
+                        'phone'       => $request->phone,
+                        'address'     => $request->street_address,
+                        'city'        => $request->city,
                         'postal_code' => $request->postal_code,
                         'country_code' => 'IDN'
                     ],
                     'shipping_address' => [
-                        'first_name' => $request->recipient_name,
-                        'email' => auth()->user()->email,
-                        'phone' => $request->phone,
-                        'address' => $request->street_address,
-                        'city' => $request->city,
+                        'first_name'  => $request->recipient_name,
+                        'email'       => auth()->user()->email,
+                        'phone'       => $request->phone,
+                        'address'     => $request->street_address,
+                        'city'        => $request->city,
                         'postal_code' => $request->postal_code,
                         'country_code' => 'IDN'
                     ]
@@ -145,12 +180,17 @@ class CheckoutController extends Controller
             // Update order dengan snap_token
             $order->update(['snap_token' => $snapToken]);
 
+            // Increment usage count kupon
+            if ($coupon) {
+                $coupon->incrementUsage();
+            }
+
             DB::commit();
 
-            // 4. Kosongkan keranjang
-            session()->forget('cart');
+            // Kosongkan keranjang dan data kupon dari session
+            session()->forget(['cart', 'applied_coupon']);
 
-            // 5. Redirect ke halaman sukses
+            // Redirect ke halaman sukses
             return redirect()->route('checkout.success', $order->order_number);
 
         } catch (\Exception $e) {

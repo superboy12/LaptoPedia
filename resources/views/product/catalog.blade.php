@@ -244,137 +244,109 @@
     margin-bottom: 40px;
 }
 
-/* PRODUCT CARD — Clean Dashboard Style */
+/* ===== PRODUCT CARD (Apple Screenshot Style) ===== */
 .pcat-card {
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    transition: transform 0.3s cubic-bezier(0.2,0.8,0.2,1), box-shadow 0.3s ease, border-color 0.3s ease;
-    cursor: pointer;
+    border-radius: 24px;
+    padding: 32px 24px 24px;
     display: flex;
     flex-direction: column;
-    animation: fadeUpCard 0.5s cubic-bezier(0.2,0.8,0.2,1) both;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    min-height: 440px;
 }
 .pcat-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 48px rgba(0,0,0,0.18);
-    border-color: rgba(212,168,67,0.35);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.15);
 }
 
-@keyframes fadeUpCard {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
+.pcat-title-area {
+    text-align: left;
+    margin-bottom: 24px;
 }
-.pcat-card:nth-child(1) { animation-delay: 0.05s; }
-.pcat-card:nth-child(2) { animation-delay: 0.10s; }
-.pcat-card:nth-child(3) { animation-delay: 0.15s; }
-.pcat-card:nth-child(4) { animation-delay: 0.20s; }
-.pcat-card:nth-child(5) { animation-delay: 0.25s; }
-.pcat-card:nth-child(6) { animation-delay: 0.30s; }
+.pcat-name {
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
 
 .pcat-img-wrap {
-    background: var(--surface-2);
-    height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px;
-    border-bottom: 1px solid var(--border);
-    overflow: hidden;
-    transition: background 0.4s ease;
+    flex: 1;
+    width: 100%;
+    margin-bottom: 24px;
 }
 .pcat-img-wrap img {
-    max-height: 140px;
+    max-height: 200px;
     max-width: 100%;
     object-fit: contain;
     transition: transform 0.5s cubic-bezier(0.2,0.8,0.2,1);
 }
-.pcat-card:hover .pcat-img-wrap img { transform: scale(1.08) translateY(-4px); }
-.pcat-img-placeholder {
-    font-size: 3.5rem;
-    color: var(--text-muted);
-    opacity: 0.2;
-}
+.pcat-card:hover .pcat-img-wrap img { transform: scale(1.04); }
 
-.pcat-body { padding: 18px; flex: 1; display: flex; flex-direction: column; }
-
-.pcat-category {
-    font-size: 0.68rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--gold);
-    margin-bottom: 6px;
-    font-family: 'DM Sans', sans-serif;
-}
-
-.pcat-name {
-    font-family: 'Manrope', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 800;
-    color: var(--text);
-    letter-spacing: -0.02em;
-    margin-bottom: 8px;
-    line-height: 1.3;
-    transition: color 0.4s ease;
-}
-
-.pcat-desc {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    line-height: 1.6;
-    font-weight: 300;
-    flex: 1;
-    margin-bottom: 16px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    transition: color 0.4s ease;
-}
-
-.pcat-footer {
+.pcat-swatches {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    padding-top: 14px;
-    border-top: 1px solid var(--border);
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 32px;
 }
-
-.pcat-price {
-    font-family: 'Manrope', sans-serif;
-    font-size: 1.05rem;
-    font-weight: 900;
-    color: var(--text);
-    letter-spacing: -0.03em;
-    transition: color 0.4s ease;
-}
-
-.pcat-stock {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    font-family: 'DM Sans', sans-serif;
-    margin-top: 2px;
-}
-.pcat-stock.low { color: #fb923c; }
-.pcat-stock.out { color: #f87171; }
-
-.btn-pcat-detail {
-    background: var(--text);
-    color: var(--bg);
-    border: none;
-    font-family: 'Manrope', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 800;
-    padding: 9px 16px;
-    border-radius: 100px;
+.swatch {
+    width: 12px; height: 12px;
+    border-radius: 50%;
     cursor: pointer;
-    transition: transform 0.2s, opacity 0.2s;
+    outline: 1px solid transparent;
+    outline-offset: 2px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+.swatch:hover { outline-color: var(--text-muted); }
+
+.pcat-footer-apple {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: auto;
+}
+.pcat-price-detail {
+    font-family: 'Inter', 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    text-align: left;
+}
+.pcat-link-selengkapnya {
+    display: block;
+    color: #0066cc; /* Apple link color */
+    text-decoration: none;
+    margin-top: 4px;
+    font-weight: 600;
+}
+.pcat-link-selengkapnya:hover { text-decoration: underline; }
+
+.btn-pcat-beli-apple {
+    background: #0071e3; /* Apple blue button */
+    color: #fff;
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-family: 'Inter', 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
     white-space: nowrap;
 }
-.btn-pcat-detail:hover { opacity: 0.85; transform: translateY(-1px); }
+.btn-pcat-beli-apple:hover {
+    background: #0077ed;
+    transform: scale(1.04);
+}
 
 /* EMPTY STATE */
 .empty-state {
@@ -625,36 +597,32 @@
                     @foreach($products as $product)
                     <div class="pcat-card" onclick="window.location='{{ route('product.detail', $product->slug) }}'">
 
+                        <div class="pcat-title-area">
+                            <h3 class="pcat-name">{{ $product->name }}</h3>
+                        </div>
+
                         {{-- Image --}}
                         <div class="pcat-img-wrap">
                             @if($product->image)
                                 <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
                             @else
-                                <i class="bi bi-laptop pcat-img-placeholder"></i>
+                                <i class="bi bi-laptop" style="font-size:4rem;color:var(--text-muted);opacity:0.2;"></i>
                             @endif
                         </div>
+                        
+                        <div class="pcat-swatches">
+                            <div class="swatch" style="background:#e3e4e5;"></div>
+                            <div class="swatch" style="background:#e07a3e;"></div>
+                            <div class="swatch" style="background:#4a5568;"></div>
+                        </div>
 
-                        {{-- Body --}}
-                        <div class="pcat-body">
-                            <div class="pcat-category">{{ $product->category->name ?? '—' }}</div>
-                            <div class="pcat-name">{{ $product->name }}</div>
-                            <div class="pcat-desc">{{ $product->description }}</div>
-
-                            <div class="pcat-footer">
-                                <div>
-                                    <div class="pcat-price">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
-                                    @if($product->stock > 10)
-                                        <div class="pcat-stock">Stok: {{ $product->stock }}</div>
-                                    @elseif($product->stock > 0)
-                                        <div class="pcat-stock low">Stok Terbatas: {{ $product->stock }}</div>
-                                    @else
-                                        <div class="pcat-stock out">Habis</div>
-                                    @endif
-                                </div>
-                                <a href="{{ route('product.detail', $product->slug) }}" class="btn-pcat-detail" onclick="event.stopPropagation()">
-                                    Detail <i class="bi bi-arrow-right"></i>
-                                </a>
+                        {{-- Footer Apple Style --}}
+                        <div class="pcat-footer-apple">
+                            <div class="pcat-price-detail">
+                                Mulai Rp {{ number_format($product->price, 0, ',', '.') }}
+                                <a href="{{ route('product.detail', $product->slug) }}" class="pcat-link-selengkapnya" onclick="event.stopPropagation()">Lihat selengkapnya &gt;</a>
                             </div>
+                            <button class="btn-pcat-beli-apple" onclick="event.stopPropagation(); addToCart(this, {{ $product->id }});">Beli</button>
                         </div>
                     </div>
                     @endforeach

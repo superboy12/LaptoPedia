@@ -368,6 +368,122 @@
     box-shadow: 0 15px 30px rgba(212,168,67,0.3);
 }
 
+
+/* ── Kupon Input ── */
+.coupon-input-wrap {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed var(--border);
+}
+.coupon-input-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.coupon-input-label i { color: var(--gold); }
+.coupon-input-row {
+    display: flex;
+    gap: 8px;
+}
+.coupon-input-field {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 11px 16px;
+    border-radius: 10px;
+    outline: none;
+    text-transform: uppercase;
+    transition: all 0.3s;
+}
+.coupon-input-field::placeholder {
+    text-transform: none;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--text-muted);
+}
+.coupon-input-field:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(212,168,67,0.12);
+}
+.coupon-input-field.is-valid {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
+}
+.coupon-input-field.is-invalid {
+    border-color: #f87171;
+    box-shadow: 0 0 0 3px rgba(248,113,113,0.1);
+}
+.coupon-apply-btn {
+    background: linear-gradient(135deg, #f0d080, #d4a843);
+    color: #000;
+    border: none;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 0.82rem;
+    padding: 11px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+.coupon-apply-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(212,168,67,0.3);
+}
+.coupon-apply-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+.coupon-feedback {
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-top: 8px;
+    display: none;
+    align-items: center;
+    gap: 5px;
+    line-height: 1.4;
+}
+.coupon-feedback.success { display: flex; color: #10b981; }
+.coupon-feedback.error   { display: flex; color: #f87171; }
+.coupon-feedback.freeship { display: flex; color: #60a5fa; }
+
+.coupon-applied-badge {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(16,185,129,0.08);
+    border: 1px solid rgba(16,185,129,0.25);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-top: 10px;
+    font-size: 0.8rem;
+}
+.coupon-applied-badge.show { display: flex; }
+.coupon-applied-badge span { font-weight: 700; color: #10b981; }
+.coupon-remove-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: color 0.2s;
+}
+.coupon-remove-btn:hover { color: #f87171; }
+
 @media (max-width: 1000px) {
     .checkout-layout { grid-template-columns: 1fr; padding: 0 24px 80px; }
     .summary-box { position: static; margin-top: 40px; }
@@ -499,7 +615,7 @@
                         <div class="form-group">
                             <label class="form-label">Kode Pos</label>
                             <div class="input-with-icon">
-                                <input type="text" name="postal_code" class="form-input" placeholder="Contoh: 12110" value="{{ old('postal_code') }}" required>
+                                <input type="text" name="postal_code" id="postal_code_input" class="form-input" placeholder="Contoh: 12110" value="{{ old('postal_code') }}" required>
                                 <i class="bi bi-mailbox"></i>
                             </div>
                         </div>
@@ -570,18 +686,51 @@
                         @endforeach
                     </div>
 
+                    {{-- ── KUPON INPUT ── --}}
+                    <div class="coupon-input-wrap">
+                        <div class="coupon-input-label">
+                            <i class="bi bi-ticket-perforated-fill"></i> Kode Kupon / Promo
+                        </div>
+                        <div class="coupon-input-row">
+                            <input
+                                type="text"
+                                id="couponInput"
+                                class="coupon-input-field"
+                                placeholder="Masukkan kode promo"
+                                maxlength="50"
+                                value="{{ $appliedCoupon['code'] ?? '' }}"
+                            >
+                            <button type="button" class="coupon-apply-btn" id="couponApplyBtn" onclick="applyCoupon()">
+                                <i class="bi bi-check-lg"></i> Pakai
+                            </button>
+                        </div>
+                        <div class="coupon-feedback" id="couponFeedback"></div>
+                        <div class="coupon-applied-badge {{ !empty($appliedCoupon) ? 'show' : '' }}" id="couponAppliedBadge">
+                            <span id="couponAppliedText">{{ !empty($appliedCoupon) ? $appliedCoupon['code'] . ' — ' . $appliedCoupon['label'] : '' }}</span>
+                            <button type="button" class="coupon-remove-btn" onclick="removeCoupon()" title="Hapus kupon">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {{-- Hidden input untuk dikirim bersama form --}}
+                    <input type="hidden" name="coupon_code" id="couponCodeHidden" value="{{ $appliedCoupon['code'] ?? '' }}">
+
                     <div class="summary-row">
                         <span>Subtotal Produk</span>
-                        <span>Rp {{ number_format($total, 0, ',', '.') }}</span>
+                        <span id="summarySubtotal">Rp {{ number_format($total, 0, ',', '.') }}</span>
                     </div>
                     <div class="summary-row">
                         <span>Biaya Pengiriman</span>
                         <span style="color:#4ade80;">Gratis</span>
                     </div>
+                    <div class="summary-row" id="discountRow" style="{{ !empty($appliedCoupon) && $appliedCoupon['discount'] > 0 ? '' : 'display:none;' }}">
+                        <span style="color:#10b981;"><i class="bi bi-tag-fill" style="font-size:0.75rem;"></i> Diskon Kupon</span>
+                        <span style="color:#10b981;" id="discountDisplay">- Rp {{ !empty($appliedCoupon) ? number_format($appliedCoupon['discount'], 0, ',', '.') : '0' }}</span>
+                    </div>
 
                     <div class="summary-total">
                         <span>Total Pembayaran</span>
-                        <span>Rp {{ number_format($total, 0, ',', '.') }}</span>
+                        <span id="summaryTotal">Rp {{ !empty($appliedCoupon) ? number_format(max(0, $total - $appliedCoupon['discount']), 0, ',', '.') : number_format($total, 0, ',', '.') }}</span>
                     </div>
 
                     <button type="submit" class="btn-checkout" id="btnSubmit">
@@ -589,7 +738,7 @@
                     </button>
                     
                     <p style="text-align:center; font-size:0.75rem; color:var(--text-muted); margin-top:16px;">
-                        Dengan menekan tombol ini, Anda menyetujui Syarat & Ketentuan kami.
+                        Dengan menekan tombol ini, Anda menyetujui Syarat &amp; Ketentuan kami.
                     </p>
                 </div>
             </div>
@@ -602,6 +751,7 @@
 @push('scripts')
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
 /* ── MAP INIT + REVERSE GEOCODING ── */
 window.addEventListener('load', function () {
     // Default: Jakarta Pusat
@@ -972,5 +1122,146 @@ async function csddLoadDistrictAsync(regencyId) {
 
 // ── Init: Load provinces immediately ─────────────────────
 csddLoadProvinces();
+</script>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   KUPON PROMO — Apply & Remove Logic
+══════════════════════════════════════════════════════════ */
+
+// Subtotal dari PHP (tanpa diskon)
+const BASE_SUBTOTAL = {{ (int) $total }};
+
+// State kupon yang sedang aktif
+let activeCoupon = null;
+
+// Tekan Enter di input kupon = apply
+document.getElementById('couponInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        applyCoupon();
+    }
+});
+
+async function applyCoupon() {
+    const input   = document.getElementById('couponInput');
+    const btn     = document.getElementById('couponApplyBtn');
+    const feedback = document.getElementById('couponFeedback');
+    const code    = input.value.trim().toUpperCase();
+
+    if (!code) {
+        showCouponFeedback('error', 'bi-exclamation-circle', 'Masukkan kode kupon terlebih dahulu.');
+        input.classList.add('is-invalid');
+        return;
+    }
+
+    // Loading state
+    btn.disabled = true;
+    btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Memeriksa...';
+    input.classList.remove('is-valid', 'is-invalid');
+    feedback.className = 'coupon-feedback';
+
+    try {
+        const response = await fetch('{{ route("coupon.apply") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
+                    || document.querySelector('input[name="_token"]')?.value
+                    || '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                code:  code,
+                total: BASE_SUBTOTAL
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.valid) {
+            activeCoupon = data;
+            input.classList.add('is-valid');
+            document.getElementById('couponCodeHidden').value = data.code;
+
+            // Kupon FREESHIPID (value=0) — tampilkan sebagai gratis ongkir
+            if (data.discount === 0 || data.type === 'fixed' && data.value === 0) {
+                showCouponFeedback('freeship', 'bi-truck', '✓ Gratis Ongkir aktif untuk pesanan ini!');
+                updateSummary(0);
+                showAppliedBadge(data.code, 'Gratis Ongkir');
+            } else {
+                showCouponFeedback('success', 'bi-check-circle-fill', data.message);
+                updateSummary(data.discount);
+                const label = data.type === 'percent'
+                    ? `Diskon ${data.value}% (- Rp ${formatRupiah(data.discount)})`
+                    : `Diskon - Rp ${formatRupiah(data.discount)}`;
+                showAppliedBadge(data.code, label);
+            }
+
+        } else {
+            activeCoupon = null;
+            input.classList.add('is-invalid');
+            document.getElementById('couponCodeHidden').value = '';
+            showCouponFeedback('error', 'bi-x-circle-fill', data.message);
+            updateSummary(0);
+            hideAppliedBadge();
+        }
+
+    } catch (err) {
+        showCouponFeedback('error', 'bi-wifi-off', 'Gagal menghubungi server. Cek koneksi Anda.');
+        input.classList.add('is-invalid');
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-check-lg"></i> Pakai';
+}
+
+function removeCoupon() {
+    activeCoupon = null;
+    const input = document.getElementById('couponInput');
+    input.value = '';
+    input.classList.remove('is-valid', 'is-invalid');
+    document.getElementById('couponCodeHidden').value = '';
+    document.getElementById('couponFeedback').className = 'coupon-feedback';
+    updateSummary(0);
+    hideAppliedBadge();
+}
+
+function updateSummary(discount) {
+    const finalTotal = Math.max(0, BASE_SUBTOTAL - discount);
+    const discountRow = document.getElementById('discountRow');
+    const discountDisplay = document.getElementById('discountDisplay');
+    const summaryTotal = document.getElementById('summaryTotal');
+
+    if (discount > 0) {
+        discountRow.style.display = 'flex';
+        discountDisplay.textContent = '- Rp ' + formatRupiah(discount);
+    } else {
+        discountRow.style.display = 'none';
+    }
+
+    summaryTotal.textContent = 'Rp ' + formatRupiah(finalTotal);
+}
+
+function showAppliedBadge(code, label) {
+    const badge = document.getElementById('couponAppliedBadge');
+    const text  = document.getElementById('couponAppliedText');
+    text.textContent = code + ' — ' + label;
+    badge.classList.add('show');
+}
+
+function hideAppliedBadge() {
+    document.getElementById('couponAppliedBadge').classList.remove('show');
+    document.getElementById('couponAppliedText').textContent = '';
+}
+
+function showCouponFeedback(type, icon, msg) {
+    const el = document.getElementById('couponFeedback');
+    el.className = 'coupon-feedback ' + type;
+    el.innerHTML = `<i class="bi ${icon}"></i> ${msg}`;
+}
+
+function formatRupiah(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
 </script>
 @endpush

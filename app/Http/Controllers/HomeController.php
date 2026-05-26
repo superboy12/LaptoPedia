@@ -24,8 +24,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $products = \App\Models\Product::with('category')->latest()->take(4)->get();
-        return view('home', compact('products'));
+        $products   = \App\Models\Product::with('category')->latest()->take(8)->get();
+        $categories = \App\Models\Category::withCount('products')->having('products_count', '>', 0)->orderBy('name')->get();
+        $totalProducts = \App\Models\Product::count();
+
+        return view('home', compact('products', 'categories', 'totalProducts'));
     }
 
     /**

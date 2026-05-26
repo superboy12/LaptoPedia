@@ -259,139 +259,108 @@
         gap: 48px;
     }
 
-    /* ===== PRODUCT CARD (Elegant Apple-Style) ===== */
+    /* ===== PRODUCT CARD (Apple Screenshot Style) ===== */
     .p-card {
-        background: transparent;
-        border: none;
+        background: var(--surface);
+        border-radius: 24px;
+        padding: 32px 24px 24px;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        text-align: center;
         cursor: pointer;
-        transition: transform 0.3s ease;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        min-height: 440px;
+    }
+    .p-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+    }
+    
+    .p-title-area {
+        text-align: left;
+        margin-bottom: 24px;
+    }
+    .p-name {
+        font-family: 'Manrope', sans-serif;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--text);
+        letter-spacing: -0.02em;
+        line-height: 1.2;
     }
     
     .p-img-wrap {
-        background: var(--surface);
-        border-radius: 32px;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 40px;
-        height: 380px;
+        flex: 1;
         width: 100%;
         margin-bottom: 24px;
-        transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-        position: relative;
     }
     .p-img-wrap img {
-        max-height: 260px;
+        max-height: 200px;
         max-width: 100%;
         object-fit: contain;
-        transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-        z-index: 2;
+        transition: transform 0.5s cubic-bezier(0.2,0.8,0.2,1);
     }
-    .p-card:hover .p-img-wrap img {
-        transform: scale(1.04);
-    }
+    .p-card:hover .p-img-wrap img { transform: scale(1.04); }
 
     .p-swatches {
         display: flex;
         gap: 8px;
         justify-content: center;
-        margin-bottom: 12px;
+        margin-bottom: 32px;
     }
     .swatch {
         width: 12px; height: 12px;
         border-radius: 50%;
-        border: 1px solid rgba(0,0,0,0.1);
         cursor: pointer;
-        transition: transform 0.2s, outline 0.2s;
-        outline: 1.5px solid transparent;
+        outline: 1px solid transparent;
         outline-offset: 2px;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
     }
-    .swatch:hover {
-        transform: scale(1.1);
-    }
-    .swatch.active {
-        outline-color: var(--text-muted);
-    }
+    .swatch:hover { outline-color: var(--text-muted); }
     
-    .p-badge {
-        font-size: 0.7rem;
-        color: #d97706;
-        font-weight: 700;
-        margin-bottom: 6px;
-    }
-
-    .p-name {
-        font-family: 'Manrope', sans-serif;
-        font-size: 1.6rem;
-        font-weight: 700;
-        color: var(--text);
-        letter-spacing: -0.03em;
-        margin-bottom: 8px;
-    }
-
-    .section-h2 {
-        font-family: 'Manrope', sans-serif;
-        font-size: clamp(2.5rem, 4vw, 3.2rem);
-        font-weight: 800;
-        color: var(--text);
-        letter-spacing: -0.04em;
-        margin-bottom: 8px;
-        transition: color 0.4s ease;
-    }
-
-    .p-desc {
-        font-size: 0.9rem;
-        color: var(--text-muted);
-        line-height: 1.5;
-        max-width: 85%;
-        margin: 0 auto 24px;
-    }
-
-    .p-actions {
+    .p-footer-apple {
         display: flex;
-        align-items: center;
+        align-items: flex-end;
+        justify-content: space-between;
         gap: 16px;
-        justify-content: center;
+        margin-top: auto;
     }
-    
-    .btn-selengkapnya {
-        background: var(--gold);
-        color: #000;
-        padding: 8px 18px;
-        border-radius: 100px;
-        font-size: 0.85rem;
-        font-weight: 700;
+    .p-price-detail {
+        font-family: 'Inter', 'DM Sans', sans-serif;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        line-height: 1.4;
+        text-align: left;
+    }
+    .p-link-selengkapnya {
+        display: block;
+        color: #0066cc; /* Apple link color */
         text-decoration: none;
-        transition: all 0.3s;
+        margin-top: 4px;
+        font-weight: 600;
     }
-    .btn-selengkapnya:hover {
-        background: var(--gold-light, #f0d080);
-        color: #000;
-        transform: scale(1.02);
-        box-shadow: 0 4px 12px rgba(212, 168, 67, 0.3);
-    }
+    .p-link-selengkapnya:hover { text-decoration: underline; }
 
-    .btn-beli {
-        color: var(--gold);
+    .btn-beli-apple {
+        background: #0071e3; /* Apple blue button */
+        color: #fff;
+        padding: 6px 16px;
+        border-radius: 100px;
+        font-family: 'Inter', 'DM Sans', sans-serif;
         font-size: 0.85rem;
-        font-weight: 700;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        background: none;
+        font-weight: 600;
         border: none;
         cursor: pointer;
-        padding: 0;
-        transition: color 0.3s;
+        transition: background 0.2s, transform 0.2s;
+        white-space: nowrap;
     }
-    .btn-beli:hover {
-        color: var(--gold-light, #f0d080);
-        text-decoration: underline;
+    .btn-beli-apple:hover {
+        background: #0077ed;
+        transform: scale(1.04);
     }
 
     /* Responsive */
@@ -419,6 +388,48 @@
         .p-img-wrap { height: 260px; padding: 20px; border-radius: 24px; }
         .p-img-wrap img { max-height: 160px; }
         .p-name { font-size: 1.4rem; }
+    }
+
+    /* =============================================
+       BRANDS SECTION
+    ============================================= */
+    .brands-section {
+        background: var(--bg);
+        padding: 80px 24px;
+        border-top: 1px solid var(--border);
+    }
+    .brands-inner {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    .brands-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 40px;
+        opacity: 0.6;
+        transition: opacity 0.4s;
+    }
+    .brands-grid:hover {
+        opacity: 1;
+    }
+    .brand-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: 'Manrope', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        transition: color 0.3s, transform 0.3s;
+        cursor: pointer;
+    }
+    .brand-item:hover {
+        color: var(--text);
+        transform: translateY(-2px);
+    }
+    .brand-item i {
+        font-size: 1.8rem;
     }
 </style>
 @endpush
@@ -486,39 +497,37 @@
     <div class="products-grid reveal">
         @forelse($products as $product)
         <div class="p-card" onclick="window.location='{{ route('product.detail', $product->slug) }}'">
+            
+            <div class="p-title-area">
+                <h3 class="p-name">{{ $product->name }}</h3>
+            </div>
+            
             <div class="p-img-wrap">
                 @if($product->image)
                     <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
                          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                     <div style="display:none;align-items:center;justify-content:center;width:100%;height:100%;">
-                        <i class="bi bi-laptop" style="font-size:5rem;color:var(--text-muted);opacity:0.25;"></i>
+                        <i class="bi bi-laptop" style="font-size:4rem;color:var(--text-muted);opacity:0.2;"></i>
                     </div>
                 @else
-                    <i class="bi bi-laptop" style="font-size:5rem;color:var(--text-muted);opacity:0.25;"></i>
+                    <i class="bi bi-laptop" style="font-size:4rem;color:var(--text-muted);opacity:0.2;"></i>
                 @endif
             </div>
             
             <div class="p-swatches">
-                <div class="swatch active" style="background:#5e5e60;" onclick="selectColor(this, event)"></div>
-                <div class="swatch" style="background:#e3e4e5;" onclick="selectColor(this, event)"></div>
-                <div class="swatch" style="background:#fce0d8;" onclick="selectColor(this, event)"></div>
+                <div class="swatch" style="background:#e3e4e5;"></div>
+                <div class="swatch" style="background:#e07a3e;"></div>
+                <div class="swatch" style="background:#4a5568;"></div>
             </div>
             
-            @if($loop->first)
-            <div class="p-badge">Baru</div>
-            @endif
-
-            <div class="p-name">{{ $product->name }}</div>
-            <div class="p-desc">{{ Str::limit($product->description, 50) }}</div>
-
-            <div class="p-actions">
-                <a href="{{ route('product.detail', $product->slug) }}" class="btn-selengkapnya" onclick="event.stopPropagation();">
-                    Selengkapnya
-                </a>
-                <button class="btn-beli" onclick="event.stopPropagation(); addToCart(this, {{ $product->id }});">
-                    Beli <i class="bi bi-bag-plus" style="font-size:0.9rem;"></i>
-                </button>
+            <div class="p-footer-apple">
+                <div class="p-price-detail">
+                    Mulai Rp {{ number_format($product->price, 0, ',', '.') }}
+                    <a href="{{ route('product.detail', $product->slug) }}" class="p-link-selengkapnya" onclick="event.stopPropagation();">Lihat selengkapnya &gt;</a>
+                </div>
+                <button class="btn-beli-apple" onclick="event.stopPropagation(); addToCart(this, {{ $product->id }});">Beli</button>
             </div>
+            
         </div>
         @empty
         {{-- Fallback jika belum ada produk di DB --}}
@@ -530,6 +539,22 @@
             <div class="p-desc">Admin belum menambahkan produk. Silakan login sebagai admin untuk menambahkan produk.</div>
         </div>
         @endforelse
+    </div>
+</section>
+
+<!-- =============================================
+     BRANDS SECTION
+============================================= -->
+<section class="brands-section">
+    <div class="brands-inner reveal">
+        <h3 style="font-family:'Manrope',sans-serif;font-size:1.2rem;font-weight:800;text-align:center;color:var(--text);margin-bottom:32px;">Bermitra dengan Merek Global</h3>
+        <div class="brands-grid">
+            <div class="brand-item"><i class="bi bi-apple"></i> <span>Apple</span></div>
+            <div class="brand-item"><i class="bi bi-windows"></i> <span>Microsoft</span></div>
+            <div class="brand-item"><i class="bi bi-laptop"></i> <span>Asus</span></div>
+            <div class="brand-item"><i class="bi bi-pc-display"></i> <span>Lenovo</span></div>
+            <div class="brand-item"><i class="bi bi-mouse"></i> <span>Logitech</span></div>
+        </div>
     </div>
 </section>
 

@@ -17,6 +17,8 @@ class Order extends Model
         'longitude',
         'payment_method',
         'snap_token',
+        'coupon_code',
+        'discount_amount',
     ];
 
     public function user()
